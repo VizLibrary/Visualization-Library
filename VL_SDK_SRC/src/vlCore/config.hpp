@@ -213,22 +213,16 @@
 ///////////////////////////////////////////////////
 
 // Dll import/export settings
-#ifdef _WIN32
-
-  #ifdef VL_COMPILE_DLL
-
-    #ifdef VL_DLL_EXPORT
-      #define VL_DllExport __declspec(dllexport)
-    #else
-      #define VL_DllExport __declspec(dllimport)
-    #endif
-
+#if defined(_WIN32) && defined(VL_COMPILE_DLL)
+  #ifdef VL_DLL_EXPORT
+    #define VL_DllExport __declspec(dllexport)
   #else
-
-    #define VL_DllExport
-
+    #define VL_DllExport __declspec(dllimport)
   #endif
+#endif
 
+#ifndef VL_DllExport
+  #define VL_DllExport
 #endif
 
 #endif
