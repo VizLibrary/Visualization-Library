@@ -38,7 +38,7 @@ namespace vl
 {
   //! The RenderingTree class organizes a set of renderings into an N-ary tree.
   //! To enable the RenderingTree set the enableMask() to a value != 0, otherwise the RenderingTree will be disabled.
-  class RenderingTree: public RenderingAbstract
+  class VL_DllExport RenderingTree: public RenderingAbstract
   {
   public:
     virtual const char* className() { return "RenderingTree"; }

@@ -43,22 +43,22 @@ namespace vl
   /** 
    * Returns a random number N that between 'min' and 'max' included.
    */
-  Real randomMinMax(Real min, Real max);
+  VL_DllExport Real randomMinMax(Real min, Real max);
 
   /** 
    * Returns a number N that is a power of 2 and that is equal to or greater than 'n'.
    */
-  int greaterEqualPow2(int n);
+  VL_DllExport int greaterEqualPow2(int n);
 
   /** 
    * Returns a number N that is a power of 2 and that is equal to or smaller than 'n'.
    */
-  int smallerEqualPow2(int n);
+  VL_DllExport int smallerEqualPow2(int n);
 
   /**
    * Extracts the 6 frustum planes for the given model-view-projection matrix.
    */
-  void extractPlanes( Plane* planes, const mat4& modelviewproj );
+  VL_DllExport void extractPlanes( Plane* planes, const mat4& modelviewproj );
 }
 
 #endif

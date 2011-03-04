@@ -125,7 +125,7 @@ namespace vl
 
   \sa Transform, Effect, Renderable, Geometry
   */
-  class Actor: public Object
+  class VL_DllExport Actor: public Object
   {
   public:
     virtual const char* className() { return "Actor"; }

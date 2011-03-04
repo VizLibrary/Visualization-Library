@@ -47,7 +47,7 @@ namespace vl
   /** For internal use only. Base class for GLSLVertexShader, GLSLFragmentShader, GLSLGeometryShader, GLSLTessEvaluationShader and GLSLTessControlShader.
    *
    * \sa GLSLVertexShader, GLSLFragmentShader, GLSLGeometryShader, GLSLTessControlShader, GLSLTessEvaluationShader, GLSLProgram, Effect */
-  class GLSLShader: public Object
+  class VL_DllExport GLSLShader: public Object
   {
   public:
     GLSLShader(EShaderType type, const String& source=String());
@@ -212,7 +212,7 @@ namespace vl
    * - Effect
    * - Actor::renderEventCallbacks()
   */
-  class GLSLProgram: public RenderState
+  class VL_DllExport GLSLProgram: public RenderState
   {
     // applyUniform
     friend class Renderer;

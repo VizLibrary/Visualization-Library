@@ -182,7 +182,9 @@
 
 // -------------------- Do Not Touch The Following Section --------------------
 
+///////////////////////////////////////////////////
 
+// Pipeline precision settings
 #if VL_PIPELINE_PRECISION == 2
   namespace vl { /** Defined as \p 'typedef \p double \p Real' */ typedef double Real; }
   //! Defined as \p glLoadMatrixd, used internally.
@@ -197,6 +199,7 @@
   //! Defined as \p glMultMatrixf, used internally.
   #define VL_glMultMatrix glMultMatrixf
 #endif
+
 ///////////////////////////////////////////////////
 
 // Visual Studio special settings
@@ -205,6 +208,27 @@
   #pragma warning( once : 4800 )
   #pragma warning( once : 4127 ) // conditional expression is constant
   #pragma warning( once : 4100 ) // unreferenced formal parameter
+#endif
+
+///////////////////////////////////////////////////
+
+// Dll import/export settings
+#ifdef _WIN32
+
+  #ifdef VL_COMPILE_DLL
+
+    #ifdef VL_DLL_EXPORT
+      #define VL_DllExport __declspec(dllexport)
+    #else
+      #define VL_DllExport __declspec(dllimport)
+    #endif
+
+  #else
+
+    #define VL_DllExport
+
+  #endif
+
 #endif
 
 #endif

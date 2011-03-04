@@ -57,7 +57,7 @@ namespace vl
    * affect the rendering. For more information look at the glRasterPos documentation.
   */
   //-----------------------------------------------------------------------------
-  class DrawPixels: public Renderable
+  class VL_DllExport DrawPixels: public Renderable
   {
   public:
   //-----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ namespace vl
     /**
      * Represents a bitmap to be drawn on the screen.
     */
-    class Pixels: public Object
+    class VL_DllExport Pixels: public Object
     {
       friend class DrawPixels;
 

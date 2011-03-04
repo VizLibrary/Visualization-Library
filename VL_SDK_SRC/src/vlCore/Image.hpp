@@ -51,7 +51,7 @@ namespace vl
    *
    * \remarks The copy operator performs a deep copy of all the pixel data and thus
    * is to be considered an expensive operation. */
-  class Image: public Object
+  class VL_DllExport Image: public Object
   {
     Image(const Image& other): Object(other) {}
   public:
@@ -308,46 +308,46 @@ namespace vl
   //! \param file The file from which the data is read. This function also opens the file if it is not open already. Note that this function 
   //! never closes the file so that you can read sequentially several raw image data from the same file.
   //! \param file_offset The offset in the file from where the data is read. If set to -1 the data is read from the current file position.
-  ref<Image> loadRAW(VirtualFile* file, long long file_offset, int width, int height, int depth, int bytealign, EImageFormat format, EImageType type);
+  VL_DllExport ref<Image> loadRAW(VirtualFile* file, long long file_offset, int width, int height, int depth, int bytealign, EImageFormat format, EImageType type);
 
   //! Loads an image from the specified file
-  ref<Image> loadImage(VirtualFile* file);
+  VL_DllExport ref<Image> loadImage(VirtualFile* file);
 
   //! Loads an image from the specified path
-  ref<Image> loadImage(const String& path);
+  VL_DllExport ref<Image> loadImage(const String& path);
 
   //! Loads all the images with the specified extension from the given directory.
-  bool loadImagesFromDir(const String& dir_path, const String& ext, std::vector< ref<Image> >& images);
+  VL_DllExport bool loadImagesFromDir(const String& dir_path, const String& ext, std::vector< ref<Image> >& images);
 
   //! Assembles the given 2D images in a single 2D image, all the images must be 2D images and have the same size, format() and type().
-  ref<Image> assemble3DImage(const std::vector< ref<Image> >& images);
+  VL_DllExport ref<Image> assemble3DImage(const std::vector< ref<Image> >& images);
 
   //! Writes an image on the specified file
-  bool saveImage(Image* img, VirtualFile* file);
+  VL_DllExport bool saveImage(Image* img, VirtualFile* file);
 
   //! Writes an image on the specified path
-  bool saveImage(Image* img, const String& path);
+  VL_DllExport bool saveImage(Image* img, const String& path);
 
   //! Creates a 1D Image whose color is interpolated from left to right from the specified spectrum.
-  ref<Image> makeNonUniformColorSpectrum(size_t width, size_t col_count, const fvec4* colors, const float* col_pos);
+  VL_DllExport ref<Image> makeNonUniformColorSpectrum(size_t width, size_t col_count, const fvec4* colors, const float* col_pos);
 
   //! Creates a 1D Image whose color is interpolated from left to right from the specified spectrum.
-  ref<Image> makeNonUniformColorSpectrum(int width, const std::vector<fvec4>& colors, const std::vector<float>& col_pos);
+  VL_DllExport ref<Image> makeNonUniformColorSpectrum(int width, const std::vector<fvec4>& colors, const std::vector<float>& col_pos);
 
   //! Creates a 1D Image whose color is interpolated from left to right from the specified spectrum.
-  ref<Image> makeColorSpectrum(size_t width, const std::vector<fvec4>& colors);
+  VL_DllExport ref<Image> makeColorSpectrum(size_t width, const std::vector<fvec4>& colors);
 
   //! Creates a 1D Image whose color is interpolated from left to right from the specified spectrum.
-  ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1);
+  VL_DllExport ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1);
 
   //! Creates a 1D Image whose color is interpolated from left to right from the specified spectrum.
-  ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1, const fvec4& c2);
+  VL_DllExport ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1, const fvec4& c2);
 
   //! Creates a 1D Image whose color is interpolated from left to right from the specified spectrum.
-  ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1, const fvec4& c2, const fvec4& c3);
+  VL_DllExport ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1, const fvec4& c2, const fvec4& c3);
 
   //! Creates a 1D Image whose color is interpolated from left to right from the specified spectrum.
-  ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1, const fvec4& c2, const fvec4& c3, const fvec4& c4);
+  VL_DllExport ref<Image> makeColorSpectrum(size_t width, const fvec4& c0, const fvec4& c1, const fvec4& c2, const fvec4& c3, const fvec4& c4);
 }
 
 #endif

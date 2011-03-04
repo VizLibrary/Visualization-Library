@@ -42,11 +42,11 @@ namespace vl
   class String;
   class Image;
 
-  ref<Image> loadTGA(VirtualFile* file);
-  ref<Image> loadTGA(const String& path);
-  bool isTGA(VirtualFile* file);
-  bool saveTGA(const Image* src, const String& path);
-  bool saveTGA(const Image* src, VirtualFile* file);
+  VL_DllExport ref<Image> loadTGA(VirtualFile* file);
+  VL_DllExport ref<Image> loadTGA(const String& path);
+  VL_DllExport bool isTGA(VirtualFile* file);
+  VL_DllExport bool saveTGA(const Image* src, const String& path);
+  VL_DllExport bool saveTGA(const Image* src, VirtualFile* file);
 
   //---------------------------------------------------------------------------
   // LoadWriterTGA

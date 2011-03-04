@@ -39,7 +39,7 @@
 namespace vl
 {
   //! A set of key/value pairs used to store generic information.
-  class KeyValues: public Object
+  class VL_DllExport KeyValues: public Object
   {
   public:
     bool has(const String& key) const { return mKeyValues.find(key) != mKeyValues.end(); }

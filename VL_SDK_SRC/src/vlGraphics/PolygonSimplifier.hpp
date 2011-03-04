@@ -48,7 +48,7 @@ namespace vl
    * The PolygonSimplifier class reduces the amount of polygons present in a Geometry using a quadric error metric.
    * The algorithm simplifies only the position array of the Geometry all the other vertex attributes will be discarded.
   */
-  class PolygonSimplifier: public Object
+  class VL_DllExport PolygonSimplifier: public Object
   {
   public:
     class Vertex;

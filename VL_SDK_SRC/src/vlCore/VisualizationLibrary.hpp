@@ -32,10 +32,12 @@
 #ifndef VisualizationLibrary_INCLUDE_ONCE
 #define VisualizationLibrary_INCLUDE_ONCE
 
+#include <vlCore/config.hpp>
+
 namespace vl
 {
   //! Used to initialize/shutdown VisualizationLibrary and to access important global data.
-  class VisualizationLibrary
+  class VL_DllExport VisualizationLibrary
   {
   public:
     //! Initializes VLCore or VLCore and VLGraphics libraries (if VL_MODULE_GRAPHICS was enabled during CMake configuration).
@@ -69,7 +71,7 @@ namespace vl
   };
 
   //! Shows a console window that displays the standard output. This function is meant to be used only under Windows only.
-  void showWin32Console();
+  VL_DllExport void showWin32Console();
 }
 
 #endif

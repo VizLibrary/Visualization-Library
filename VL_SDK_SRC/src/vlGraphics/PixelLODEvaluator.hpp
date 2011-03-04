@@ -47,7 +47,7 @@ namespace vl
    * - LODEvaluator
    * - PixelLODEvaluator
   */
-  class PixelLODEvaluator: public LODEvaluator
+  class VL_DllExport PixelLODEvaluator: public LODEvaluator
   {
   public:
     PixelLODEvaluator() 

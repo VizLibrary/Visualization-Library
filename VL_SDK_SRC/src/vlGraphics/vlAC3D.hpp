@@ -52,7 +52,7 @@ namespace vl
   //!   - Only one material per object
   //!   - Face flags supported: only "two-sided" flag
   //!   - The objects are all flat shaded
-  ref<ResourceDatabase> loadAC3D( VirtualFile* file );
+  VL_DllExport ref<ResourceDatabase> loadAC3D( VirtualFile* file );
 
   //! Loads and AC3D file (.ac)
   //!
@@ -62,7 +62,7 @@ namespace vl
   //!   - Only one material per object
   //!   - Face flags supported: only "two-sided" flag
   //!   - The objects are all flat shaded
-  ref<ResourceDatabase> loadAC3D( const String& path );
+  VL_DllExport ref<ResourceDatabase> loadAC3D( const String& path );
 
 //---------------------------------------------------------------------------
 // LoadWriterAC3D

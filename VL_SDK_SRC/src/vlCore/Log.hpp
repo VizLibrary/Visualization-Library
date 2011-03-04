@@ -41,7 +41,7 @@ namespace vl
   // Log
   //-----------------------------------------------------------------------------
   /** Utility class to generate logs. */
-  class Log: public Object
+  class VL_DllExport Log: public Object
   {
   protected:
     typedef enum 
@@ -106,16 +106,16 @@ namespace vl
   // Default logger
   //-----------------------------------------------------------------------------
   //! Installs the default logger used by Visualization Library. Setting this to NULL will disable logging.
-  void setDefLogger(Log* logger);
+  VL_DllExport void setDefLogger(Log* logger);
 
   //! Returns the currently installed default logger.
-  Log* defLogger();
+  VL_DllExport Log* defLogger();
 
   //-----------------------------------------------------------------------------
   // StandardLog
   //-----------------------------------------------------------------------------
   /** The StandardLog class outputs the log messages on the stdout device and optionally also on a specified file. */
-  class StandardLog: public Log
+  class VL_DllExport StandardLog: public Log
   {
   public:
     virtual const char* className() { return "StandardLog"; }

@@ -68,7 +68,7 @@ namespace vl
     *
     * \sa setLocalAndWorldMatrix(), setAssumeIdentityWorldMatrix(), Rendering::transform()
     * \sa Actor, Rendering, Effect, Renderable, Geometry */
-  class Transform: public Object
+  class VL_DllExport Transform: public Object
   {
   public:
     virtual const char* className() { return "Transform"; }

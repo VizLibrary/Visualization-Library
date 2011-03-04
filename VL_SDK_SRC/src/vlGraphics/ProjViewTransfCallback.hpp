@@ -73,7 +73,7 @@ namespace vl
   //! You usually want to install this callback if the fixed fuction pipeline is available, even when using GLSL shaders.
   //! In fact the GL_MODELVIEW and GL_PROJECTION matrices are visible from all the GLSL shaders, thus requiring fewer matrix updates
   //! compared to being forced to send projection, view and transform matrix to every single GLSLProgram at least once during the rendering!
-  class ProjViewTransfCallbackStandard: public ProjViewTransfCallback
+  class VL_DllExport ProjViewTransfCallbackStandard: public ProjViewTransfCallback
   {
   public:
     ProjViewTransfCallbackStandard(): mLastTransform(NULL) {}

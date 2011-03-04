@@ -119,7 +119,7 @@ namespace vl
   //! - Always update the mKeyboard structure appropriately especially with respect to Key_[Left/Right]-Alt/Ctrl/Shift events.
   //! - When cycling through EventListeners to dispatch the events you must do it on a temporary copy of mEventListeners so that
   //!   the EventListeners can safely add/remove themselves or other EventListeners to the OpenGLContext itself. */
-  class OpenGLContext: public Object
+  class VL_DllExport OpenGLContext: public Object
   {
   public:
     virtual const char* className() { return "OpenGLContext"; }

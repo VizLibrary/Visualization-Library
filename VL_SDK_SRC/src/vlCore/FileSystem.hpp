@@ -56,7 +56,7 @@ namespace vl
    * - MemoryFile
    * - ZippedFile
   */
-  class FileSystem: public Object
+  class VL_DllExport FileSystem: public Object
   {
   public:
     virtual const char* className() { return "FileSystem"; }
@@ -80,6 +80,7 @@ namespace vl
 
     //! Returns the list of VirtualDirectory objects added to a FileSystem
     Collection<VirtualDirectory>* directories() { return &mDirectories; }
+    
     //! Returns the list of VirtualDirectory objects added to a FileSystem
     const Collection<VirtualDirectory>* directories() const { return &mDirectories; }
 

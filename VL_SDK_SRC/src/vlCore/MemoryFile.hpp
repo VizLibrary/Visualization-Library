@@ -53,7 +53,7 @@ namespace vl
    * - DiskFile
    * - ZippedFile
   */
-  class MemoryFile: public VirtualFile
+  class VL_DllExport MemoryFile: public VirtualFile
   {
   public:
     virtual const char* className() { return "MemoryFile"; }

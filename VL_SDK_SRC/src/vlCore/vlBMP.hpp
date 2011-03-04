@@ -42,9 +42,9 @@ namespace vl
   class String;
   class Image;
 
-  ref<Image> loadBMP(VirtualFile* file);
-  ref<Image> loadBMP(const String& path);
-  bool isBMP(VirtualFile* file);
+  VL_DllExport ref<Image> loadBMP(VirtualFile* file);
+  VL_DllExport ref<Image> loadBMP(const String& path);
+  VL_DllExport bool isBMP(VirtualFile* file);
 
   //---------------------------------------------------------------------------
   // LoadWriterBMP

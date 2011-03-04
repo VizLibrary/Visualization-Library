@@ -42,11 +42,11 @@ namespace vl
   class String;
   class Image;
 
-  ref<Image> loadTIFF(VirtualFile* file);
-  ref<Image> loadTIFF(const String& path);
-  bool isTIFF(VirtualFile* file);
-  bool saveTIFF(const Image* src, const String& path);
-  bool saveTIFF(const Image* src, VirtualFile* file);
+  VL_DllExport ref<Image> loadTIFF(VirtualFile* file);
+  VL_DllExport ref<Image> loadTIFF(const String& path);
+  VL_DllExport bool isTIFF(VirtualFile* file);
+  VL_DllExport bool saveTIFF(const Image* src, const String& path);
+  VL_DllExport bool saveTIFF(const Image* src, VirtualFile* file);
 
   //---------------------------------------------------------------------------
   // LoadWriterTIFF

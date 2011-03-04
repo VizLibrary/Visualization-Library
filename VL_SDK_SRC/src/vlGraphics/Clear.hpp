@@ -65,7 +65,7 @@ namespace vl
    * Actor's and Effect's renderRank() and Actor's renderBlock(). 
    * - The following render states also affect the clearing process: ColorMask, StencilMask, DepthMask.
   */
-  class Clear: public Renderable
+  class VL_DllExport Clear: public Renderable
   {
   public:
     virtual const char* className() { return "Clear"; }

@@ -43,7 +43,7 @@ namespace vl
 
   /** A set of RenderState objects managed by a Shader.
     * \sa Shader, Effect, Actor */
-  class RenderStateSet: public Object
+  class VL_DllExport RenderStateSet: public Object
   {
   public:
     RenderStateSet(): mGLSLProgram(NULL)

@@ -42,7 +42,7 @@ namespace vl
    * - Text
    * - Actor
    * - VectorGraphics */
-  class FontManager: public Object
+  class VL_DllExport FontManager: public Object
   {
   public:
     virtual const char* className() { return "FontManager"; }

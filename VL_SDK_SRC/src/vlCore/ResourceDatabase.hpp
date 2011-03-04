@@ -137,22 +137,22 @@ namespace vl
   };
 
   //! Short version of defLoadWriterManager()->canLoad(path).
-  bool canLoad(const String& path);
+  VL_DllExport bool canLoad(const String& path);
 
   //! Short version of defLoadWriterManager()->canWrite(path).
-  bool canWrite(const String& path);
+  VL_DllExport bool canWrite(const String& path);
 
   //! Short version of defLoadWriterManager()->canLoad(file).
-  bool canLoad(VirtualFile* file);
+  VL_DllExport bool canLoad(VirtualFile* file);
 
   //! Short version of defLoadWriterManager()->canWrite(file).
-  bool canWrite(VirtualFile* file);
+  VL_DllExport bool canWrite(VirtualFile* file);
 
   //! Short version of defLoadWriterManager()->loadResource(path,quick).
-  ref<ResourceDatabase> loadResource(const String& path, bool quick=true);
+  VL_DllExport ref<ResourceDatabase> loadResource(const String& path, bool quick=true);
 
   //! Short version of defLoadWriterManager()->loadResource(file,quick).
-  ref<ResourceDatabase> loadResource(VirtualFile* file, bool quick=true);
+  VL_DllExport ref<ResourceDatabase> loadResource(VirtualFile* file, bool quick=true);
 }
 
 #endif

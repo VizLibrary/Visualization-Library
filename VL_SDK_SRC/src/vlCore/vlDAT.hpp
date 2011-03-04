@@ -42,9 +42,9 @@ namespace vl
   class String;
   class Image;
 
-  ref<Image> loadDAT(VirtualFile* file);
-  ref<Image> loadDAT(const String& path);
-  bool isDAT(VirtualFile* file);
+  VL_DllExport ref<Image> loadDAT(VirtualFile* file);
+  VL_DllExport ref<Image> loadDAT(const String& path);
+  VL_DllExport bool isDAT(VirtualFile* file);
 
   //---------------------------------------------------------------------------
   // LoadWriterDAT

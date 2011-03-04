@@ -37,7 +37,7 @@
 namespace vl
 {
   //! Random number generator.
-  class Random: public Object
+  class VL_DllExport Random: public Object
   {
   public:
     //! Constructor.

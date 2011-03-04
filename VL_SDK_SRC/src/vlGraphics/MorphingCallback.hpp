@@ -41,7 +41,7 @@ namespace vl
 
   /** The MorphingCallback class implements a simple morphing animation mechanism using the 
       GPU acceleration where available. */
-  class MorphingCallback: public ActorEventCallback
+  class VL_DllExport MorphingCallback: public ActorEventCallback
   {
   public:
     virtual const char* className() { return "MorphingCallback"; }

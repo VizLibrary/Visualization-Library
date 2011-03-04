@@ -50,7 +50,7 @@ namespace vl
   //! - SceneManagerPortals
   //! - Sector
   //! - \ref pagGuidePortals "Portal-Based Culling and Scene Management Tutorial"
-  class Portal: public Object
+  class VL_DllExport Portal: public Object
   {
     friend class SceneManagerPortals;
   public:
@@ -102,7 +102,7 @@ namespace vl
    *  - Portal
    *  - \ref pagGuidePortals "Portal-Based Culling and Scene Management Tutorial"
    */
-  class Sector: public Object
+  class VL_DllExport Sector: public Object
   {
   public:
 
@@ -172,7 +172,7 @@ namespace vl
    * - SceneManagerActorKdTree
    * - SceneManagerActorTree
    */
-  class SceneManagerPortals: public SceneManager
+  class VL_DllExport SceneManagerPortals: public SceneManager
   {
   public:
     //! Constructor.

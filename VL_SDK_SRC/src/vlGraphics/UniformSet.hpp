@@ -46,7 +46,7 @@ namespace vl
    * \sa 
    * Shader, Effect, Actor
   */
-  class UniformSet: public Object
+  class VL_DllExport UniformSet: public Object
   {
   public:
     virtual const char* className() { return "UniformSet"; }

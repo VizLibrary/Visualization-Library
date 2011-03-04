@@ -50,7 +50,7 @@ namespace vl
    *
    * \image html pagGuideExtrusion3.jpg
    */
-  class Extrusion: public vl::Object
+  class VL_DllExport Extrusion: public vl::Object
   {
   public:
     //! Constructor.

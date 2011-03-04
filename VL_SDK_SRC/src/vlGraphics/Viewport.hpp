@@ -47,7 +47,7 @@ namespace vl
    * Supports glClearColor, glClearColorIiEXT and glClearColorIuiEXT (see GL_EXT_texture_integer).
    * \sa Camera, Rendering, Renderer
   */
-  class Viewport: public Object
+  class VL_DllExport Viewport: public Object
   {
   public:
     virtual const char* className() { return "Viewport"; }

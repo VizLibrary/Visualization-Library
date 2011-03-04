@@ -47,7 +47,7 @@ namespace vl
    * Tessellates a complex polygon defined by a set of outlines into a set of triangles that can be rendered by Visualization Library.
    * For more information see the OpenGL Programmer's Guide chapter #11 "Tessellators and Quadrics".
    */
-  class Tessellator: public Object
+  class VL_DllExport Tessellator: public Object
   {
     typedef void (CALLBACK *callback_type)(void);
   public:

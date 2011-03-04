@@ -40,7 +40,7 @@ namespace vl
   /**
    * The GZipCodec class is a VirtualFile that transparently encodes and decodes a stream of data using the GZip compression algorithm.
    */
-  class GZipCodec: public VirtualFile
+  class VL_DllExport GZipCodec: public VirtualFile
   {
     // Lower this if you need to limit the amount of data allocated to the stack, for example to 16K.
     static const int CHUNK_SIZE = 128*1024;
@@ -82,12 +82,15 @@ namespace vl
     //! Sets the compression level used during write operations. 
     //! \param level Values can be between 0 (faster compression) to 9 (slower but better compression).
     void setCompressionLevel(int level) { mCompressionLevel = level; }
+    
     int compressionLevel() const { return mCompressionLevel; }
 
     //! Installs the VirtualFile representing the GZip file to be read or to be written.
     void setStream(VirtualFile* stream);
+    
     //! Returns the VirtualFile representing the GZip file to be read or to be written.
     const VirtualFile* stream() const { return mStream.get(); }
+    
     //! Returns the VirtualFile representing the GZip file to be read or to be written.
     VirtualFile* stream() { return mStream.get(); }
 
@@ -96,12 +99,15 @@ namespace vl
      * \note This function needs to seek to the end of the GZip stream in order to read the uncompressed file size.
      */
     long long uncompressedSize();
+    
     //! Returns the size of the compressed stream as returned by \p stream()->size().
     long long compressedSize() const { return stream() ? stream()->size() : -1; }
+    
     //! Returns the compression ratio computed as \p compressedsize/uncompressedsize.
     float compressionRatio() const;
 
     bool warnOnSeek() const { return mWarnOnSeek; }
+    
     void setWarnOnSeek(bool warn_on) { mWarnOnSeek = warn_on; }
 
   protected:

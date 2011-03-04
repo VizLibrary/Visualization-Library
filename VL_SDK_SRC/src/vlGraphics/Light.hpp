@@ -47,7 +47,7 @@ namespace vl
    * See also the \ref pagGuideLights "Lights Tutorial" for a practical example of how to use OpenGL lights.
    * \sa Shader, Effect, Actor, vl::EN_LIGHTING
   */
-  class Light: public RenderState
+  class VL_DllExport Light: public RenderState
   {
   public:
     Light(int light_index);

@@ -42,7 +42,7 @@ namespace vl
   /**
    * The TextStream class can be used to conveniently read or parse utf8-encoded text files.
   */
-  class TextStream: public BufferedStream<unsigned char, 128*1024>
+  class VL_DllExport TextStream: public BufferedStream<unsigned char, 128*1024>
   {
   public:
     virtual const char* className() { return "TextStream"; }

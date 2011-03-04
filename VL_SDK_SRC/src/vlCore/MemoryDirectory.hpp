@@ -53,7 +53,7 @@ namespace vl
    * - DiskFile
    * - ZippedFile
   */
-  class MemoryDirectory: public VirtualDirectory
+  class VL_DllExport MemoryDirectory: public VirtualDirectory
   {
   public:
     MemoryDirectory(const String& path="."): VirtualDirectory(path) {}

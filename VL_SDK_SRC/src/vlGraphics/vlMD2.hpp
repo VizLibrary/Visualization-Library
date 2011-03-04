@@ -41,8 +41,8 @@
 namespace vl
 {
 //-----------------------------------------------------------------------------
-  ref<ResourceDatabase> loadMD2(const String& path);
-  ref<ResourceDatabase> loadMD2(VirtualFile* file);
+  VL_DllExport ref<ResourceDatabase> loadMD2(const String& path);
+  VL_DllExport ref<ResourceDatabase> loadMD2(VirtualFile* file);
 //---------------------------------------------------------------------------
 // LoadWriterMD2
 //---------------------------------------------------------------------------

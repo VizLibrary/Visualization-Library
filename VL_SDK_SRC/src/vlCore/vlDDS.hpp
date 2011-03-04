@@ -42,9 +42,9 @@ namespace vl
   class String;
   class Image;
 
-  ref<Image> loadDDS(VirtualFile* file);
-  ref<Image> loadDDS(const String& path);
-  bool isDDS(VirtualFile* file);
+  VL_DllExport ref<Image> loadDDS(VirtualFile* file);
+  VL_DllExport ref<Image> loadDDS(const String& path);
+  VL_DllExport bool isDDS(VirtualFile* file);
 
   //---------------------------------------------------------------------------
   // LoadWriterDDS

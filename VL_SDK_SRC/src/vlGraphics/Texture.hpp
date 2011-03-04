@@ -131,7 +131,7 @@ namespace vl
    * - Shader
    * - Effect
    * - Actor */
-  class Texture: public Object
+  class VL_DllExport Texture: public Object
   {
   public:
     /** The SetupParams function wraps all the parameters needed to crate a Texture.

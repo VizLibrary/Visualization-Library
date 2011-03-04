@@ -132,7 +132,7 @@ namespace vl
   //-----------------------------------------------------------------------------
   /** The RayIntersector class is used to detect the intersection points between a Ray and a set of Actor[s]
    */
-  class RayIntersector: public Object
+  class VL_DllExport RayIntersector: public Object
   {
   public:
     virtual const char* className() { return "RayIntersector"; }

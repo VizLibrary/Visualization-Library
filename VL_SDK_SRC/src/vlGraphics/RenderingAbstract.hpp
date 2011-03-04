@@ -40,7 +40,7 @@ namespace vl
   class RenderEventCallback;
 
   //! The RenderingAbstract class is the base of all the rendering related sub-classes.
-  class RenderingAbstract: public Object
+  class VL_DllExport RenderingAbstract: public Object
   {
   public:
     //! Constructor.

@@ -69,7 +69,7 @@ namespace vl
   - \ref pagGuideEdgeRendering "Edge Enhancement and Wireframe Rendering Tutorial"
   - vl::EdgeRenderer
   */
-  class EdgeExtractor: public Object
+  class VL_DllExport EdgeExtractor: public Object
   {
   public:
     //! A single edge as extracted from the EdgeExtractor class.

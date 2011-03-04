@@ -42,15 +42,15 @@ namespace vl
   class String;
 
   //! Loads a DICOM file.
-  ref<Image> loadDICOM(VirtualFile* file);
+  VL_EXPORT ref<Image> loadDICOM(VirtualFile* file);
   //! Loads a DICOM file.
-  ref<Image> loadDICOM(const String& path);
+  VL_EXPORT ref<Image> loadDICOM(const String& path);
   //! Writes a DICOM file.
-  bool saveDICOM(const Image* src, const String& path);
+  VL_EXPORT bool saveDICOM(const Image* src, const String& path);
   //! Writes a DICOM file.
-  bool saveDICOM(const Image* src, VirtualFile* file);
+  VL_EXPORT bool saveDICOM(const Image* src, VirtualFile* file);
   //! Checks if the given file is a DICOM file.
-  bool isDICOM(VirtualFile* file);
+  VL_EXPORT bool isDICOM(VirtualFile* file);
 
   //---------------------------------------------------------------------------
   // LoadWriterDICOM

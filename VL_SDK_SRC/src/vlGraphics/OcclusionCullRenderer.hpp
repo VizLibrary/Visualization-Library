@@ -41,7 +41,7 @@ namespace vl
   //------------------------------------------------------------------------------
   /** Wraps a Renderer performing occlusion culling acceleration. 
     * For more information see \ref pagGuideOcclusionCulling */
-  class OcclusionCullRenderer: public Renderer
+  class VL_DllExport OcclusionCullRenderer: public Renderer
   {
   public:
     /** Constructor. */

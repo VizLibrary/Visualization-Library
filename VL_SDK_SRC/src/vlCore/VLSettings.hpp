@@ -38,7 +38,7 @@
 namespace vl
 {
   //! Global application settings controlling how Visualization Library behaves.
-  class VLSettings: public Object
+  class VL_DllExport VLSettings: public Object
   {
     friend class VisualizationLibrary;
   public:

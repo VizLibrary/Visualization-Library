@@ -66,7 +66,7 @@ namespace vl
   - Actor
   - Effect
   - Transform */
-  class Rendering: public RenderingAbstract
+  class VL_DllExport Rendering: public RenderingAbstract
   {
   public:
     virtual const char* className() { return "Rendering"; }

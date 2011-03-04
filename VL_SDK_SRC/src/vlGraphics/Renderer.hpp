@@ -44,7 +44,7 @@ namespace vl
   //-----------------------------------------------------------------------------
   /** The Renderer class executes the actual rendering on the given RenderQueue.
     * \sa Rendering */
-  class Renderer: public RendererAbstract
+  class VL_DllExport Renderer: public RendererAbstract
   {
   public:
     virtual const char* className() { return "Renderer"; }

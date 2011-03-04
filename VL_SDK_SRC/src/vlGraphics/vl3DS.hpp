@@ -46,8 +46,8 @@ namespace vl
 namespace vl
 {
 //-----------------------------------------------------------------------------
-  ref<ResourceDatabase> load3DS(VirtualFile* file);
-  ref<ResourceDatabase> load3DS(const String& path);
+  VL_DllExport ref<ResourceDatabase> load3DS(VirtualFile* file);
+  VL_DllExport ref<ResourceDatabase> load3DS(const String& path);
 //-----------------------------------------------------------------------------
 // LoadWriter3DS
 //-----------------------------------------------------------------------------
@@ -198,7 +198,7 @@ namespace vl
   /**
    * The A3DSLoader class loads an Autodesk 3DS file and generates a vector of A3DSObject and A3DSMaterial objects.
    */
-  class A3DSLoader
+  class VL_DllExport A3DSLoader
   {
   public:
     A3DSLoader();

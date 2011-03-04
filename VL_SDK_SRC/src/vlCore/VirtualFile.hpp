@@ -57,7 +57,7 @@ namespace vl
    * - MemoryFile
    * - ZippedFile
   */
-  class VirtualFile: public Object
+  class VL_DllExport VirtualFile: public Object
   {
   protected:
     VirtualFile(const VirtualFile& other): Object(other) {}
@@ -247,7 +247,7 @@ namespace vl
   };
 //-----------------------------------------------------------------------------
   //! Utility function, equivalent to \p vl::defFileSystem()->locateFile(path)
-  ref<VirtualFile> locateFile(const String& path);
+  VL_DllExport ref<VirtualFile> locateFile(const String& path);
 //-----------------------------------------------------------------------------
 }
 

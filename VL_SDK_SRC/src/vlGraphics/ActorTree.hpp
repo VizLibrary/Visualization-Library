@@ -59,7 +59,7 @@ namespace vl
    * - SceneManagerActorTree
    * - Actor
    */
-  class ActorTree: public ActorTreeAbstract
+  class VL_DllExport ActorTree: public ActorTreeAbstract
   {
   public:
     virtual const char* className() { return "ActorTree"; }

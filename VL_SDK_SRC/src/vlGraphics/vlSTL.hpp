@@ -45,8 +45,8 @@ namespace vl
 namespace vl
 {
 //-----------------------------------------------------------------------------
-  ref<ResourceDatabase> loadSTL(VirtualFile* file);
-  ref<ResourceDatabase> loadSTL(const String& path);
+  VL_DllExport ref<ResourceDatabase> loadSTL(VirtualFile* file);
+  VL_DllExport ref<ResourceDatabase> loadSTL(const String& path);
 //---------------------------------------------------------------------------
 // LoadWriterSTL
 //---------------------------------------------------------------------------
@@ -87,7 +87,7 @@ namespace vl
   /**
    * Loads an STL file.
    */
-  class STLLoader
+  class VL_DllExport STLLoader
   {
   public:
     virtual const char* className() { return "STLLoader"; }

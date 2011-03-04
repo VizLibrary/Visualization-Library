@@ -52,7 +52,7 @@ namespace vl
    * - Down = \p Key_S + \p Key_Shift
    * \sa TrackballManipulator
    */
-  class GhostCameraManipulator: public UIEventListener
+  class VL_DllExport GhostCameraManipulator: public UIEventListener
   {
   public:
     virtual const char* className() { return "GhostCameraManipulator"; }

@@ -42,7 +42,7 @@ namespace vl
   /**
    * A Transform that aligns an Actor towards the camera.
   */
-  class Billboard: public Transform
+  class VL_DllExport Billboard: public Transform
   {
   public:
     Billboard();

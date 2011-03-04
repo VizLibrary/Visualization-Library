@@ -32,6 +32,8 @@
 #ifndef TriangleStripGenerator_INCLUDE_ONCE
 #define TriangleStripGenerator_INCLUDE_ONCE
 
+#include <vlCore/config.hpp>
+
 namespace vl
 {
   class Geometry;
@@ -39,7 +41,7 @@ namespace vl
   /** 
    * The TriangleStripGenerator class is used to substitute lists of triangles or quads with triangle strips.
    */
-  class TriangleStripGenerator
+  class VL_DllExport TriangleStripGenerator
   {
   public:
     virtual const char* className() { return "TriangleStripGenerator"; }

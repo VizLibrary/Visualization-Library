@@ -60,7 +60,7 @@ namespace vl
    *
    * \sa setTerrainTexture(), setHeightmapTexture(), setDetailTexture()
    */
-  class Terrain: public SceneManagerActorKdTree
+  class VL_DllExport Terrain: public SceneManagerActorKdTree
   {
   public:
     virtual const char* className() { return "Terrain"; }

@@ -42,11 +42,11 @@ namespace vl
   class String;
   class Image;
 
-  ref<Image> loadPNG(VirtualFile* file);
-  ref<Image> loadPNG(const String& path);
-  bool isPNG(VirtualFile* file);
-  bool savePNG(const Image* src, const String& path, int compression = 6);
-  bool savePNG(const Image* src, VirtualFile* file, int compression = 6);
+  VL_DllExport ref<Image> loadPNG(VirtualFile* file);
+  VL_DllExport ref<Image> loadPNG(const String& path);
+  VL_DllExport bool isPNG(VirtualFile* file);
+  VL_DllExport bool savePNG(const Image* src, const String& path, int compression = 6);
+  VL_DllExport bool savePNG(const Image* src, VirtualFile* file, int compression = 6);
 
   //---------------------------------------------------------------------------
   // LoadWriterPNG

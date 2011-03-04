@@ -125,7 +125,7 @@ namespace vl
   /**
    * A font to be used with a Text renderable.
   */
-  class Font: public Object
+  class VL_DllExport Font: public Object
   {
     friend class Text;
     friend class FontManager;

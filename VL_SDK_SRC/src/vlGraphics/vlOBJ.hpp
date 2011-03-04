@@ -44,10 +44,10 @@ namespace vl
 
 //-----------------------------------------------------------------------------
   //! Loads a Wavefront OBJ file. See also ObjLoader.
-  ref<ResourceDatabase> loadOBJ( const String& path );
+  VL_DllExport ref<ResourceDatabase> loadOBJ( const String& path );
 //-----------------------------------------------------------------------------
   //! Loads a Wavefront OBJ file. See also ObjLoader.
-  ref<ResourceDatabase> loadOBJ( VirtualFile* file );
+  VL_DllExport ref<ResourceDatabase> loadOBJ( VirtualFile* file );
 //---------------------------------------------------------------------------
 // LoadWriterOBJ
 //---------------------------------------------------------------------------
@@ -88,7 +88,7 @@ namespace vl
 // ObjTexture
 //-----------------------------------------------------------------------------
   //! Represents a Wavefront OBJ texture. See also ObjMaterial and ObjLoader.
-  class ObjTexture
+  class VL_DllExport ObjTexture
   {
   public:
     ObjTexture();

@@ -43,11 +43,11 @@ namespace vl
   class String;
   class Image;
 
-  ref<Image> loadJPG(VirtualFile* file);
-  ref<Image> loadJPG(const String& path);
-  bool isJPG(VirtualFile* file);
-  bool saveJPG(const Image* src, const String& path, int quality = 95);
-  bool saveJPG(const Image* src, VirtualFile* file, int quality = 95);
+  VL_DllExport ref<Image> loadJPG(VirtualFile* file);
+  VL_DllExport ref<Image> loadJPG(const String& path);
+  VL_DllExport bool isJPG(VirtualFile* file);
+  VL_DllExport bool saveJPG(const Image* src, const String& path, int quality = 95);
+  VL_DllExport bool saveJPG(const Image* src, VirtualFile* file, int quality = 95);
 
   //---------------------------------------------------------------------------
   // LoadWriterJPG

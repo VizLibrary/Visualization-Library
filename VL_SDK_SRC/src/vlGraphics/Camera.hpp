@@ -47,7 +47,7 @@ namespace vl
   // Camera
   //-----------------------------------------------------------------------------
   /** Represents a virtual camera defining, among other things, the point of view from which scenes can be rendered. */
-  class Camera: public Object
+  class VL_DllExport Camera: public Object
   {
   public:
     virtual const char* className() { return "Camera"; }

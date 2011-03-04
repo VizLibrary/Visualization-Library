@@ -87,7 +87,7 @@ namespace vl
   /**
    * Loads a PLY file.
    */
-  class PlyLoader
+  class VL_DllExport PlyLoader
   {
   public:
     typedef enum
