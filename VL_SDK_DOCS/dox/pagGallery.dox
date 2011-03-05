@@ -73,32 +73,32 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/marching-engine.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/marching-engine.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/marching-engine.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/marching-foot.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/marching-foot.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/marching-foot.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/marching-skull.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/marching-skull.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/marching-skull.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/marching-multi-transp.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/marching-multi-transp.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/marching-multi-transp.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/marching-plot.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/marching-plot.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/marching-plot.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/marching-metaballs.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/marching-metaballs.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/marching-metaballs.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -227,54 +227,54 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/edge01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge01.jpg" alt="Highslide JS" title="No edge enhancement" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge02.jpg" alt="Highslide JS" title="Silhouette only" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge03.jpg" alt="Highslide JS" title="Silhouette + creases" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge04.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge04.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge04.jpg" alt="Highslide JS" title="Silhouette + creases + hidden creases" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge05.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge05.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge05.jpg" alt="Highslide JS" title="Only silhouette + creases" />
 			</a>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<a href="gallery/edge06.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge06.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge06.jpg" alt="Highslide JS" title="No edge enhancement" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge07.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge07.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge07.jpg" alt="Highslide JS" title="Silhouette only" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge08.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge08.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge08.jpg" alt="Highslide JS" title="Silhouette + creases" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge09.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge09.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge09.jpg" alt="Highslide JS" title="Silhouette + creases + hidden creases" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/edge10.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/edge10.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/edge10.jpg" alt="Highslide JS" title="Only silhouette + creases" />
 			</a>
 		</td>
@@ -296,25 +296,25 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/simplify01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/simplify01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/simplify01.jpg" alt="Highslide JS" title="Original mesh shaded" />
 			</a>
 			<div class="highslide-caption">Original mesh shaded.</div>
 		</td>
 		<td>
-			<a href="gallery/simplify02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/simplify02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/simplify02.jpg" alt="Highslide JS" title="Original mesh wireframe" />
 			</a>
 			<div class="highslide-caption">Original mesh wireframe.</div>
 		</td>
 		<td>
-			<a href="gallery/simplify03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/simplify03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/simplify03.jpg" alt="Highslide JS" title="10% reduced shaded" />
 			</a>
 			<div class="highslide-caption">10% reduced mesh shaded.</div>
 		</td>
 		<td>
-			<a href="gallery/simplify04.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/simplify04.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/simplify04.jpg" alt="Highslide JS" title="10% reduced wireframe" />
 			</a>
 			<div class="highslide-caption">10% reduced mesh wireframe.</div>
@@ -338,22 +338,22 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/extrude01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/extrude01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/extrude01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/extrude02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/extrude02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/extrude02.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/extrude03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/extrude03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/extrude03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/extrude04.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/extrude04.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/extrude04.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -376,17 +376,17 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/interp01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/interp01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/interp01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/interp02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/interp02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/interp02.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/interp03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/interp03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/interp03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -412,22 +412,22 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/bezier01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/bezier01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/bezier01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/bezier02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/bezier02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/bezier02.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/bezier03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/bezier03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/bezier03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/bezier04.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/bezier04.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/bezier04.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -456,17 +456,17 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/occlusion01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/occlusion01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/occlusion01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/occlusion03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/occlusion03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/occlusion03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/occlusion05.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/occlusion05.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/occlusion05.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -486,32 +486,32 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/kdtree-quad01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-quad01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-quad01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-quad02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-quad02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-quad02.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-quad03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-quad03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-quad03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-quad04.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-quad04.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-quad04.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-quad05.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-quad05.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-quad05.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-quad06.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-quad06.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-quad06.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -521,27 +521,27 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/kdtree-cube01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-cube01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-cube01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-cube02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-cube02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-cube02.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-cube03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-cube03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-cube03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-cube04.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-cube04.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-cube04.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/kdtree-cube05.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/kdtree-cube05.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/kdtree-cube05.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -558,17 +558,17 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/culling01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/culling01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/culling01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/culling02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/culling02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/culling02.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/culling03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/culling03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/culling03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
@@ -596,7 +596,7 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/tessellator01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/tessellator01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/tessellator01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
