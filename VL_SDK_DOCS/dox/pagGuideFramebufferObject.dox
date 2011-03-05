@@ -3,7 +3,7 @@
 
 	This tutorial shows how to use framebuffer objects to perform offscreen rendering.
 
-	\image html pagGuideFBO.jpg
+	<img src="pics/pagGuideFBO.jpg">
 	
 	Visualization Library uses the following classes to implement framebuffer objects and framebuffer attachments:
 

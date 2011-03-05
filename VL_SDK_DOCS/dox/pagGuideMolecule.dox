@@ -4,7 +4,7 @@
 
 	This tutorial demonstrates how to use the vlMolecule module classes to manipulate and render molecules and chemical structures.
 	
-	\image html pagGuideMolecule.png
+	<img src="pics/pagGuideMolecule.png">
 	
 	The vlMolecule module is a simple and minimalistic framework to manipulate and render chemical structures. The vl::Molecule class is the most important member of the module and represents a molecular structure as a collection of vl::Atom[s] and vl::Bond[s]. The vl::Molecule class allows you to add and remove both atoms and bonds in order to create any kind of molecule. The vlMolecule framework is flexible and intuitive, it allows you for example to set the color, the size, the visibility etc. for each atom and for each bond, it allows you to define the geometrical detail for bonds and atoms, it allows you highlight aromatic rings and much more.
 	
@@ -17,10 +17,10 @@
 	<center>
 	<table border=0 cellspacing=0 cellpadding=5>
 	<tr>
-		<td> \image html pagGuideMolecule1.jpg </td>
-		<td> \image html pagGuideMolecule2.jpg </td>
-		<td> \image html pagGuideMolecule3.jpg </td>
-		<td> \image html pagGuideMolecule4.jpg </td>
+		<td> <img src="pics/pagGuideMolecule1.jpg"> </td>
+		<td> <img src="pics/pagGuideMolecule2.jpg"> </td>
+		<td> <img src="pics/pagGuideMolecule3.jpg"> </td>
+		<td> <img src="pics/pagGuideMolecule4.jpg"> </td>
 	</tr>
 	<tr>
 		<td align=center valign=top> Wireframe style </td>

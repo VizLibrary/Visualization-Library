@@ -7,14 +7,14 @@
 	<center>
 	<table border=0 cellspacing=0 cellpadding=5>
 	<tr>
-		<td> \image html pagGuideSlicedVolume_1.jpg </td>
-		<td> \image html pagGuideSlicedVolume_2.jpg </td>
-		<td> \image html pagGuideSlicedVolume_4.jpg </td>
+		<td> <img src="pics/pagGuideSlicedVolume_1.jpg"> </td>
+		<td> <img src="pics/pagGuideSlicedVolume_2.jpg"> </td>
+		<td> <img src="pics/pagGuideSlicedVolume_4.jpg"> </td>
 	</tr>
 	<tr>
-		<td> \image html pagGuideSlicedVolume_5.jpg </td>
-		<td> \image html pagGuideSlicedVolume_6.jpg </td>
-		<td> \image html pagGuideSlicedVolume_7.jpg </td>
+		<td> <img src="pics/pagGuideSlicedVolume_5.jpg"> </td>
+		<td> <img src="pics/pagGuideSlicedVolume_6.jpg"> </td>
+		<td> <img src="pics/pagGuideSlicedVolume_7.jpg"> </td>
 	</tr>
 	</table>
 	</center>

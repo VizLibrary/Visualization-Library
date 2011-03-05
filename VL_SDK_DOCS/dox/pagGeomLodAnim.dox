@@ -4,7 +4,7 @@
 	In this tutorial you will learn how to define a set of LOD (level of detail) geometries using the vl::DistanceLODEvaluator class and how to 
 	animate your geometry using the vl::ActorEventCallback class.
 
-	\image html pagGeomLodAnim.jpg
+	<img src="pics/pagGeomLodAnim.jpg">
 	
 	This demo creates a scene containing a central animated wave geometry and a few objects surrounding it in a circle. The central wave geometry 
 	defines 3 level of detail which will be animated in realtime using a subclass of vl::ActorEventCallback created ad-hoc. The surrounding objects

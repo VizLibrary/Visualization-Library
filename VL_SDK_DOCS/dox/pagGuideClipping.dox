@@ -4,7 +4,7 @@
 
 	This tutorial shows how to use clipping, planes, how to animate them and how to use them with multipassing rendering.
 	
-	\image html pagGuideClipping.jpg
+	<img src="pics/pagGuideClipping.jpg">
 	
 	[From \p App_ClipPlanes.cpp]
 	\dontinclude App_ClipPlanes.cpp

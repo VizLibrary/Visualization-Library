@@ -1,7 +1,7 @@
 /**
 	\page pagGuideRotatingCube Basic Scene Setup
 	
-	\image html pagGuideRotatingCube.png
+	<img src="pics/pagGuideRotatingCube.png">
 	
 	<h2>Setting up the rendering of a simple scene</h2>
 	

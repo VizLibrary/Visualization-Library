@@ -4,7 +4,7 @@
 	This tutorial shows some advanced techniques related to Shaders. You will learn how to perform multipassing, how to define LODs 
 	(level of detail) in your Effects and how to animate your Shaders using the vl::ShaderAnimator class.
 
-	\image html pagShaderMultipassLODAnim.jpg
+	<img src="pics/pagShaderMultipassLODAnim.jpg">
 	
 	Visualization Library allows you to define quite intricate effects combination setups. You can in fact define several level of detail modes
 	for your Effects. Each level of detail defines its own set of Shader passes, that is, VL will draw the object once for each pass using the 

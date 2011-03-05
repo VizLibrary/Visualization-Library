@@ -20,15 +20,15 @@
 	
 	Run CMake, select the \a source \a directory and the \a build \a directory, then press the \a Configure button:
 	
-	\image html cmake-01.png
+	<img src="pics/cmake-01.png">
 	
 	Select your building environment and press the \a Finish button:
 	
-	\image html cmake-02.png
+	<img src="pics/cmake-02.png">
 	
 	The basic build environment is ready:
 	
-	\image html cmake-03.png
+	<img src="pics/cmake-03.png">
 	
 	Variables overview:
 	
@@ -42,7 +42,7 @@
 	
 	Press the \a Configure button, you should see something similar to:
 	
-	\image html cmake-04.png
+	<img src="pics/cmake-04.png">
 	
 	If you would like to reset your configuration go to the menu \p File -> \p Delete \p Cache.
 
