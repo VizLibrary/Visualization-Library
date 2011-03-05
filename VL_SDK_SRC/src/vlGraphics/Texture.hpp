@@ -61,7 +61,7 @@ namespace vl
     friend class Texture;
   public:
     TexParameter();
-    virtual const char* className() { return "TexParameter"; }
+    virtual const char* className() { return "vl::TexParameter"; }
 
     void apply(ETextureDimension dimension) const;
 
@@ -184,7 +184,7 @@ namespace vl
     };
 
   public:
-    virtual const char* className() { return "Texture"; }
+    virtual const char* className() { return "vl::Texture"; }
 
     /** Constructs a texture from the specified file. 
     \note The OpenGL texture object is created immediately therefore an OpenGL context must be active when calling this constructor. */

@@ -44,7 +44,7 @@ namespace vl
   class VL_DllExport MorphingCallback: public ActorEventCallback
   {
   public:
-    virtual const char* className() { return "MorphingCallback"; }
+    virtual const char* className() { return "vl::MorphingCallback"; }
 
     MorphingCallback();
 

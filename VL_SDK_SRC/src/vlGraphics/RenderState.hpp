@@ -50,7 +50,7 @@ namespace vl
   class RenderState: public Object
   {
   public:
-    virtual const char* className() { return "RenderState"; }
+    virtual const char* className() { return "vl::RenderState"; }
     RenderState() 
     {
       #ifndef NDEBUG
@@ -73,7 +73,7 @@ namespace vl
   class TextureState: public RenderState
   {
   public:
-    virtual const char* className() { return "TextureState"; }
+    virtual const char* className() { return "vl::TextureState"; }
     TextureState(): mTextureUnit(0)
     {
       #ifndef NDEBUG

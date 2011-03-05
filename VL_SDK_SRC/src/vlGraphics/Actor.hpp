@@ -128,7 +128,7 @@ namespace vl
   class VL_DllExport Actor: public Object
   {
   public:
-    virtual const char* className() { return "Actor"; }
+    virtual const char* className() { return "vl::Actor"; }
 
     /** Constructor.
     \param renderable A Renderable defining the Actor's LOD level #0

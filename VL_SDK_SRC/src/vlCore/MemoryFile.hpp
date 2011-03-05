@@ -56,7 +56,7 @@ namespace vl
   class VL_DllExport MemoryFile: public VirtualFile
   {
   public:
-    virtual const char* className() { return "MemoryFile"; }
+    virtual const char* className() { return "vl::MemoryFile"; }
 
     MemoryFile();
 

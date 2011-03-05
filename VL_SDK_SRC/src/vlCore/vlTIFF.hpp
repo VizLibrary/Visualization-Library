@@ -57,8 +57,14 @@ namespace vl
   class LoadWriterTIFF: public ResourceLoadWriter
   {
   public:
-    virtual const char* className() { return "LoadWriterTIFF"; }
-    LoadWriterTIFF(): ResourceLoadWriter("|tif|tiff|", "|tif|tiff|") {}
+    virtual const char* className() { return "vl::LoadWriterTIFF"; }
+
+    LoadWriterTIFF(): ResourceLoadWriter("|tif|tiff|", "|tif|tiff|") 
+    {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
+    }
 
     ref<ResourceDatabase> loadResource(const String& path) const 
     {

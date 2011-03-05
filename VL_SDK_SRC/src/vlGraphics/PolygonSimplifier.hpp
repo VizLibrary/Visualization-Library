@@ -317,7 +317,7 @@ namespace vl
   public:
     PolygonSimplifier(): mRemoveDoubles(false), mVerbose(true), mQuick(true) {}
 
-    virtual const char* className() { return "PolygonSimplifier"; }
+    virtual const char* className() { return "vl::PolygonSimplifier"; }
 
     void simplify(float simplification_ratio, Geometry* geom);
     void simplify(int target_vertex_count, Geometry* geom);

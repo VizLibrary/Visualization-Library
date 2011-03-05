@@ -47,6 +47,8 @@ namespace vl
   class ProjViewTransfCallback: public Object
   {
   public:
+    virtual const char* className() { return "vl::ProjViewTransfCallback"; }
+
     /** This function is called whenever a new GLSLProgram (or the NULL one, i.e. the fixed function pipeline) is being activated for the first time in the current rendering.
      * This callback is most useful to initialize the GLSLProgram with the current projection and view matrices, besides the current Actor's transform.
      * \param caller The Renderer object calling this function.
@@ -76,9 +78,19 @@ namespace vl
   class VL_DllExport ProjViewTransfCallbackStandard: public ProjViewTransfCallback
   {
   public:
-    ProjViewTransfCallbackStandard(): mLastTransform(NULL) {}
+    virtual const char* className() { return "vl::ProjViewTransfCallbackStandard"; }
+    
+    ProjViewTransfCallbackStandard(): mLastTransform(NULL) 
+    {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
+    }
+    
     virtual void programFirstUse(const Renderer*, const GLSLProgram* glsl, const Transform*, const Camera*, bool first_overall );
+    
     virtual void programTransfChange(const Renderer*, const GLSLProgram* glsl, const Transform*, const Camera* );
+  
   private:
     const Transform* mLastTransform;
   };

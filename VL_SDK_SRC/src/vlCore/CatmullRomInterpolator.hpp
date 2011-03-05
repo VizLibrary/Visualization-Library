@@ -46,7 +46,14 @@ namespace vl
   class CatmullRomInterpolator: public Object
   {
   public:
-    CatmullRomInterpolator() {}
+    virtual const char* className() { return "vl::CatmullRomInterpolator"; }
+
+    CatmullRomInterpolator() 
+    {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
+    }
 
     CatmullRomInterpolator(const std::vector<T>& path): mPath(path) {}
 

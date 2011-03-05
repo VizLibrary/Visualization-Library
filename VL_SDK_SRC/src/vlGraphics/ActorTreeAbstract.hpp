@@ -55,7 +55,7 @@ namespace vl
   class VL_DllExport ActorTreeAbstract: public Object
   {
   public:
-    virtual const char* className() { return "ActorTreeAbstract"; }
+    virtual const char* className() { return "vl::ActorTreeAbstract"; }
     ActorTreeAbstract();
 
     //! Returns the number of child nodes of an ActorTreeAbstract node.

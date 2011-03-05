@@ -53,7 +53,7 @@ namespace vl
   class RenderEventCallback: public Object
   {
   public:
-    virtual const char* className() { return "RenderEventCallback"; }
+    virtual const char* className() { return "vl::RenderEventCallback"; }
     RenderEventCallback(): mRemoveAfterCall(false), mEnabled(true)
     {
       #ifndef NDEBUG

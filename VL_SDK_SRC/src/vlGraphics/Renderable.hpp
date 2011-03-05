@@ -64,7 +64,7 @@ namespace vl
     }
 
   public:
-    virtual const char* className() { return "Renderable"; }
+    virtual const char* className() { return "vl::Renderable"; }
 
     //! Constructor
     Renderable(): mBoundsUpdateTick(0), mDisplayList(0), mBoundsDirty(true), 

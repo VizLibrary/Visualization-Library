@@ -55,7 +55,7 @@ namespace vl
   class GLBufferObject: public Buffer
   {
   public:
-    virtual const char* className() { return "GLBufferObject"; }
+    virtual const char* className() { return "vl::GLBufferObject"; }
     GLBufferObject()
     {
       #ifndef NDEBUG

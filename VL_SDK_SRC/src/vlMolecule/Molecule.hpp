@@ -63,7 +63,7 @@ namespace vl
   class VL_DllExport Molecule: public Object
   {
   public:
-    virtual const char* className() { return "Molecule"; }
+    virtual const char* className() { return "vl::Molecule"; }
 
     Molecule();
     ~Molecule() { reset(); }

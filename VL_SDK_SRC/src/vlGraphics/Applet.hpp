@@ -60,7 +60,7 @@ namespace vl
   class VL_DllExport Applet: public UIEventListener
   {
   public:
-    virtual const char* className() { return "Applet"; }
+    virtual const char* className() { return "vl::Applet"; }
 
     /** Constructor */
     Applet();

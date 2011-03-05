@@ -130,7 +130,7 @@ namespace vl
     };
 
   public:
-    virtual const char* className() { return "EdgeExtractor"; }
+    virtual const char* className() { return "vl::EdgeExtractor"; }
     EdgeExtractor(): mCreaseAngle(45.0f), mWarnNonManifold(false)
     {
       #ifndef NDEBUG

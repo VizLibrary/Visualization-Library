@@ -50,7 +50,7 @@ namespace vl
   class VL_DllExport Viewport: public Object
   {
   public:
-    virtual const char* className() { return "Viewport"; }
+    virtual const char* className() { return "vl::Viewport"; }
     Viewport();
     Viewport(int x, int y, int w, int h);
 

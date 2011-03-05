@@ -71,7 +71,7 @@ namespace vl
   class SceneManager: public Object
   {
   public:
-    virtual const char* className() { return "SceneManager"; }
+    virtual const char* className() { return "vl::SceneManager"; }
     //! Constructor.
     SceneManager();
 

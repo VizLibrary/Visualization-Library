@@ -41,7 +41,7 @@ namespace vl
   class VL_DllExport RenderingTree: public RenderingAbstract
   {
   public:
-    virtual const char* className() { return "RenderingTree"; }
+    virtual const char* className() { return "vl::RenderingTree"; }
 
     //! Constructor.
     RenderingTree();

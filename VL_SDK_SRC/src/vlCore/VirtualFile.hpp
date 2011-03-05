@@ -63,7 +63,7 @@ namespace vl
     VirtualFile(const VirtualFile& other): Object(other) {}
 
   public:
-    virtual const char* className() { return "VirtualFile"; }
+    virtual const char* className() { return "vl::VirtualFile"; }
 
     //! Constructor.
     VirtualFile() {}

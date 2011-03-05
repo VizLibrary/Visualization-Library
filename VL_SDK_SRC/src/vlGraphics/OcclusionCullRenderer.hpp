@@ -44,6 +44,8 @@ namespace vl
   class VL_DllExport OcclusionCullRenderer: public Renderer
   {
   public:
+    virtual const char* className() { return "vl::OcclusionCullRenderer"; }
+
     /** Constructor. */
     OcclusionCullRenderer();
 

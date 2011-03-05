@@ -62,7 +62,12 @@ namespace vl
   public:
     virtual const char* className() { return "LoadWriterDICOM"; }
 
-    LoadWriterDICOM(): ResourceLoadWriter("|dcm|dicom|dic|ima|ph|mag|", "|dcm|dicom|dic|ima|ph|mag|") {}
+    LoadWriterDICOM(): ResourceLoadWriter("|dcm|dicom|dic|ima|ph|mag|", "|dcm|dicom|dic|ima|ph|mag|") 
+    {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
+    }
 
     ref<ResourceDatabase> loadResource(const String& path) const 
     {

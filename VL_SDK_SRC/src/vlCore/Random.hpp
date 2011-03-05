@@ -40,6 +40,8 @@ namespace vl
   class VL_DllExport Random: public Object
   {
   public:
+    virtual const char* className() { return "vl::Random"; }
+
     //! Constructor.
     Random();
 

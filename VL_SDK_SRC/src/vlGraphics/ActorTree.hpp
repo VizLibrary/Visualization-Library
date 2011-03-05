@@ -62,7 +62,7 @@ namespace vl
   class VL_DllExport ActorTree: public ActorTreeAbstract
   {
   public:
-    virtual const char* className() { return "ActorTree"; }
+    virtual const char* className() { return "vl::ActorTree"; }
     ActorTree()
     {
       #ifndef NDEBUG

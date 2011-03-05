@@ -42,6 +42,8 @@ namespace vl
   {
     friend class VisualizationLibrary;
   public:
+    virtual const char* className() { return "vl::VLSettings"; }
+
     VLSettings();
 
     /** If \p true VL checks at the beginning of each rendering that the OpenGL states are

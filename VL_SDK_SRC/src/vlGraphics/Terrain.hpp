@@ -63,7 +63,7 @@ namespace vl
   class VL_DllExport Terrain: public SceneManagerActorKdTree
   {
   public:
-    virtual const char* className() { return "Terrain"; }
+    virtual const char* className() { return "vl::Terrain"; }
     Terrain(): 
         mShaderNode(new ShaderNode), mWidth(0), mHeight(0), mDepth(0), mDetailRepetitionCount(0), 
         mHeightmapTextureFormat(TF_LUMINANCE16F), mTerrainTextureFormat(TF_RGB), mDetailTextureFormat(TF_RGB),

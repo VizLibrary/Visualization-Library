@@ -51,7 +51,7 @@ namespace vl
   class Atom: public Object
   {
   public:
-    virtual const char* className() { return "Atom"; }
+    virtual const char* className() { return "vl::Atom"; }
 
     Atom()
     {

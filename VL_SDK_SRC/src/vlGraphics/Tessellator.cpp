@@ -36,6 +36,9 @@ using namespace vl;
 //-----------------------------------------------------------------------------
 Tessellator::Tessellator()
 {
+  #ifndef NDEBUG
+    mObjectName = className();
+  #endif
   mTessNormal = fvec3(0,0,0);
   mBoundaryOnly = false;
   mTolerance = 0.0;

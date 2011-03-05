@@ -78,6 +78,9 @@ using namespace vl;
 //! Constructor.
 SlicedVolume::SlicedVolume()
 {
+  #ifndef NDEBUG
+    mObjectName = className();
+  #endif
   mSliceCount = 1024;
   mGeometry = new Geometry;
   

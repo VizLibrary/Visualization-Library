@@ -51,6 +51,8 @@ namespace vl
   {
     typedef void (CALLBACK *callback_type)(void);
   public:
+    virtual const char* className() { return "vl::Tessellator"; }
+
     //! Constructor.
     Tessellator();
 

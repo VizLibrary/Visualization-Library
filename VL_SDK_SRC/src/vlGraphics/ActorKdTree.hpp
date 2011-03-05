@@ -63,7 +63,7 @@ namespace vl
         mObjectName = className();
       #endif
     }
-    virtual const char* className() { return "ActorKdTree"; }
+    virtual const char* className() { return "vl::ActorKdTree"; }
 
     virtual int childrenCount() const;
     virtual ActorTreeAbstract* child(int i);

@@ -62,7 +62,7 @@ namespace vl
     };
 
   public:
-    virtual const char* className() { return "EdgeRenderer"; }
+    virtual const char* className() { return "vl::EdgeRenderer"; }
     EdgeRenderer(): mLineWidth(1.0f), mPolygonOffsetFactor(1.0f), mPolygonOffsetUnits(1.0f), mCreaseAngle(44.0f), mShowHiddenLines(true), mShowCreases(true), mSmoothLines(true)
     {
       #ifndef NDEBUG

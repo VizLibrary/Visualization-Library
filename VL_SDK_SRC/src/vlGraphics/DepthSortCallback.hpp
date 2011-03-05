@@ -125,7 +125,7 @@ namespace vl
     };
 
   public:
-    virtual const char* className() { return "DepthSortCallback"; }
+    virtual const char* className() { return "vl::DepthSortCallback"; }
 
     //! Constructor.
     DepthSortCallback()

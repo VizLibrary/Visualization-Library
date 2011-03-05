@@ -67,7 +67,7 @@ namespace vl
 
     ~Glyph();
 
-    virtual const char* className() { return "Glyph"; }
+    virtual const char* className() { return "vl::Glyph"; }
 
     unsigned int textureHandle() const { return mTextureHandle; }
     void setTextureHandle(unsigned int handle) { mTextureHandle = handle; }
@@ -143,7 +143,7 @@ namespace vl
     Font(FontManager* fm, const String& font_file, int size );
 
   public:
-    virtual const char* className() { return "Font"; }
+    virtual const char* className() { return "vl::Font"; }
 
     //! Destructor
     ~Font();

@@ -52,7 +52,7 @@ namespace vl
   class SceneManagerActorTree: public SceneManagerBVH<ActorTree>
   {
   public:
-    virtual const char* className() { return "SceneManagerActorTree"; }
+    virtual const char* className() { return "vl::SceneManagerActorTree"; }
 
     SceneManagerActorTree()
     { 

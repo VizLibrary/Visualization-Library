@@ -57,8 +57,14 @@ namespace vl
   class LoadWriterTGA: public ResourceLoadWriter
   {
   public:
-    virtual const char* className() { return "LoadWriterTGA"; }
-    LoadWriterTGA(): ResourceLoadWriter("|tga|", "|tga|") {}
+    virtual const char* className() { return "vl::LoadWriterTGA"; }
+
+    LoadWriterTGA(): ResourceLoadWriter("|tga|", "|tga|") 
+    {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
+    }
 
     ref<ResourceDatabase> loadResource(const String& path) const 
     {

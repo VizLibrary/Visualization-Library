@@ -55,7 +55,7 @@ namespace vl
   class VL_DllExport GhostCameraManipulator: public UIEventListener
   {
   public:
-    virtual const char* className() { return "GhostCameraManipulator"; }
+    virtual const char* className() { return "vl::GhostCameraManipulator"; }
 
     /** Constructor. */
     GhostCameraManipulator();

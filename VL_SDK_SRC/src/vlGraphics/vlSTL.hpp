@@ -56,7 +56,7 @@ namespace vl
   class LoadWriterSTL: public ResourceLoadWriter
   {
   public:
-    virtual const char* className() { return "LoadWriterSTL"; }
+    virtual const char* className() { return "vl::LoadWriterSTL"; }
     LoadWriterSTL(): ResourceLoadWriter("|stl|", "|stl|") {}
 
     ref<ResourceDatabase> loadResource(const String& path) const 
@@ -90,7 +90,7 @@ namespace vl
   class VL_DllExport STLLoader
   {
   public:
-    virtual const char* className() { return "STLLoader"; }
+    virtual const char* className() { return "vl::STLLoader"; }
     //! Loads a STL file.
     ref<ResourceDatabase> loadSTL(VirtualFile* file);
     ref<ResourceDatabase> loadAscii(VirtualFile* file);

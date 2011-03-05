@@ -49,7 +49,7 @@ namespace vl
   class VL_DllExport Time: public Object
   {
   public:
-    virtual const char* className() { return "Time"; }
+    virtual const char* className() { return "vl::Time"; }
     Time();
 
     int year() const { return mYear; }

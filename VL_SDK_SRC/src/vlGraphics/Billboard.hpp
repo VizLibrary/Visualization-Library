@@ -46,7 +46,7 @@ namespace vl
   {
   public:
     Billboard();
-    virtual const char* className() { return "Billboard"; }
+    virtual const char* className() { return "vl::Billboard"; }
     //! The billboard position and rotation center
     void setPosition(const vec3& pos);
     //! The billboard position and rotation center

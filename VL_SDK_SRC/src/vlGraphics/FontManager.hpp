@@ -45,7 +45,7 @@ namespace vl
   class VL_DllExport FontManager: public Object
   {
   public:
-    virtual const char* className() { return "FontManager"; }
+    virtual const char* className() { return "vl::FontManager"; }
 
     //! Constructor: uses the given FT_Library handle otherwise will initialize and use its own FT_Library.
     FontManager(void* free_type_library=NULL);

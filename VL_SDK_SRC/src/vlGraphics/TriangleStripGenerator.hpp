@@ -44,7 +44,7 @@ namespace vl
   class VL_DllExport TriangleStripGenerator
   {
   public:
-    virtual const char* className() { return "TriangleStripGenerator"; }
+    virtual const char* className() { return "vl::TriangleStripGenerator"; }
     static void stripfy(Geometry* geom, int cache_size=22, bool merge_strips = true, bool remove_doubles = true, bool substitute_quads = true);
   };
 }

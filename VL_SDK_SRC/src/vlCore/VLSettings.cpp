@@ -39,6 +39,10 @@ using namespace vl;
 VLSettings::VLSettings()
 {
   #ifndef NDEBUG
+    mObjectName = className();
+  #endif
+
+  #ifndef NDEBUG
     mVerbosityLevel  = vl::VEL_VERBOSITY_NORMAL;
     mCheckOpenGLStates = true;
     mCheckTransformSiblings = false;

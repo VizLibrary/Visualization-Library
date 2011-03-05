@@ -43,6 +43,8 @@ namespace vl
   class VL_DllExport RenderingAbstract: public Object
   {
   public:
+    virtual const char* className() { return "vl::RenderingAbstract"; }
+
     //! Constructor.
     RenderingAbstract();
 

@@ -56,7 +56,7 @@ namespace vl
   class LoadWriterPLY: public ResourceLoadWriter
   {
   public:
-    virtual const char* className() { return "LoadWriterPLY"; }
+    virtual const char* className() { return "vl::LoadWriterPLY"; }
     LoadWriterPLY(): ResourceLoadWriter("|ply|", "|ply|") {}
 
     ref<ResourceDatabase> loadResource(const String& path) const 

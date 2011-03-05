@@ -58,7 +58,7 @@ namespace vl
     Image();
     Image(const String& path);
     Image(int x, int y, int z, int bytealign, EImageFormat format, EImageType type);
-    virtual const char* className() { return "Image"; }
+    virtual const char* className() { return "vl::Image"; }
     virtual ~Image();
     Image& operator=(const Image& other);
     bool isCubemap() const { return mIsCubemap; }

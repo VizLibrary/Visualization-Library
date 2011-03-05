@@ -71,7 +71,7 @@ namespace vl
   class VL_DllExport Transform: public Object
   {
   public:
-    virtual const char* className() { return "Transform"; }
+    virtual const char* className() { return "vl::Transform"; }
 
     /** Constructor. */
     Transform(): mParent(NULL), mWorldMatrixUpdateTick(0), mAssumeIdentityWorldMatrix(false) 

@@ -40,6 +40,10 @@ using namespace vl;
 //-----------------------------------------------------------------------------
 OcclusionCullRenderer::OcclusionCullRenderer()
 {
+  #ifndef NDEBUG
+    mObjectName = className();
+  #endif
+
   mPrevWrapRenderer = NULL;
 
   mStatsTotalObjects = 0;

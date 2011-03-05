@@ -53,9 +53,14 @@ namespace vl
   class VL_DllExport Extrusion: public vl::Object
   {
   public:
+    virtual const char* className() { return "vl::Extrusion"; }
+
     //! Constructor.
     Extrusion()
     {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
       mSmooth     = false;
       mFillBottom = true;
       mFillTop    = true;

@@ -61,7 +61,7 @@ namespace vl
   class VL_DllExport LoadWriterManager: public Object
   {
   public:
-    virtual const char* className() { return "LoadWriterManager"; }
+    virtual const char* className() { return "vl::LoadWriterManager"; }
 
     LoadWriterManager()
     { 

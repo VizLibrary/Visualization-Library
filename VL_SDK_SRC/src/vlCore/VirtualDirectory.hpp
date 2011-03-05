@@ -57,7 +57,7 @@ namespace vl
   class VL_DllExport VirtualDirectory: public Object
   {
   public:
-    virtual const char* className() { return "VirtualDirectory"; }
+    virtual const char* className() { return "vl::VirtualDirectory"; }
 
     //! Constructor
     //! \param path Defines the path name of the virtual dirctory, must be a non empty string.

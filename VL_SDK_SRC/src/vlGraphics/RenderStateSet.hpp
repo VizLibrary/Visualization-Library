@@ -52,7 +52,7 @@ namespace vl
         mObjectName = className();
       #endif
     }
-    virtual const char* className() { return "RenderStateSet"; }
+    virtual const char* className() { return "vl::RenderStateSet"; }
 
     // renderstates getters and setters
 

@@ -59,7 +59,7 @@ namespace vl
   class VL_DllExport FileSystem: public Object
   {
   public:
-    virtual const char* className() { return "FileSystem"; }
+    virtual const char* className() { return "vl::FileSystem"; }
 
     FileSystem() { mDirectories.setAutomaticDelete(false); }
 

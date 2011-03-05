@@ -57,7 +57,7 @@ namespace vl
       #endif
     }
 
-    virtual const char* className() { return "PixelLODEvaluator"; }
+    virtual const char* className() { return "vl::PixelLODEvaluator"; }
 
     virtual int evaluate(Actor* actor, Camera* camera);
 

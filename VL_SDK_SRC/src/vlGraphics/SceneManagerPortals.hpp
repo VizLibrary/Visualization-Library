@@ -54,9 +54,14 @@ namespace vl
   {
     friend class SceneManagerPortals;
   public:
+    virtual const char* className() { return "vl::Portal"; }
+
     //! Constructor.
     Portal()
     {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
       mIsOpen = true;
       mVisitTick = 0;
     }
@@ -105,6 +110,7 @@ namespace vl
   class VL_DllExport Sector: public Object
   {
   public:
+    virtual const char* className() { return "vl::Sector"; }
 
     /** A callback object called each time a Sector becomes visible through a Portal.
      *  Note: a callback can be called multiple times with the same Sector argument if a Sector is discovered multiple times through different portals.
@@ -126,7 +132,13 @@ namespace vl
     };
   public:
     //! Constructor.
-    Sector() { mActors = new ActorCollection; }
+    Sector() 
+    { 
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
+      mActors = new ActorCollection; 
+    }
 
     //! The Actor object contained in a sector. An actor can be part of multiple sectors.
     ActorCollection* actors() { return mActors.get(); }
@@ -175,8 +187,15 @@ namespace vl
   class VL_DllExport SceneManagerPortals: public SceneManager
   {
   public:
+    virtual const char* className() { return "vl::SceneManagerPortals"; }
+
     //! Constructor.
-    SceneManagerPortals(): mExternalSector(new Sector), mVisitTick(1), mShowPortals(false) {}
+    SceneManagerPortals(): mExternalSector(new Sector), mVisitTick(1), mShowPortals(false) 
+    {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
+    }
 
     //! Appends to the given list all the Actor[s] contained in the scene regardless of their visibility.
     void extractActors(ActorCollection& list);

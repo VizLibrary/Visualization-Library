@@ -55,7 +55,7 @@ namespace vl
     } ELogLevel;
 
   public:
-    virtual const char* className() { return "Log"; }
+    virtual const char* className() { return "vl::Log"; }
     Log()
     {
       #ifndef NDEBUG
@@ -118,7 +118,7 @@ namespace vl
   class VL_DllExport StandardLog: public Log
   {
   public:
-    virtual const char* className() { return "StandardLog"; }
+    virtual const char* className() { return "vl::StandardLog"; }
     void setLogFile(const String& file);
     const String& logFile() const { return mLogFile; }
 

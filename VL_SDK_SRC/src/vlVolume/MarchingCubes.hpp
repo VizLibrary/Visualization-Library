@@ -54,9 +54,9 @@ namespace vl
       bool includes(float v) const { return v >= mMin && v <= mMax; }
     };
   public:
-    Volume();
+    virtual const char* className() { return "vl::Volume"; }
 
-    virtual const char* className() { return "Volume"; }
+    Volume();
 
     void setup(float* data, const fvec3& bottom_left, const fvec3& top_right, const ivec3& slices);
     void setup(const Volume&);
@@ -140,10 +140,13 @@ namespace vl
   class VolumeInfo: public Object
   {
   public:
-    virtual const char* className() { return "VolumeInfo"; }
+    virtual const char* className() { return "vl::VolumeInfo"; }
 
     VolumeInfo(Volume* vol, float threshold, const fvec4& color)
     {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
       mColor = color;
       mThreshold = threshold;
       mVolume = vol;
@@ -153,6 +156,9 @@ namespace vl
 
     VolumeInfo(Volume* vol, float threshold)
     {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
       mThreshold = threshold;
       mVolume = vol;
       mVert0 = -1;

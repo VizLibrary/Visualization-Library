@@ -49,7 +49,7 @@ namespace vl
   class VL_DllExport ClipPlane: public RenderState
   {
   public:
-    virtual const char* className() { return "ClipPlane"; }
+    virtual const char* className() { return "vl::ClipPlane"; }
     /** Constructor. */
     ClipPlane(int plane_index, Real o=0.0f, vec3 n=vec3(0,0,0));
     /** Constructor. */

@@ -50,7 +50,7 @@ namespace vl
   class RayIntersection: public Object
   {
   public:
-    virtual const char* className() { return "RayIntersection"; }
+    virtual const char* className() { return "vl::RayIntersection"; }
     RayIntersection(): mActor(NULL), mDistance(0.0f) 
     {
       #ifndef NDEBUG
@@ -88,7 +88,7 @@ namespace vl
   class RayIntersectionGeometry: public RayIntersection
   {
   public:
-    virtual const char* className() { return "RayIntersectionGeometry"; }
+    virtual const char* className() { return "vl::RayIntersectionGeometry"; }
     RayIntersectionGeometry(): mGeometry(NULL), mDrawCalls(NULL), mTriangleIndex(-1) 
     {
       #ifndef NDEBUG
@@ -135,7 +135,7 @@ namespace vl
   class VL_DllExport RayIntersector: public Object
   {
   public:
-    virtual const char* className() { return "RayIntersector"; }
+    virtual const char* className() { return "vl::RayIntersector"; }
     RayIntersector()
     {
       #ifndef NDEBUG

@@ -57,7 +57,7 @@ namespace vl
       #endif
     }
     virtual int evaluate(Actor* actor, Camera* camera) = 0;
-    virtual const char* className() { return "LODEvaluator"; }
+    virtual const char* className() { return "vl::LODEvaluator"; }
   };
   //------------------------------------------------------------------------------
 }

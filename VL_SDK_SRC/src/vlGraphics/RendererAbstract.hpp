@@ -51,8 +51,13 @@ namespace vl
   class RendererAbstract: public Object
   {
   public:
+    virtual const char* className() { return "vl::RendererAbstract"; }
+
     RendererAbstract()
     {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
       mOnStartedCallbacks  = new Collection<RenderEventCallback>;
       mOnFinishedCallbacks = new Collection<RenderEventCallback>;
       mClearFlags = CF_CLEAR_COLOR_DEPTH;

@@ -49,7 +49,7 @@ namespace vl
   class VL_DllExport UniformSet: public Object
   {
   public:
-    virtual const char* className() { return "UniformSet"; }
+    virtual const char* className() { return "vl::UniformSet"; }
     UniformSet()
     {
       #ifndef NDEBUG

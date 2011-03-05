@@ -68,7 +68,7 @@ namespace vl
   class VL_DllExport Clear: public Renderable
   {
   public:
-    virtual const char* className() { return "Clear"; }
+    virtual const char* className() { return "vl::Clear"; }
 
     Clear();
 

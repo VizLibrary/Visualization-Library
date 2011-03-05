@@ -74,20 +74,19 @@ namespace vl
   public:
 
     //! Returns the name of the class.
-    virtual const char* className() { return "Object"; }
+    virtual const char* className() { return "vl::Object"; }
 
     Object()
     {
+      #ifndef NDEBUG
+        mObjectName = className();
+      #endif
       mMutex = NULL;
       mReferenceCount = 0;
       mAutomaticDelete = true;
       // user data
       #if VL_ACTOR_USER_DATA
         mUserData = NULL;
-      #endif
-      // debug living objects
-      #ifndef NDEBUG
-        mObjectName = className();
       #endif
       #if VL_DEBUG_LIVING_OBJECTS && !defined(NDEBUG)
         debug_living_objects()->insert(this);

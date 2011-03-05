@@ -49,7 +49,7 @@ namespace vl
   class VL_DllExport Plane: public Object
   {
   public:
-    virtual const char* className() { return "Plane"; }
+    virtual const char* className() { return "vl::Plane"; }
 
     Plane( Real o=0.0f, vec3 n=vec3(0,0,0) ): mNormal(n), mOrigin(o) 
     {

@@ -45,7 +45,7 @@ namespace vl
   class VL_DllExport TextStream: public BufferedStream<unsigned char, 128*1024>
   {
   public:
-    virtual const char* className() { return "TextStream"; }
+    virtual const char* className() { return "vl::TextStream"; }
     TextStream(VirtualFile* file=NULL)
     {
       setInputFile(file);
