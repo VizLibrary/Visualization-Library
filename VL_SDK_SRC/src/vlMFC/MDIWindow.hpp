@@ -44,7 +44,7 @@ namespace vlMFC
    * The MDIWindow class is an MFC CView with the functionalities of a Win32Context (experimental).
    * \remarks Don't forget to reimplement the OnDraw() method.
    */
-  class MDIWindow: public CView, public vlWin32::Win32Context /* the order is important! */
+  class VL_DllExport MDIWindow: public CView, public vlWin32::Win32Context /* the order is important! */
   {
   public:
     MDIWindow() {}

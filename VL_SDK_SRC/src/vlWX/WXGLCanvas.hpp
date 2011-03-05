@@ -48,7 +48,7 @@
 namespace vlWX
 {
   /** The WXGLCanvas class implements a vl::OpenGLContext using the wxWidgets library. */
-  class WXGLCanvas: public wxGLCanvas, public vl::OpenGLContext
+  class VL_DllExport WXGLCanvas: public wxGLCanvas, public vl::OpenGLContext
   {
   public:
     WXGLCanvas( wxWindow *parent,

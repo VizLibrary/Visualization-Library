@@ -38,7 +38,7 @@
 
 namespace vl
 {
-  class SlicedVolume: public ActorEventCallback
+  class VL_DllExport SlicedVolume: public ActorEventCallback
   {
   public:
     

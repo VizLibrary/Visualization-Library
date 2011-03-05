@@ -259,10 +259,10 @@ namespace vl
   };
 
   //! Returns an AtomInfo representing the properties of the given atom type.
-  const AtomInfo& atomInfo(EAtomType type);
+  VL_DllExport const AtomInfo& atomInfo(EAtomType type);
 
   //! Translates a string containing atom type name, atom symbol or a Sybyl type into an EAtomType.
-  EAtomType atomType(const char* type);
+  VL_DllExport EAtomType atomType(const char* type);
 }
 
 #endif

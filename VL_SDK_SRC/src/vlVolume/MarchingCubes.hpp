@@ -42,7 +42,7 @@ namespace vl
   /**
    * Defines the volume data to be used with a MarchingCube object.
    */
-  class Volume: public Object
+  class VL_DllExport Volume: public Object
   {
     /**
      * A Volume cell.
@@ -186,7 +186,7 @@ namespace vl
   /**
    * An efficient implementation of the Marching Cubes algorithm.
    */
-  class MarchingCubes
+  class VL_DllExport MarchingCubes
   {
   public:
     MarchingCubes();

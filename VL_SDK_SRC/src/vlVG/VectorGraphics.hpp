@@ -102,7 +102,7 @@ namespace vl
    *
    * For more information please refer to the \ref pagGuideVectorGraphics "2D Vector Graphics" page.
    */
-  class VectorGraphics: public Object
+  class VL_DllExport VectorGraphics: public Object
   {
   private:
     //------------------------------------------------------------------------- start internal

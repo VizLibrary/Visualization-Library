@@ -49,7 +49,7 @@ namespace vlQt4
 // Qt4Widget
 //-----------------------------------------------------------------------------
   /** The Qt4Widget class implements an OpenGLContext using the Trolltech's Qt4 API. */
-  class Qt4Widget: public QGLWidget, public vl::OpenGLContext
+  class VL_DllExport Qt4Widget: public QGLWidget, public vl::OpenGLContext
   {
     Q_OBJECT
 

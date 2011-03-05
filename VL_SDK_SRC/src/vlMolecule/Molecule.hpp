@@ -60,7 +60,7 @@ namespace vl
    *
    * <img src="pics/pagGuideMolecule.png">
    */
-  class Molecule: public Object
+  class VL_DllExport Molecule: public Object
   {
   public:
     virtual const char* className() { return "Molecule"; }
@@ -240,12 +240,13 @@ namespace vl
   //! The Molecule tags will contain the following key/value pairs:
   //! - \p "MultiMol2Index": the index (0-based) of the structure in a multi MOL2 file.
   //! - \p "FilePath": the full path of the file that contained the structure.
-  bool loadMOL2(const String& path, std::vector< ref<Molecule> >& structures);
+  VL_DllExport bool loadMOL2(const String& path, std::vector< ref<Molecule> >& structures);
+
   //! Loads a Tripos MOL2 file.
   //! The Molecule tags will contain the following key/value pairs:
   //! - \p "MultiMol2Index": the index (0-based) of the structure in a multi MOL2 file.
   //! - \p "FilePath": the full path of the file that contained the structure.
-  bool loadMOL2(VirtualFile* vfile, std::vector< ref<Molecule> >& structures);
+  VL_DllExport bool loadMOL2(VirtualFile* vfile, std::vector< ref<Molecule> >& structures);
 }
 
 #endif

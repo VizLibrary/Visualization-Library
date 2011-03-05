@@ -54,7 +54,7 @@ namespace vlSDL
    * @note
    * SDL notifies Unicode codes only on key-press events not on release events.
   */
-  class SDLWindow: public vl::OpenGLContext
+  class VL_DllExport SDLWindow: public vl::OpenGLContext
   {
   public:
     SDLWindow();

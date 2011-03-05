@@ -37,7 +37,7 @@
 
 namespace vl
 {
-  class RaycastVolume: public ActorEventCallback
+  class VL_DllExport RaycastVolume: public ActorEventCallback
   {
   public:
     

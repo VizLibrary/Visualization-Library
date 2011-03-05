@@ -55,7 +55,7 @@ namespace vlGLUT
   /**
    * The GLUTWindow class implements an OpenGLContext using the GLUT API.
   */
-  class GLUTWindow: public vl::OpenGLContext
+  class VL_DllExport GLUTWindow: public vl::OpenGLContext
   {
   public:
     GLUTWindow();
@@ -160,7 +160,7 @@ namespace vlGLUT
     static std::map< int, GLUTWindow* > mWinMap;
   };
 
-  void atexit_visualization_library_shutdown();
+  VL_DllExport void atexit_visualization_library_shutdown();
 }
 
 #endif
