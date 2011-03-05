@@ -168,44 +168,44 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/mol01.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol01.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol01.jpg" alt="Highslide JS" title="Sticks" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mol02.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol02.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol02.jpg" alt="Highslide JS" title="Ball & Sticks" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mol03.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol03.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol03.jpg" alt="Highslide JS" title="Wireframe" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mol04.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol04.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol04.jpg" alt="Highslide JS" title="CPK" />
 			</a>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<a href="gallery/mol05.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol05.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol05.jpg" alt="Highslide JS" title="Sticks" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mol06.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol06.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol06.jpg" alt="Highslide JS" title="Ball & Sticks" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mol07.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol07.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol07.jpg" alt="Highslide JS" title="Wireframe" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mol08.png" class="highslide" onclick="return hs.expand(this)"> 
+			<a href="gallery/mol08.jpg" class="highslide" onclick="return hs.expand(this)"> 
 				<img src="gallery_small/mol08.jpg" alt="Highslide JS" title="CPK" />
 			</a>
 		</td>
