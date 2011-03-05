@@ -48,7 +48,7 @@ namespace vl
    *
    * LinearInterpolator, CatmullRomInterpolator, the \ref pagGuideInterpolators "Interpolators Tutorial" page and the Extrusion class.
    *
-   * \image html pagGuideInterpolators1.png */
+   * <img src="pics/pagGuideInterpolators1.png"> */
   class Interpolator: public vl::Object
   {
   public:

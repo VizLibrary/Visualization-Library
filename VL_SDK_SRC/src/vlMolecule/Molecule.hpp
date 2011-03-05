@@ -58,7 +58,7 @@ namespace vl
    * - Atom
    * - Bond
    *
-   * \image html pagGuideMolecule.png
+   * <img src="pics/pagGuideMolecule.png">
    */
   class Molecule: public Object
   {
