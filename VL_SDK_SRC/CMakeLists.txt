@@ -172,7 +172,6 @@ if(VL_MODULE_GRAPHICS)
 	endif()
 	if(MINGW)
 	  option(GUI_WIN32_SUPPORT "Build Win32 support" ON)
-	  option(GUI_MFC_SUPPORT "Build MFC support" OFF)
 	endif()
 	option(GUI_SDL_SUPPORT "Build SDL support" OFF)
 	option(GUI_GLUT_SUPPORT "Build GLUT support" OFF)
@@ -362,8 +361,7 @@ endif()
 #endif()
 
 add_subdirectory("src/examples")
-
-#add_subdirectory("docs")
+add_subdirectory("../VL_SDK_DOCS" "${CMAKE_CURRENT_BINARY_DIR}/VL_SDK_DOCS")
 add_subdirectory("src/examples/Applets")
 
 #install(FILES "bin/Win32_Tests.bat" DESTINATION bin)

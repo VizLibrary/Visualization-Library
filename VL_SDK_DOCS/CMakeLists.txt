@@ -82,4 +82,40 @@ set(VL_DOCUMENTATION
 
 source_group(dox FILES ${VL_DOCUMENTATION})
 
-add_custom_target(Documentation SOURCES Doxyfile ${VL_DOCUMENTATION})
+# # method 1, builds documentation outside of the source tree.
+# # requires Doxyfile with "HTML_OUTPUT = @CMAKE_CURRENT_BINARY_DIR@/VL_SDK_DOCS-HTML"
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.cmake @ONLY)
+
+# add_custom_target(
+	# Documentation 
+	# "doxygen" "Doxyfile.cmake"
+	# WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
+	# SOURCES Doxyfile ${VL_DOCUMENTATION}
+	# COMMENT "Generating API documentation with Doxygen from ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile" VERBATIM
+# )
+
+# #install images and html pages
+# install(DIRECTORY "VL_SDK_DOCS-HTML/" DESTINATION "docs/html") # copy images and javascript
+# install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/VL_SDK_DOCS-HTML/" DESTINATION "docs/html") # copy doxygen generated stuff
+
+# method 2, generate documentation directly in the source directory (to keep a single, clean, Doxyfile)
+add_custom_target(
+	Documentation 
+	"doxygen"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
+	SOURCES Doxyfile ${VL_DOCUMENTATION}
+	COMMENT "Generating API documentation with Doxygen" VERBATIM
+)
+
+# we actually allow the user to build the docs in any case, we simply skip the install rule.
+option(VL_BUILD_DOCS "Build API Documentation" ON)
+if(VL_BUILD_DOCS)
+	#install images and html pages
+	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/VL_SDK_DOCS-HTML/" DESTINATION "docs/html") # copy doxygen generated stuff
+endif()
+
+# # method 3, just keep the documentation in the editor
+# add_custom_target(
+	# Documentation 
+	# SOURCES Doxyfile ${VL_DOCUMENTATION}
+# )
