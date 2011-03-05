@@ -116,112 +116,38 @@
 	<table border=0 cellspacing=0 cellpadding=5 width=1%>
 	<tr>
 		<td>
-			<a href="gallery/mandel08.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel08.jpg" alt="Highslide JS" title="Click to enlarge" />
+			<a href="gallery/mandel01.jpg" class="highslide" onclick="return hs.expand(this)"> 
+				<img src="gallery_small/mandel01.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mandel10.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel10.jpg" alt="Highslide JS" title="Click to enlarge" />
+			<a href="gallery/mandel02.jpg" class="highslide" onclick="return hs.expand(this)"> 
+				<img src="gallery_small/mandel02.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mandel13.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel13.jpg" alt="Highslide JS" title="Click to enlarge" />
+			<a href="gallery/mandel03.jpg" class="highslide" onclick="return hs.expand(this)"> 
+				<img src="gallery_small/mandel03.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mandel14.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel14.jpg" alt="Highslide JS" title="Click to enlarge" />
+			<a href="gallery/mandel04.jpg" class="highslide" onclick="return hs.expand(this)"> 
+				<img src="gallery_small/mandel04.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mandel15.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel15.jpg" alt="Highslide JS" title="Click to enlarge" />
+			<a href="gallery/mandel05.jpg" class="highslide" onclick="return hs.expand(this)"> 
+				<img src="gallery_small/mandel05.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mandel16.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel16.jpg" alt="Highslide JS" title="Click to enlarge" />
+			<a href="gallery/mandel06.jpg" class="highslide" onclick="return hs.expand(this)"> 
+				<img src="gallery_small/mandel06.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 		<td>
-			<a href="gallery/mandel17.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel17.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="gallery/mandel18.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel18.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel22.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel22.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel25.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel25.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel26.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel26.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel27.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel27.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel28.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel28.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel29.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel29.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<a href="gallery/mandel34.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel34.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel37.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel37.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel45.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel45.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel38.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel38.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel42.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel42.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel49.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel49.jpg" alt="Highslide JS" title="Click to enlarge" />
-			</a>
-		</td>
-		<td>
-			<a href="gallery/mandel55.jpg" class="highslide" onclick="return hs.expand(this)"> 
-				<img src="gallery_small/mandel55.jpg" alt="Highslide JS" title="Click to enlarge" />
+			<a href="gallery/mandel07.jpg" class="highslide" onclick="return hs.expand(this)"> 
+				<img src="gallery_small/mandel07.jpg" alt="Highslide JS" title="Click to enlarge" />
 			</a>
 		</td>
 	</tr>
