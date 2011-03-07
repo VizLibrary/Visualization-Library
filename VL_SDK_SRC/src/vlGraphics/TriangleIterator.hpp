@@ -506,7 +506,7 @@ namespace vl
     :TriangleIteratorIndexed<TArray>( idx_array, prim_type, 0, prim_restart_on, prim_restart_idx)
     {
       #ifndef NDEBUG
-        mObjectName = className();
+        this->mObjectName = className();
       #endif
       mpBaseVertices  = p_base_vertices;
       mpCountVector   = p_count_vector;
