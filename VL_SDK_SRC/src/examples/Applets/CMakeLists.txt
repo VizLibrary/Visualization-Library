@@ -92,6 +92,7 @@ set(VL_APPLETS_SRC
   App_ShaderOverride.cpp
   App_Terrain.cpp
   App_Tessellator.cpp
+  App_TessellationShader.cpp
   App_TextRendering.cpp
   App_Texturing.cpp
   App_Transforms.cpp

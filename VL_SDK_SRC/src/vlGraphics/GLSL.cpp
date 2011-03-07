@@ -404,18 +404,22 @@ void GLSLProgram::preLink()
     }
   }
 
-  // geometry shader - note: this pertains only to OpenGL 3.2 not OpenGL 4.x
+  // Note that OpenGL 3 and 4 do not use glProgramParameter to define the layout of the 
+  // input/output geometry but something like this in the geometry shader:
+  //
+  // layout(triangles) in;
+  // layout(triangle_strip, max_vertices = 3) out;
 
-  if (GLEW_Has_Geometry_Shader)
+  if (GLEW_Has_Geometry_Shader && geometryVerticesOut() )
   {
     // if there is at least one geometry shader applies the geometry shader parameters
     for(unsigned i=0; i<mShaders.size(); ++i)
     {
       if (mShaders[i]->type() == ST_GEOMETRY_SHADER)
       {
-        VL_glProgramParameteri(handle(), GL_GEOMETRY_VERTICES_OUT_EXT, geometryVerticesOut()); VL_CHECK_OGL();
         VL_glProgramParameteri(handle(), GL_GEOMETRY_INPUT_TYPE_EXT,   geometryInputType()); VL_CHECK_OGL();
         VL_glProgramParameteri(handle(), GL_GEOMETRY_OUTPUT_TYPE_EXT,  geometryOutputType()); VL_CHECK_OGL();
+        VL_glProgramParameteri(handle(), GL_GEOMETRY_VERTICES_OUT_EXT, geometryVerticesOut()); VL_CHECK_OGL();
         break;
       }
     }
