@@ -63,7 +63,7 @@ namespace vl
     void operator=(const Glyph&){}
 
   public:
-    Glyph(): mTextureHandle(0), mWidth(0), mHeight(0), mLeft(0), mTop(0), mS0(0), mT0(0), mS1(0), mT1(0),mGlyphIndex(0), mFont(NULL) {}
+    Glyph(): mFont(NULL), mS0(0), mT0(0), mS1(0), mT1(0), mGlyphIndex(0), mTextureHandle(0), mWidth(0), mHeight(0), mLeft(0), mTop(0) {}
 
     ~Glyph();
 
@@ -106,18 +106,18 @@ namespace vl
     void setFont(Font* font) { mFont = font; }
 
   protected:
+    Font* mFont;
+    fvec2 mAdvance;
+    float mS0;
+    float mT0;
+    float mS1;
+    float mT1;
+    unsigned int mGlyphIndex;
     unsigned int mTextureHandle;
     int mWidth;
     int mHeight;
     int mLeft;
     int mTop;
-    float mS0;
-    float mT0;
-    float mS1;
-    float mT1;
-    fvec2 mAdvance;
-    unsigned int mGlyphIndex; // glyph index
-    Font* mFont;
   };
   //-----------------------------------------------------------------------------
   // Font
@@ -176,6 +176,14 @@ namespace vl
     //! The FontManager associated to this Font used to acquire/release FreeType resources.
     FontManager* fontManager() { return mFontManager; }
 
+    //! Whether FT_Load_Char() should be called with FT_LOAD_FORCE_AUTOHINT (default) or FT_LOAD_DEFAULT.
+    //! There isn't a "best" option for all the fonts, the results can be better or worse depending on the particular font loaded.
+    bool freeTypeLoadForceAutoHint() const { return mFreeTypeLoadForceAutoHint; }
+
+    //! Whether FT_Load_Char() should be called with FT_LOAD_FORCE_AUTOHINT (default) or FT_LOAD_DEFAULT.
+    //! There isn't a "best" option for all the fonts, the results can be better or worse depending on the particular font loaded.
+    void setFreeTypLoadForceAutoHint(bool enable) { mFreeTypeLoadForceAutoHint = enable; }
+
   protected:
     FontManager* mFontManager;
     String mFilePath;
@@ -185,6 +193,7 @@ namespace vl
     int mSize;
     float mHeight;
     bool mSmooth;
+    bool mFreeTypeLoadForceAutoHint;
   };
   //-----------------------------------------------------------------------------
 }
