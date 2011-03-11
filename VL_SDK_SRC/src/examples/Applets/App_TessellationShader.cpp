@@ -34,6 +34,7 @@
 #include <vlGraphics/Geometry.hpp>
 #include <vlGraphics/GLSL.hpp>
 #include <vlGraphics/Light.hpp>
+#include <vlGraphics/GeometryPrimitives.hpp>
 
 class App_TessellationShader: public BaseDemo
 {
@@ -41,7 +42,36 @@ public:
   void initEvent()
   {
     BaseDemo::initEvent();
+    
+    vl::ref< vl::Geometry > geom = makeGrid(vl::fvec3(), 200,200, 50,50, true);
 
+    // patch parameter associated to the draw call
+    vl::ref<vl::PatchParameter> patch_param = new vl::PatchParameter;
+    patch_param->setPatchVertices(4);
+    geom->drawCalls()->at(0)->setPatchParameter( patch_param.get() );
+    geom->drawCalls()->at(0)->setPrimitiveType(vl::PT_PATCHES);
+
+    // effect: light + depth testing
+    vl::ref<vl::Effect> fx = new vl::Effect;
+    fx->shader()->enable(vl::EN_DEPTH_TEST);
+    fx->shader()->setRenderState( new vl::Light(0) );
+    fx->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+
+    // bind all the necessary stages to the GLSLProgram
+    mGLSL = fx->shader()->gocGLSLProgram();
+    mGLSL->attachShader( new vl::GLSLVertexShader("glsl/tess_grid.vs") );
+    mGLSL->attachShader( new vl::GLSLTessControlShader("glsl/tess_grid.tcs") );
+    mGLSL->attachShader( new vl::GLSLTessEvaluationShader("glsl/tess_grid.tes") );
+    // mGLSL->attachShader( new vl::GLSLGeometryShader("glsl/tess_grid.gs") );
+    // mGLSL->gocUniform("Outer")->setUniform(10.0f);
+    // mGLSL->gocUniform("Inner")->setUniform(10.0f);
+    // mGLSL->gocUniform("Radius")->setUniform(1.0f);
+
+    sceneManager()->tree()->addActor( geom.get(), fx.get(), NULL );
+  }
+
+  void trianglePatchDemo()
+  {
     // hemisphere base geometry
     vl::ref< vl::Geometry > geom = new vl::Geometry;
 
@@ -121,6 +151,7 @@ public:
   // interactively change the inner/outer tessellation levels
   void keyPressEvent(unsigned short, vl::EKey key)
   {
+#if 0
     float outer = 0;
     float inner = 0;
     mGLSL->gocUniform("Outer")->getUniform(&outer);
@@ -145,6 +176,7 @@ public:
     mGLSL->gocUniform("Inner")->setUniform(inner);
 
     vl::Log::print( vl::Say("outer = %n, inner = %n\n") << outer << inner );
+#endif
   }
 
 protected:

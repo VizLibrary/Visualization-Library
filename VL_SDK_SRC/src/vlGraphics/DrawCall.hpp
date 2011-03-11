@@ -108,6 +108,16 @@ namespace vl
     {
       if (mType == PT_PATCHES && mPatchParameter)
         mPatchParameter->apply();
+
+      if (mPatchParameter && mType != PT_PATCHES)
+      {
+        vl::Log::warning("PatchParameter used with non PT_PATCHES draw call!\n");
+      }
+
+      if (!mPatchParameter && mType == PT_PATCHES)
+      {
+        vl::Log::warning("No PatchParameter supplied while using PT_PATCHES draw call!\n");
+      }
     }
 
   protected:

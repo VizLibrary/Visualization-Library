@@ -189,7 +189,7 @@ public:
       { "Occlusion Culling", Create_App_OcclusionCulling(), 10,10, 512, 512, vl::gray, vl::vec3(0,25,575), vl::vec3(0,0,0) },
       { "Bezier Patches", Create_App_BezierSurfaces(), 10,10, 512, 512, vl::black, vl::vec3(4.5f,5,13), vl::vec3(4.5f,0,0) },
       { "Picking", Create_App_Picking(), 10,10, 512, 512, vl::black, vl::vec3(0,0,10), vl::vec3(0,0,0) },
-      { "Tessellation Shader", Create_App_TessellationShader(), 10,10, 512, 512, vl::skyblue, vl::vec3(0,0,4), vl::vec3(0,0,0) },
+      { "Tessellation Shader", Create_App_TessellationShader(), 10,10, 512, 512, vl::skyblue, vl::vec3(0,1,4), vl::vec3(0,0,0) },
       { "Mini Earth", Create_App_MiniEarth(), 10,10, 512, 512, vl::black, vl::vec3(0,0,4), vl::vec3(0,0,0) },
     };
 
