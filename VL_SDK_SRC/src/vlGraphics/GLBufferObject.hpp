@@ -62,7 +62,7 @@ namespace vl
         mObjectName = className();
       #endif
       mHandle = 0;
-      mUsage = BU_STATIC_DRAW;
+      mUsage = GBU_STATIC_DRAW;
       mByteCountGPU = 0;
     }
 
@@ -72,7 +72,7 @@ namespace vl
         mObjectName = className();
       #endif
       mHandle = 0;
-      mUsage = BU_STATIC_DRAW;
+      mUsage = GBU_STATIC_DRAW;
       mByteCountGPU = 0;
       // copy local data
       *this = other;
@@ -110,10 +110,7 @@ namespace vl
       deleteGLBufferObject();
     }
 
-    void setHandle(unsigned int handle) { mHandle = handle; }
-
     unsigned int handle() const { return mHandle; }
-
     int byteCountGPU() const { return mByteCountGPU; }
 
     void createGLBufferObject()
@@ -124,7 +121,7 @@ namespace vl
       if (handle() == 0)
       {
         VL_CHECK(mByteCountGPU == 0)
-        VL_glGenBuffers( 1, &mHandle );
+        VL_glGenBuffers( 1, &(mHandle) );
         mByteCountGPU = 0;
       }
       VL_CHECK(handle())
@@ -134,7 +131,7 @@ namespace vl
     {
       if (handle() != 0)
       {
-        VL_glDeleteBuffers( 1, &mHandle );
+        VL_glDeleteBuffers( 1, &(mHandle) );
         mHandle = 0;
         mByteCountGPU = 0;
       }
@@ -179,8 +176,8 @@ namespace vl
       VL_CHECK(GLEW_ARB_vertex_buffer_object||GLEW_VERSION_1_5||GLEW_VERSION_3_0)
       if(!(GLEW_ARB_vertex_buffer_object||GLEW_VERSION_1_5||GLEW_VERSION_3_0))
         return;
-      //if (!data || !byte_count)
-      //  return;
+      if (!data || !byte_count)
+        return;
       createGLBufferObject();
       // we use the GL_ARRAY_BUFFER slot to send the data for no special reason
       VL_glBindBuffer( GL_ARRAY_BUFFER, handle() );
