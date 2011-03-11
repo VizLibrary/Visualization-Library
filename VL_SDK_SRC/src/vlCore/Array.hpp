@@ -68,7 +68,7 @@ namespace vl
       #endif
       mBufferGPU = new GLBufferObject;
       mVBODirty = true;
-      mVBOUsage = vl::GBU_STATIC_DRAW;
+      mVBOUsage = vl::BU_STATIC_DRAW;
     }
 
     //! Copies only the local data and not the VBO related fields
@@ -136,10 +136,10 @@ namespace vl
     //! true by default
     void setVBODirty(bool dirty) { mVBODirty = dirty; }
 
-    //! GBU_STATIC_DRAW by default
+    //! BU_STATIC_DRAW by default
     EGLBufferUsage usage() const { return mVBOUsage; }
 
-    //! GBU_STATIC_DRAW by default
+    //! BU_STATIC_DRAW by default
     void setUsage(EGLBufferUsage usage) { mVBOUsage = usage; }
 
     void updateVBO(bool discard_local_storage=false)
