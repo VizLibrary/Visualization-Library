@@ -136,7 +136,7 @@ bool GLSLShader::compile()
       Log::bug( Say("\nGLSLShader::compile() failed! '%s':\n\n") << objectName().c_str() );
       // Log::bug( Say("Source:\n%s\n\n") << mSource.c_str() );
       Log::bug( Say("Info log:\n%s\n\n") << infoLog() );
-      VL_TRAP()
+       VL_TRAP()
     }
   }
 
@@ -356,7 +356,7 @@ bool GLSLProgram::linkProgram(bool force_relink)
   {
     if (shaderCount() == 0)
     {
-      Log::bug("GLSLProgram::linkProgram() called on a GLSLProgram with no shaders! ('" + String(objectName().c_str()) + "')\n");
+      Log::bug("GLSLProgram::linkProgram() called on a GLSLProgram with no shaders! (" + String(objectName().c_str()) + ")\n");
       VL_TRAP()
       return false;
     }
@@ -379,7 +379,7 @@ bool GLSLProgram::linkProgram(bool force_relink)
     }
     else
     {
-      Log::bug("GLSLProgram::linkProgram() failed! ('" + String(objectName().c_str()) + "')\n");
+      Log::bug("GLSLProgram::linkProgram() failed! (" + String(objectName().c_str()) + ")\n");
       Log::bug( Say("Info log:\n%s\n") << infoLog() );
       VL_TRAP()
       return false;
@@ -499,7 +499,7 @@ String GLSLProgram::infoLog() const
   VL_CHECK(handle())
 
   if (handle() == 0)
-    return "GLSLProgram::infoLog(): error! GLSL program object not yet created! ('" + String(objectName().c_str()) + "')\n";
+    return "GLSLProgram::infoLog(): error! GLSL program object not yet created! (" + String(objectName().c_str()) + ")\n";
 
   int max_length = 0;
   glGetProgramiv(handle(), GL_INFO_LOG_LENGTH, &max_length); VL_CHECK_OGL();
@@ -558,14 +558,14 @@ bool GLSLProgram::useProgram() const
 
   if (!handle())
   {
-    Log::bug("GLSLProgram::useProgram() failed! GLSL program handle is null! ('" + String(objectName().c_str()) + "')\n");
+    Log::bug("GLSLProgram::useProgram() failed! GLSL program handle is null! (" + String(objectName().c_str()) + ")\n");
     VL_TRAP()
     return false;
   }
 
   if (!linked())
   {
-    Log::bug("GLSLProgram::useProgram() failed! GLSL program not linked! ('" + String(objectName().c_str()) + "')\n");
+    Log::bug("GLSLProgram::useProgram() failed! GLSL program not linked! (" + String(objectName().c_str()) + ")\n");
     VL_TRAP()
     return false;
   }
@@ -573,7 +573,7 @@ bool GLSLProgram::useProgram() const
 #ifndef NDEBUG
   if (!validateProgram())
   {
-    Log::bug("GLSLProgram::useProgram() failed validation! ('" + String(objectName().c_str()) + "')\n");
+    Log::bug("GLSLProgram::useProgram() failed validation! (" + String(objectName().c_str()) + ")\n");
     Log::bug( Say("Info log:\n%s\n") << infoLog() );
     VL_TRAP();
     return false;
@@ -787,7 +787,7 @@ bool GLSLProgram::programBinary(GLenum binary_format, const void* binary, int le
     }
     else
     {
-      Log::bug("GLSLProgram::programBinary() failed! ('" + String(objectName().c_str()) + "')\n");
+      Log::bug("GLSLProgram::programBinary() failed! (" + String(objectName().c_str()) + ")\n");
       Log::bug( Say("Info log:\n%s\n") << infoLog() );
       VL_TRAP();
     }
