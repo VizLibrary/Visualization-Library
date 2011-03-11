@@ -687,7 +687,7 @@ int vl::glcheck(const char* file, int line)
   if (glerr != GL_NO_ERROR)
   {
     String msg( (char*)gluErrorString(glerr) );
-    Log::error( Say("glGetError() [%s:%n]: %s\n") << file << line << msg );
+    Log::bug( Say("glGetError() [%s:%n]: %s\n") << file << line << msg );
   }
   return glerr;
 }
