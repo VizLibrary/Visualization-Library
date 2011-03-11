@@ -217,7 +217,6 @@ void Log::logSystemInfo()
     default: break;
   }
   print( Say("Check OpenGL States = %s\n") << (globalSettings()->checkOpenGLStates()?"YES":"NO") );
-  print( Say("Check Transform Siblings = %s\n") << (globalSettings()->checkTransformSiblings()?"YES":"NO") );
 
   print("\n");
 }
