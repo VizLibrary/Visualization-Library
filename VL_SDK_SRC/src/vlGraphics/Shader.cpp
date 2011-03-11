@@ -639,29 +639,34 @@ void TexParameter::apply(ETextureDimension dimension) const
   }
 #endif
 
-  mDirty = false;
+  // none of these are supported by texture buffers
 
-  glTexParameterfv(dimension, GL_TEXTURE_BORDER_COLOR, borderColor().ptr()); VL_CHECK_OGL()
-  glTexParameteri(dimension, GL_TEXTURE_MIN_FILTER, minFilter()); VL_CHECK_OGL()
-  glTexParameteri(dimension, GL_TEXTURE_MAG_FILTER, magFilter()); VL_CHECK_OGL()
-  glTexParameteri(dimension, GL_TEXTURE_WRAP_S, wrapS()); VL_CHECK_OGL()
-  glTexParameteri(dimension, GL_TEXTURE_WRAP_T, wrapT()); VL_CHECK_OGL()
-  if (GLEW_VERSION_1_2) 
-    glTexParameteri(dimension, GL_TEXTURE_WRAP_R, wrapR()); VL_CHECK_OGL()
-
-  if (GLEW_EXT_texture_filter_anisotropic)
-    glTexParameterf( dimension, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy() ); VL_CHECK_OGL()
-
-  if (GLEW_VERSION_1_4||GLEW_SGIS_generate_mipmap)
-    if (dimension != TD_TEXTURE_RECTANGLE)
-      glTexParameteri(dimension, GL_GENERATE_MIPMAP, generateMipmap() ? GL_TRUE : GL_FALSE); VL_CHECK_OGL()
-
-  if (GLEW_VERSION_1_4||GLEW_ARB_shadow)
+  if (dimension != TD_TEXTURE_BUFFER)
   {
-    glTexParameteri(dimension, GL_TEXTURE_COMPARE_MODE, compareMode() ); VL_CHECK_OGL()
-    glTexParameteri(dimension, GL_TEXTURE_COMPARE_FUNC, compareFunc() ); VL_CHECK_OGL()
-    glTexParameteri(dimension, GL_DEPTH_TEXTURE_MODE, depthTextureMode() ); VL_CHECK_OGL()
+    glTexParameterfv(dimension, GL_TEXTURE_BORDER_COLOR, borderColor().ptr()); VL_CHECK_OGL()
+    glTexParameteri(dimension, GL_TEXTURE_MIN_FILTER, minFilter()); VL_CHECK_OGL()
+    glTexParameteri(dimension, GL_TEXTURE_MAG_FILTER, magFilter()); VL_CHECK_OGL()
+    glTexParameteri(dimension, GL_TEXTURE_WRAP_S, wrapS()); VL_CHECK_OGL()
+    glTexParameteri(dimension, GL_TEXTURE_WRAP_T, wrapT()); VL_CHECK_OGL()
+    if (GLEW_VERSION_1_2) 
+      glTexParameteri(dimension, GL_TEXTURE_WRAP_R, wrapR()); VL_CHECK_OGL()
+
+    if (GLEW_EXT_texture_filter_anisotropic)
+      glTexParameterf( dimension, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy() ); VL_CHECK_OGL()
+
+    if (GLEW_VERSION_1_4||GLEW_SGIS_generate_mipmap)
+      if (dimension != TD_TEXTURE_RECTANGLE)
+        glTexParameteri(dimension, GL_GENERATE_MIPMAP, generateMipmap() ? GL_TRUE : GL_FALSE); VL_CHECK_OGL()
+
+    if (GLEW_VERSION_1_4||GLEW_ARB_shadow)
+    {
+      glTexParameteri(dimension, GL_TEXTURE_COMPARE_MODE, compareMode() ); VL_CHECK_OGL()
+      glTexParameteri(dimension, GL_TEXTURE_COMPARE_FUNC, compareFunc() ); VL_CHECK_OGL()
+      glTexParameteri(dimension, GL_DEPTH_TEXTURE_MODE, depthTextureMode() ); VL_CHECK_OGL()
+    }
   }
+
+  mDirty = false;
 
   VL_CHECK_OGL()
 }
@@ -944,6 +949,7 @@ void TextureUnit::apply(const Camera* camera, OpenGLContext* ctx) const
       {
         case TD_TEXTURE_1D_ARRAY:
         case TD_TEXTURE_2D_ARRAY:
+        case TD_TEXTURE_BUFFER:
           break;
         default:
           glDisable( prev_tex_target ); VL_CHECK_OGL()
@@ -965,6 +971,7 @@ void TextureUnit::apply(const Camera* camera, OpenGLContext* ctx) const
 
     // if we request mipmapped filtering then we must have a mip-mapped texture.
     #ifndef NDEBUG
+    if (texture()->dimension() != TD_TEXTURE_BUFFER)
     {
       GLint width = 0;
       int tex_target = texture()->dimension() == vl::TD_TEXTURE_CUBE_MAP ? GL_TEXTURE_CUBE_MAP_POSITIVE_X : texture()->dimension();
@@ -999,6 +1006,7 @@ void TextureUnit::apply(const Camera* camera, OpenGLContext* ctx) const
       {
         case TD_TEXTURE_1D_ARRAY:
         case TD_TEXTURE_2D_ARRAY:
+        case TD_TEXTURE_BUFFER:
           break;
         default:
           glEnable( texture()->dimension() ); VL_CHECK_OGL()
