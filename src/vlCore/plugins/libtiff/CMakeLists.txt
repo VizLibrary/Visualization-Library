@@ -4,7 +4,9 @@
 
 set(TIFF_DIR "${3RDPARTY_DIR}/libtiff")
 
-include_directories("${3RDPARTY_DIR}/jpeg-6b")
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
+include_directories("${3RDPARTY_DIR}/zlib" "${3RDPARTY_DIR}/jpeg-6b")
 
 #-DOJPEG_SUPPORT not supported
 add_definitions(

@@ -4,6 +4,8 @@
 
 set(JPG_DIR "${3RDPARTY_DIR}/jpeg-6b")
 
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
 if(UNIX AND VL_DYNAMIC_LINKING)
     add_definitions("-fPIC")
 endif()

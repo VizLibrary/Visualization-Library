@@ -45,20 +45,23 @@
 /*
  * Define glewGetProcAddress.
  */
+extern "C" {
 #if defined(_WIN32)
 #  define glewGetProcAddress(name) wglGetProcAddress((LPCSTR)name)
 #else
 #  if defined(__APPLE__)
 #    define glewGetProcAddress(name) NSGLGetProcAddress(name)
-     extern "C" { void* NSGLGetProcAddress (const GLubyte *name); }
+     void* NSGLGetProcAddress(const GLubyte *name);
 #  else
 #    if defined(__sgi) || defined(__sun)
 #      define glewGetProcAddress(name) dlGetProcAddress(name)
 #    else /* __linux */
 #      define glewGetProcAddress(name) (*glXGetProcAddressARB)(name)
+       void (*glXGetProcAddress(const GLubyte *procName))(void);
 #    endif
 #  endif
 #endif
+}
 
 using namespace vl;
 
