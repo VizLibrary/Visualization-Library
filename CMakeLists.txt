@@ -52,7 +52,7 @@ set(3RDPARTY_DIR "${CMAKE_SOURCE_DIR}/src/3rdparty")
 project(Visualization_Library_SDK-${VLVERSION_MAJOR}.${VLVERSION_MINOR})
 
 # Add our dir to the CMake modules path and include our InternalMacros file
-set( CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH} )
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 include( InternalMacros )
 
 ################################################################################

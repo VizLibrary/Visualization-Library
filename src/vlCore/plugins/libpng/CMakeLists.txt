@@ -4,11 +4,13 @@
 
 set(PNG_DIR "${3RDPARTY_DIR}/libpng")
 
+include_directories("${3RDPARTY_DIR}/zlib")
+
+add_definitions(-DPNG_NO_MMX_CODE -D_CRT_SECURE_NO_WARNINGS)
+
 if(UNIX AND VL_DYNAMIC_LINKING)
     add_definitions("-fPIC")
 endif()
-
-add_definitions(-DPNG_NO_MMX_CODE -D_CRT_SECURE_NO_WARNINGS)
 
 add_library(PNG STATIC
 	"${PNG_DIR}/png.c"
