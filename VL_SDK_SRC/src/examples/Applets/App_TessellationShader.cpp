@@ -43,8 +43,9 @@ public:
   {
     BaseDemo::initEvent();
 
-    const int patch_count = 256;
-    const float world_size = 256.0f;
+    const int patch_count = 128;
+    const float world_size = 2500.0;
+    const float height_scale = 50.0;
     
     vl::ref< vl::Geometry > geom_quads = makeGrid(vl::fvec3(), world_size,world_size, patch_count,patch_count, true);
 
@@ -58,14 +59,27 @@ public:
 
     // tessellated patches fx
     vl::ref<vl::Effect> fx = new vl::Effect;
+    fx->shader()->setRenderState( new vl::Light(0) );
     fx->shader()->enable(vl::EN_DEPTH_TEST);
-    fx->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+    // fx->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+    vl::ref<vl::Texture> hmap = new vl::Texture("/images/hmap.jpg", vl::TF_LUMINANCE, false, false);
+    fx->shader()->gocTextureUnit(0)->setTexture( hmap.get() );
+    fx->shader()->gocTextureUnit(1)->setTexture( new vl::Texture("/images/hmap.jpg") );
 
     // bind all the necessary stages to the GLSLProgram
     mGLSL = fx->shader()->gocGLSLProgram();
     mGLSL->attachShader( new vl::GLSLVertexShader("glsl/tess_grid.vs") );
     mGLSL->attachShader( new vl::GLSLTessControlShader("glsl/tess_grid.tcs") );
     mGLSL->attachShader( new vl::GLSLTessEvaluationShader("glsl/tess_grid.tes") );
+    mGLSL->attachShader( new vl::GLSLFragmentShader("glsl/tess_grid.fs") );
+    mGLSL->gocUniform("pixel_per_edge")->setUniform(4.0f);
+    mGLSL->gocUniform("max_tessellation")->setUniform(64.0f);
+    mGLSL->gocUniform("screen_size")->setUniform(vl::fvec2(512,512));
+    mGLSL->gocUniform("world_size")->setUniform(world_size);
+    mGLSL->gocUniform("height_scale")->setUniform(height_scale);
+    mGLSL->gocUniform("tex_heghtmap")->setUniform(0);
+    mGLSL->gocUniform("tex_heghtmap_delta")->setUniform(1.0f / hmap->width() ); // assume square texture
+    // mGLSL->gocUniform("tex_diffuse")->setUniform(1);
 
     // base patch grid fx
     vl::ref<vl::Effect> fx_grid = new vl::Effect;
@@ -76,7 +90,7 @@ public:
 
     sceneManager()->tree()->addActor( geom_patch.get(), fx.get(), NULL )->setRenderRank(0);
 
-    sceneManager()->tree()->addActor( geom_quads.get(), fx_grid.get(), NULL )->setRenderRank(1);
+    // sceneManager()->tree()->addActor( geom_quads.get(), fx_grid.get(), NULL )->setRenderRank(1);
   }
 
   void trianglePatchDemo()
@@ -186,6 +200,12 @@ public:
 
     vl::Log::print( vl::Say("outer = %n, inner = %n\n") << outer << inner );
 #endif
+  }
+
+  void resizeEvent(int w, int h)
+  {
+    BaseDemo::resizeEvent(w,h);
+    mGLSL->gocUniform("screen_size")->setUniform(vl::fvec2((float)w,(float)h));
   }
 
 protected:

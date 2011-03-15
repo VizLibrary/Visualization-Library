@@ -6,6 +6,14 @@ layout( vertices = 4 ) out;
 in vec4 vPosition[];
 out vec4 tcsPosition[];
 
+// pixels between two edges
+uniform float pixel_per_edge;
+
+// maximum tessellation level allowed
+uniform float max_tessellation;
+
+uniform vec2 screen_size;
+
 vec4 project(vec4 a)
 {
 	vec4 b = gl_ModelViewProjectionMatrix * a;
@@ -16,7 +24,7 @@ vec2 to_screen(vec4 v)
 {
 	// normalize from -1 .. +1 to 0 .. 1
 	vec2 scr = v.xy * 0.5 + vec2(0.5, 0.5);
-	return scr * vec2(512.0, 512.0); // mic fixme: screen size
+	return scr * screen_size;
 }
 
 bool off_screen_left(vec4 p0, vec4 p1, vec4 p2, vec4 p3)
@@ -57,17 +65,17 @@ void main( )
 		vec4 v3 = project(vPosition[3]);
 		
 		// check if patch is offscreen
-		if ( off_screen_left(v0, v1, v2, v3) || off_screen_right(v0, v1, v2, v3) || off_screen_bottom(v0, v1, v2, v3) || off_screen_top(v0, v1, v2, v3) )
-		{
-			// skip patch
-			gl_TessLevelOuter[0] = 
-			gl_TessLevelOuter[1] = 
-			gl_TessLevelOuter[2] = 
-			gl_TessLevelOuter[3] = 
-			gl_TessLevelInner[0] = 
-			gl_TessLevelInner[1] = 0;
-		}
-		else
+		// if ( off_screen_left(v0, v1, v2, v3) || off_screen_right(v0, v1, v2, v3) || off_screen_bottom(v0, v1, v2, v3) || off_screen_top(v0, v1, v2, v3) )
+		// {
+			// // skip patch
+			// gl_TessLevelOuter[0] = 
+			// gl_TessLevelOuter[1] = 
+			// gl_TessLevelOuter[2] = 
+			// gl_TessLevelOuter[3] = 
+			// gl_TessLevelInner[0] = 
+			// gl_TessLevelInner[1] = 0;
+		// }
+		// else
 		{
 			vec2 s0 = to_screen(v0);
 			vec2 s1 = to_screen(v1);
@@ -80,13 +88,10 @@ void main( )
 			float e2 = distance(s1,s2);
 			float e3 = distance(s2,s3);
 			
-			// how many pixels for a new edge
-			float pix_per_edge = 16.0;
-			
-			float tess_level0 = clamp( e0 / pix_per_edge, 1, 64 );
-			float tess_level1 = clamp( e1 / pix_per_edge, 1, 64 );
-			float tess_level2 = clamp( e2 / pix_per_edge, 1, 64 );
-			float tess_level3 = clamp( e3 / pix_per_edge, 1, 64 );
+			float tess_level0 = clamp( e0 / pixel_per_edge, 1, max_tessellation );
+			float tess_level1 = clamp( e1 / pixel_per_edge, 1, max_tessellation );
+			float tess_level2 = clamp( e2 / pixel_per_edge, 1, max_tessellation );
+			float tess_level3 = clamp( e3 / pixel_per_edge, 1, max_tessellation );
 
 			gl_TessLevelOuter[0] = tess_level0;
 			gl_TessLevelOuter[1] = tess_level1;
