@@ -1,3 +1,16 @@
+/**************************************************************************************/
+/*                                                                                    */
+/*  Copyright (c) 2005-2011, Michele Bosi.                                            */
+/*  All rights reserved.                                                              */
+/*                                                                                    */
+/*  This file is part of Visualization Library                                        */
+/*  http://www.visualizationlibrary.com                                               */
+/*                                                                                    */
+/*  Released under the OSI approved Simplified BSD License                            */
+/*  http://www.opensource.org/licenses/bsd-license.php                                */
+/*                                                                                    */
+/**************************************************************************************/
+
 #version 400 compatibility
 #extension GL_ARB_tessellation_shader : enable
 
@@ -5,38 +18,22 @@ layout( quads, equal_spacing, ccw ) in;
 
 in vec4 tcsPosition[];
 out vec2 tex_coord;
-out vec3 N; // normal
-out vec3 L; // light vector
 
 uniform sampler2D tex_heghtmap;
 uniform float world_size;
 uniform float height_scale;
-uniform float tex_heghtmap_delta;
 
 void main( )
 {
+	// compute vertex position based on u/v coords and patch corners
 	float u = gl_TessCoord.x;
 	float v = gl_TessCoord.y;
 	vec4 a = mix(tcsPosition[0], tcsPosition[1], u);
 	vec4 b = mix(tcsPosition[3], tcsPosition[2], u);
 	vec4 p0 = mix(a,b,v);
 
+	// compute texture uv from vertex position
 	tex_coord = p0.xz / world_size + vec2(0.5,0.5);
 	p0.y = texture( tex_heghtmap, tex_coord ).r * height_scale;
 	gl_Position = gl_ModelViewProjectionMatrix * p0;
-	
-	// compute normal based on a theoretical triangle
-	vec4 p1 = p0 + vec4(world_size * tex_heghtmap_delta, 0, 0, 0);
-	vec2 tex_coord1 = tex_coord + vec2(tex_heghtmap_delta, 0);
-	p1.y = texture( tex_heghtmap, tex_coord1 ).r * height_scale;
-
-	vec4 p2 = p0 + vec4(0, 0, world_size * tex_heghtmap_delta, 0);
-	vec2 tex_coord2 = tex_coord + vec2(0, tex_heghtmap_delta);
-	p2.y = texture( tex_heghtmap, tex_coord2 ).r * height_scale;
-	
-	N = gl_NormalMatrix * normalize( cross( (p2-p0).xyz, (p1-p0).xyz) );
-	
-	// compute light vector
-	vec4 V = gl_ModelViewMatrix * p0;
-	L = normalize(gl_LightSource[0].position.xyz - V.xyz);
 }

@@ -17,5 +17,5 @@ out vec4 vPosition;
 
 void main(void)
 {
- vPosition = gl_Vertex;
+	vPosition = gl_Vertex;
 }

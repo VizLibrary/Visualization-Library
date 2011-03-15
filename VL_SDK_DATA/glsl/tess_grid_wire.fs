@@ -13,11 +13,9 @@
 
 #version 400 compatibility
 
-uniform sampler2D tex_diffuse;
-in vec2 tex_coord;
+uniform vec4 wire_color;
 
 void main(void)
 {
-	vec3 diffuse = texture(tex_diffuse, tex_coord).rgb;
-	gl_FragColor = vec4( diffuse, 1.0);
+	gl_FragColor = wire_color;
 }

@@ -45,10 +45,10 @@ public:
 
     const int patch_count = 128;
     const float world_size = 2500.0;
-    const float height_scale = 50.0;
+    const float height_scale = 150.0;
+    const float pixel_per_edge = 16.0f;
+    const float max_tessellation = 64.0f;
     
-    vl::ref< vl::Geometry > geom_quads = makeGrid(vl::fvec3(), world_size,world_size, patch_count,patch_count, true);
-
     vl::ref< vl::Geometry > geom_patch = makeGrid(vl::fvec3(), world_size,world_size, patch_count,patch_count, true);
 
     // patch parameter associated to the draw call
@@ -57,14 +57,18 @@ public:
     geom_patch->drawCalls()->at(0)->setPatchParameter( patch_param.get() );
     geom_patch->drawCalls()->at(0)->setPrimitiveType(vl::PT_PATCHES);
 
+    vl::ref<vl::Texture> hmap = new vl::Texture("/images/ps_height_4k.jpg", vl::TF_LUMINANCE, false, false);
+    vl::ref<vl::Texture> tmap = new vl::Texture("/images/ps_texture_4k.jpg", vl::TF_RGBA, true, false);
+
+    hmap->getTexParameter()->setMinFilter(vl::TPF_LINEAR);
+    hmap->getTexParameter()->setMagFilter(vl::TPF_LINEAR);
+
     // tessellated patches fx
     vl::ref<vl::Effect> fx = new vl::Effect;
     fx->shader()->setRenderState( new vl::Light(0) );
     fx->shader()->enable(vl::EN_DEPTH_TEST);
-    // fx->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
-    vl::ref<vl::Texture> hmap = new vl::Texture("/images/hmap.jpg", vl::TF_LUMINANCE, false, false);
     fx->shader()->gocTextureUnit(0)->setTexture( hmap.get() );
-    fx->shader()->gocTextureUnit(1)->setTexture( new vl::Texture("/images/hmap.jpg") );
+    fx->shader()->gocTextureUnit(1)->setTexture( tmap.get() );
 
     // bind all the necessary stages to the GLSLProgram
     mGLSL = fx->shader()->gocGLSLProgram();
@@ -72,29 +76,85 @@ public:
     mGLSL->attachShader( new vl::GLSLTessControlShader("glsl/tess_grid.tcs") );
     mGLSL->attachShader( new vl::GLSLTessEvaluationShader("glsl/tess_grid.tes") );
     mGLSL->attachShader( new vl::GLSLFragmentShader("glsl/tess_grid.fs") );
-    mGLSL->gocUniform("pixel_per_edge")->setUniform(4.0f);
-    mGLSL->gocUniform("max_tessellation")->setUniform(64.0f);
+    mGLSL->gocUniform("pixel_per_edge")->setUniform(pixel_per_edge);
+    mGLSL->gocUniform("max_tessellation")->setUniform(max_tessellation);
     mGLSL->gocUniform("screen_size")->setUniform(vl::fvec2(512,512));
     mGLSL->gocUniform("world_size")->setUniform(world_size);
     mGLSL->gocUniform("height_scale")->setUniform(height_scale);
     mGLSL->gocUniform("tex_heghtmap")->setUniform(0);
-    mGLSL->gocUniform("tex_heghtmap_delta")->setUniform(1.0f / hmap->width() ); // assume square texture
-    // mGLSL->gocUniform("tex_diffuse")->setUniform(1);
+    mGLSL->gocUniform("tex_diffuse")->setUniform(1);
 
-    // base patch grid fx
-    vl::ref<vl::Effect> fx_grid = new vl::Effect;
-    fx_grid->shader()->enable(vl::EN_LIGHTING);
-    fx_grid->shader()->setRenderState( new vl::Light(0) );
-    fx_grid->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
-    fx_grid->shader()->gocMaterial()->setFlatColor(vl::red);
+    // tessellated patches fx_wire
+    vl::ref<vl::Effect> fx_wire = new vl::Effect;
+    fx_wire->shader()->enable(vl::EN_DEPTH_TEST);
+    fx_wire->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+    fx_wire->shader()->gocTextureUnit(0)->setTexture( hmap.get() );
+    fx_wire->shader()->gocPolygonOffset()->set(-1.0f, -1.0f);
+    fx_wire->shader()->enable(vl::EN_POLYGON_OFFSET_LINE);
+
+    // bind all the necessary stages to the GLSLProgram
+    mGLSLWire = fx_wire->shader()->gocGLSLProgram();
+    mGLSLWire->attachShader( new vl::GLSLVertexShader("glsl/tess_grid.vs") );
+    mGLSLWire->attachShader( new vl::GLSLTessControlShader("glsl/tess_grid.tcs") );
+    mGLSLWire->attachShader( new vl::GLSLTessEvaluationShader("glsl/tess_grid.tes") );
+    mGLSLWire->attachShader( new vl::GLSLFragmentShader("glsl/tess_grid_wire.fs") );
+    mGLSLWire->gocUniform("pixel_per_edge")->setUniform(pixel_per_edge);
+    mGLSLWire->gocUniform("max_tessellation")->setUniform(max_tessellation);
+    mGLSLWire->gocUniform("screen_size")->setUniform(vl::fvec2(512,512));
+    mGLSLWire->gocUniform("world_size")->setUniform(world_size);
+    mGLSLWire->gocUniform("height_scale")->setUniform(height_scale);
+    mGLSLWire->gocUniform("tex_heghtmap")->setUniform(0);
+    mGLSLWire->gocUniform("wire_color")->setUniform(vl::lightgreen);
 
     sceneManager()->tree()->addActor( geom_patch.get(), fx.get(), NULL )->setRenderRank(0);
+    
+    mWireActor = sceneManager()->tree()->addActor( geom_patch.get(), fx_wire.get(), NULL );
+    mWireActor->setRenderRank(1);
 
-    // sceneManager()->tree()->addActor( geom_quads.get(), fx_grid.get(), NULL )->setRenderRank(1);
+    // debugging
+    #if 0
+      // base patch grid
+      vl::ref< vl::Geometry > geom_quads = makeGrid(vl::fvec3(), world_size,world_size, patch_count,patch_count, true);
+      geom_quads->setColor(vl::red);
+      // base patch grid fx
+      vl::ref<vl::Effect> fx_grid = new vl::Effect;
+      fx_grid->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+      // add grid
+      sceneManager()->tree()->addActor( geom_quads.get(), fx_grid.get(), NULL )->setRenderRank(2);
+    #endif
   }
 
-  void trianglePatchDemo()
+  // interactively change the inner/outer tessellation levels
+  void keyPressEvent(unsigned short, vl::EKey key)
   {
+    if (key == vl::Key_Space)
+      mWireActor->setEnableMask( mWireActor->enableMask() ? 0 : 1 );
+  }
+
+  void resizeEvent(int w, int h)
+  {
+    BaseDemo::resizeEvent(w,h);
+    mGLSL->gocUniform("screen_size")->setUniform(vl::fvec2((float)w,(float)h));
+    mGLSLWire->gocUniform("screen_size")->setUniform(vl::fvec2((float)w,(float)h));
+  }
+
+protected:
+  vl::GLSLProgram* mGLSL;
+  vl::GLSLProgram* mGLSLWire;
+  vl::Actor* mWireActor;
+};
+
+// Have fun!
+
+BaseDemo* Create_App_TessellationShader() { return new App_TessellationShader; }
+
+class App_TessellationShaderTri: public BaseDemo
+{
+public:
+  void initEvent()
+  {
+    BaseDemo::initEvent();
+
     // hemisphere base geometry
     vl::ref< vl::Geometry > geom_patch = new vl::Geometry;
 
@@ -174,7 +234,6 @@ public:
   // interactively change the inner/outer tessellation levels
   void keyPressEvent(unsigned short, vl::EKey key)
   {
-#if 0
     float outer = 0;
     float inner = 0;
     mGLSL->gocUniform("Outer")->getUniform(&outer);
@@ -199,13 +258,6 @@ public:
     mGLSL->gocUniform("Inner")->setUniform(inner);
 
     vl::Log::print( vl::Say("outer = %n, inner = %n\n") << outer << inner );
-#endif
-  }
-
-  void resizeEvent(int w, int h)
-  {
-    BaseDemo::resizeEvent(w,h);
-    mGLSL->gocUniform("screen_size")->setUniform(vl::fvec2((float)w,(float)h));
   }
 
 protected:
@@ -214,4 +266,4 @@ protected:
 
 // Have fun!
 
-BaseDemo* Create_App_TessellationShader() { return new App_TessellationShader; }
+BaseDemo* Create_App_TessellationShaderTri() { return new App_TessellationShaderTri; }
