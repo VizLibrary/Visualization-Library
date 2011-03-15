@@ -14,10 +14,8 @@
 #version 400 compatibility
 
 out vec4 vPosition;
-out vec4 vColor;
 
 void main(void)
 {
  vPosition = gl_Vertex;
- vColor    = gl_Color;
 }

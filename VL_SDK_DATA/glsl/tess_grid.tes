@@ -3,22 +3,17 @@
 
 layout( quads, equal_spacing, ccw ) in;
 
-in vec3 tcsPosition[];
-in vec4 tcsColor[];
-// out vec3 tesPosition;
-// out vec4 tesColor;
+in vec4 tcsPosition[];
 
 void main( )
 {
 	float u = gl_TessCoord.x;
 	float v = gl_TessCoord.y;
-	float invu = 1.0 - gl_TessCoord.x;
-	float invv = 1.0 - gl_TessCoord.y;
-	// tesColor    = ...
-	// tesPosition = ...
-	// ... fix front color
-	// ... make it CLOD and not simply LOD! whoohooo!
-	gl_FrontColor = (tcsColor[0] * u + tcsColor[1] * (1.0-u)) * v + (tcsColor[3] * u + tcsColor[2] * (1.0-u)) * (1.0 - v);
-	gl_Position = gl_ModelViewProjectionMatrix * 
-	              vec4( (tcsPosition[0] * invu + tcsPosition[1] * u) * invv + (tcsPosition[3] * invu + tcsPosition[2] * u) * v, 1.0);
+	vec4 a = mix(tcsPosition[0], tcsPosition[1], u);
+	vec4 b = mix(tcsPosition[3], tcsPosition[2], u);
+	vec4 p = mix(a,b,v);
+	gl_Position = gl_ModelViewProjectionMatrix * p;
+	
+	// lighting equation should go here
+	gl_FrontColor = vec4(1.0,1.0,1.0,1.0);
 }

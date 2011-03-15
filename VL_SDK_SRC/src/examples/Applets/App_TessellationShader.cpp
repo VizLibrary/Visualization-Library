@@ -42,19 +42,23 @@ public:
   void initEvent()
   {
     BaseDemo::initEvent();
+
+    const int patch_count = 256;
+    const float world_size = 256.0f;
     
-    vl::ref< vl::Geometry > geom = makeGrid(vl::fvec3(), 200,200, 50,50, true);
+    vl::ref< vl::Geometry > geom_quads = makeGrid(vl::fvec3(), world_size,world_size, patch_count,patch_count, true);
+
+    vl::ref< vl::Geometry > geom_patch = makeGrid(vl::fvec3(), world_size,world_size, patch_count,patch_count, true);
 
     // patch parameter associated to the draw call
     vl::ref<vl::PatchParameter> patch_param = new vl::PatchParameter;
     patch_param->setPatchVertices(4);
-    geom->drawCalls()->at(0)->setPatchParameter( patch_param.get() );
-    geom->drawCalls()->at(0)->setPrimitiveType(vl::PT_PATCHES);
+    geom_patch->drawCalls()->at(0)->setPatchParameter( patch_param.get() );
+    geom_patch->drawCalls()->at(0)->setPrimitiveType(vl::PT_PATCHES);
 
-    // effect: light + depth testing
+    // tessellated patches fx
     vl::ref<vl::Effect> fx = new vl::Effect;
     fx->shader()->enable(vl::EN_DEPTH_TEST);
-    fx->shader()->setRenderState( new vl::Light(0) );
     fx->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
 
     // bind all the necessary stages to the GLSLProgram
@@ -62,18 +66,23 @@ public:
     mGLSL->attachShader( new vl::GLSLVertexShader("glsl/tess_grid.vs") );
     mGLSL->attachShader( new vl::GLSLTessControlShader("glsl/tess_grid.tcs") );
     mGLSL->attachShader( new vl::GLSLTessEvaluationShader("glsl/tess_grid.tes") );
-    // mGLSL->attachShader( new vl::GLSLGeometryShader("glsl/tess_grid.gs") );
-    // mGLSL->gocUniform("Outer")->setUniform(10.0f);
-    // mGLSL->gocUniform("Inner")->setUniform(10.0f);
-    // mGLSL->gocUniform("Radius")->setUniform(1.0f);
 
-    sceneManager()->tree()->addActor( geom.get(), fx.get(), NULL );
+    // base patch grid fx
+    vl::ref<vl::Effect> fx_grid = new vl::Effect;
+    fx_grid->shader()->enable(vl::EN_LIGHTING);
+    fx_grid->shader()->setRenderState( new vl::Light(0) );
+    fx_grid->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+    fx_grid->shader()->gocMaterial()->setFlatColor(vl::red);
+
+    sceneManager()->tree()->addActor( geom_patch.get(), fx.get(), NULL )->setRenderRank(0);
+
+    sceneManager()->tree()->addActor( geom_quads.get(), fx_grid.get(), NULL )->setRenderRank(1);
   }
 
   void trianglePatchDemo()
   {
     // hemisphere base geometry
-    vl::ref< vl::Geometry > geom = new vl::Geometry;
+    vl::ref< vl::Geometry > geom_patch = new vl::Geometry;
 
     // hemisphere base geometry vertices
     vl::ref<vl::ArrayFloat3 > verts = new vl::ArrayFloat3;
@@ -116,14 +125,14 @@ public:
     cols->at(11) = vl::fvec3(0,0,1);
     
     // vertex array
-    geom->setVertexArray( verts.get() );
+    geom_patch->setVertexArray( verts.get() );
 
     // color array
-    geom->setColorArray( cols.get() );
+    geom_patch->setColorArray( cols.get() );
     
     // draw call
     vl::ref< vl::DrawArrays> da = new vl::DrawArrays(vl::PT_PATCHES, 0, verts->size());
-    geom->drawCalls()->push_back(da.get());
+    geom_patch->drawCalls()->push_back(da.get());
     
     // patch parameter associated to the draw call
     vl::ref<vl::PatchParameter> patch_param = new vl::PatchParameter;
@@ -145,7 +154,7 @@ public:
     mGLSL->gocUniform("Inner")->setUniform(10.0f);
     mGLSL->gocUniform("Radius")->setUniform(1.0f);
 
-    sceneManager()->tree()->addActor( geom.get(), fx.get(), NULL );
+    sceneManager()->tree()->addActor( geom_patch.get(), fx.get(), NULL );
   }
 
   // interactively change the inner/outer tessellation levels
