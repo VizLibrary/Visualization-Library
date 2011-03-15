@@ -1,0 +1,41 @@
+#version 400 compatibility
+#extension GL_ARB_tessellation_shader : enable
+
+layout( vertices = 4 ) out;
+
+in vec4 vColor[];
+in vec4 vPosition[];
+out vec4 tcsColor[];
+out vec3 tcsPosition[];
+
+void main( )
+{
+	tcsPosition[gl_InvocationID] = vPosition[gl_InvocationID].xyz;
+	tcsColor[gl_InvocationID]    = vColor[gl_InvocationID];
+
+	// here compute the lod of the inner patch and of the edges
+	if (gl_InvocationID == 0)
+	{
+		float d0 = -(gl_ModelViewMatrix * vPosition[0]).z;
+		float d1 = -(gl_ModelViewMatrix * vPosition[1]).z;
+		float d2 = -(gl_ModelViewMatrix * vPosition[2]).z;
+		float d3 = -(gl_ModelViewMatrix * vPosition[3]).z;
+		
+		// simple conversion: distance -> tessellation level
+		d0 = 21 - clamp(d0, 0, 20);
+		d1 = 21 - clamp(d1, 0, 20);
+		d2 = 21 - clamp(d2, 0, 20);
+		d3 = 21 - clamp(d3, 0, 20);
+
+		gl_TessLevelOuter[0] = max(d0,d3);
+		gl_TessLevelOuter[2] = max(d1,d2);
+
+		gl_TessLevelOuter[1] = max(d0,d1);
+		gl_TessLevelOuter[3] = max(d2,d3);
+		
+		// take the mininum of the previous ones
+		gl_TessLevelInner[0] = (d0+d1+d2+d3)/4.0; // should be min out1/out3
+		gl_TessLevelInner[1] = (d0+d1+d2+d3)/4.0; // should be min out0/out2
+	}
+}
+
