@@ -681,14 +681,4 @@ void vl::VL_glUniform4uiv(GLint location, GLsizei count, const GLuint *value)
     VL_TRAP();
 }
 //------------------------------------------------------------------------------
-int vl::glcheck(const char* file, int line)
-{
-  unsigned int glerr = glGetError();
-  if (glerr != GL_NO_ERROR)
-  {
-    String msg( (char*)gluErrorString(glerr) );
-    Log::bug( Say("glGetError() [%s:%n]: %s\n") << file << line << msg );
-  }
-  return glerr;
-}
-//------------------------------------------------------------------------------
+

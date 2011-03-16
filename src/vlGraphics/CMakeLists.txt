@@ -19,7 +19,7 @@ include_directories(${_INCLUDE_DIRS})
 add_library(VLGraphics ${VL_SHARED_OR_STATIC} ${VLGRAPHICS_SRC} ${VLGRAPHICS_INC} ${_SOURCES})
 VL_DEFAULT_TARGET_PROPERTIES(VLGraphics)
 
-target_link_libraries(VLGraphics VLCore ${OPENGL_gl_LIBRARY} ${_LIBS})
+target_link_libraries(VLGraphics VLCore ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${_LIBS})
 
 ################################################################################
 # Source Groups

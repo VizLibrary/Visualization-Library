@@ -83,7 +83,7 @@ namespace vl
   };
 
   //! Returns the default FontManager used by Visualization Library.
-  FontManager* defFontManager();
+  VLGRAPHICS_EXPORT FontManager* defFontManager();
 
   //! Sets the default FontManager used by Visualization Library.
   void setDefFontManager(FontManager*);

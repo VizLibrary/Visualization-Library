@@ -29,7 +29,7 @@ add_library(VLCore ${VL_SHARED_OR_STATIC} ${VLCORE_SRC} ${VLCORE_INC} ${GLEW_SRC
 VL_DEFAULT_TARGET_PROPERTIES(VLCore)
 
 # Because of GLEW, VLCore must also link with OpenGL
-target_link_libraries(VLCore ${OPENGL_gl_LIBRARY} ${_LIBS})
+target_link_libraries(VLCore ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${_LIBS})
 
 ################################################################################
 # Source Groups

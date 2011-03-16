@@ -90,11 +90,11 @@ namespace vlQt4
             continue;
           #ifdef WIN32
             if (list[i].path()[0] == '/')
-              files.push_back( list[i].path().toStdWString().c_str()+1 );
+              files.push_back( list[i].path().toStdString().c_str()+1 );
             else
-              files.push_back( list[i].path().toStdWString().c_str() );
+              files.push_back( list[i].path().toStdString().c_str() );
           #else
-            files.push_back( list[i].path().toStdWString().c_str() );
+            files.push_back( list[i].path().toStdString().c_str() );
           #endif
         }
         dispatchFileDroppedEvent(files);
@@ -244,7 +244,7 @@ namespace vlQt4
 
     virtual void setWindowTitle(const vl::String& title)
     {
-      QGLWidget::setWindowTitle( QString::fromStdWString(title.toStdWString()) );
+      QGLWidget::setWindowTitle( QString::fromStdString(title.toStdString()) );
     }
 
     virtual bool setFullscreen(bool fullscreen)

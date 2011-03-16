@@ -89,7 +89,7 @@ namespace vl
   };
 
   //! Returns the default FileSystem used by VisualizationLibrary
-  FileSystem* defFileSystem();
+  VLCORE_EXPORT FileSystem* defFileSystem();
 
   //! Sets the default FileSystem used by VisualizationLibrary
   void seDefFileSystem(FileSystem* fs);

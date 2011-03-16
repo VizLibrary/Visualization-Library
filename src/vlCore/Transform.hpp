@@ -204,7 +204,7 @@ namespace vl
     }
     
     /** Adds \p count children transforms. */
-    void addChildren(Ttype** children, size_t count)
+    void addChildren(Ttype*const* children, size_t count)
     {
       VL_CHECK(children != NULL)
 

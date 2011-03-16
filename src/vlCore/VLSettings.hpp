@@ -80,7 +80,7 @@ namespace vl
   };
 
   //! Returns VisulizationLibrary's global settings.
-  VLSettings* globalSettings();
+  VLCORE_EXPORT VLSettings* globalSettings();
 }
 
 #endif

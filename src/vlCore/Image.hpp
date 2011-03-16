@@ -302,7 +302,7 @@ namespace vl
   ref<Image> createCubemap(const Image* xp, const Image* xn, const Image* yp, const Image* yn, const Image* zp, const Image* zn);
 
   //! Loads six images and assembles them into a cubemap image
-  ref<Image> loadCubemap(const String& xp_file, const String& xn_file, const String& yp_file, const String& yn_file, const String& zp_file, const String& zn_file);
+  VLCORE_EXPORT ref<Image> loadCubemap(const String& xp_file, const String& xn_file, const String& yp_file, const String& yn_file, const String& zp_file, const String& zn_file);
 
   //! Loads a raw image file.
   //! \param file The file from which the data is read. This function also opens the file if it is not open already. Note that this function 

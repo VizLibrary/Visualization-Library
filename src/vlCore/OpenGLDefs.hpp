@@ -52,7 +52,7 @@
 namespace vl
 {
   //-----------------------------------------------------------------------------
-  int glcheck( const char* file, int line );
+  VLCORE_EXPORT int glcheck( const char* file, int line );
 
   #if defined( _DEBUG ) || !defined( NDEBUG ) || VL_FORCE_CHECKS == 1
 

@@ -62,12 +62,12 @@ namespace vl
   VLVOLUME_EXPORT ref<Image> genGradientNormals(const Image* data);
 
   /** Internally used. */
-  VLVOLUME_EXPORT template<typename data_type, EImageType img_type>
-  ref<Image> genRGBAVolumeT(const Image* data, const Image* trfunc, const fvec3& light_dir, bool alpha_from_data);
+  template<typename data_type, EImageType img_type>
+  VLVOLUME_EXPORT ref<Image> genRGBAVolumeT(const Image* data, const Image* trfunc, const fvec3& light_dir, bool alpha_from_data);
   
   /** Internally used. */
-  VLVOLUME_EXPORT template<typename data_type, EImageType img_type>
-  ref<Image> genRGBAVolumeT(const Image* data, const Image* trfunc, bool alpha_from_data);
+  template<typename data_type, EImageType img_type>
+  VLVOLUME_EXPORT ref<Image> genRGBAVolumeT(const Image* data, const Image* trfunc, bool alpha_from_data);
 }
 
 #endif
