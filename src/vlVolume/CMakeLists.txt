@@ -21,5 +21,3 @@ VL_INSTALL_TARGET(VLVolume)
 
 # VLMolecule headers
 install(FILES ${VLVOLUME_INC} DESTINATION "include/vlVolume")
-
-

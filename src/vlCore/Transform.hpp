@@ -215,8 +215,8 @@ namespace vl
         vl::ref<Ttype>* ptr = &mChildren[insert_point];
         for(size_t i=0; i<count; ++i, ++ptr)
         {
-          VL_CHECK(children[i]->mParent == NULL);
-          children[i]->mParent = this;
+          VL_CHECK(children[i].mParent == NULL);
+          children[i].mParent = this;
           (*ptr) = children[i];
         }
       }
@@ -231,11 +231,11 @@ namespace vl
         size_t insert_point = mChildren.size();
         mChildren.resize(mChildren.size() + count);
         vl::ref<Ttype>* ptr = &mChildren[insert_point];
-        for(size_t i=0; i<count; ++i, ++ptr)
+        for(size_t i=0; i<count; ++i)
         {
           VL_CHECK(children[i]->mParent == NULL);
           children[i]->mParent = this;
-          (*ptr) = children[i];
+          ptr[i] = children[i];
         }
       }
     }
@@ -339,7 +339,7 @@ namespace vl
 
   protected:
     std::vector< ref<Ttype> > mChildren;
-    TransformHierarchy* mParent;
+    mutable TransformHierarchy* mParent;
   };
 
   //------------------------------------------------------------------------------

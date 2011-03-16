@@ -86,6 +86,7 @@ set(FT2_SOURCES
 if(APPLE)
 	list(APPEND FT2_SOURCES "${FT2_SRC}/base/ftmac.c")
 	find_library(APP_KIT AppKit)
+	mark_as_advanced(APP_KIT)
 	VL_PROJECT_ADD(VLGRAPHICS LINK_LIBRARIES ${APP_KIT})
 endif()
 

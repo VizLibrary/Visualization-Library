@@ -130,3 +130,4 @@ add_subdirectory("src")
 ################################################################################
 
 install(FILES "LICENSE.TXT" "README.TXT" DESTINATION ".")
+install(FILES "cmake/FindVL.cmake" DESTINATION "cmake")

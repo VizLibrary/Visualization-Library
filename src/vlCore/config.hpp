@@ -205,9 +205,10 @@
 // Visual Studio special settings
 #ifdef _MSC_VER
   #pragma warning( once : 4996 ) // function or variable may be unsafe
-  #pragma warning( once : 4800 )
+  #pragma warning( once : 4800 ) // forcing value to bool (performance warning)
   #pragma warning( once : 4127 ) // conditional expression is constant
   #pragma warning( once : 4100 ) // unreferenced formal parameter
+  #pragma warning( disable : 4251 ) // non-dll type exposed by a dll type
 #endif
 
 ///////////////////////////////////////////////////

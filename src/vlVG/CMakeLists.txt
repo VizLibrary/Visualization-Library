@@ -21,4 +21,3 @@ VL_INSTALL_TARGET(VLVG)
 
 # VLVG headers
 install(FILES ${VLVG_INC} DESTINATION "include/vlVG")
-

@@ -32,6 +32,7 @@
 #ifndef Qt4Window_INCLUDE_ONCE
 #define Qt4Window_INCLUDE_ONCE
 
+#include <vlQt4/config.hpp>
 #include <vlCore/VisualizationLibrary.hpp>
 #include <vlGraphics/OpenGLContext.hpp>
 #include <QtGui/QApplication>
@@ -48,8 +49,8 @@ namespace vlQt4
 //-----------------------------------------------------------------------------
 // Qt4Widget
 //-----------------------------------------------------------------------------
-  /** The Qt4Widget class implements an OpenGLContext using the Trolltech's Qt4 API. */
-  class VL_DllExport Qt4Widget: public QGLWidget, public vl::OpenGLContext
+  /** The Qt4Widget class implements an OpenGLContext using the Qt4 API. */
+  class VLQT4_EXPORT Qt4Widget : public QGLWidget, public vl::OpenGLContext
   {
     Q_OBJECT
 

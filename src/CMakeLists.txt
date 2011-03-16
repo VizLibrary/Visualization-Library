@@ -42,21 +42,42 @@ if(VL_MODULE_VOLUME)
 endif()
 
 ################################################################################
-# GUI Modules
+# GUI Modules (automatically enabled when their requirements are met)
 ################################################################################
 
+# GLUT
+set(GLUT_ROOT_PATH "${3RDPARTY_DIR}")
+find_package(GLUT)
+option(GUI_GLUT_SUPPORT "Build GLUT support" ${GLUT_FOUND})
+if(GUI_GLUT_SUPPORT)
+	add_subdirectory("vlGLUT")
+endif()
+
+# Qt4
+find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL QtMain)
+option(GUI_QT4_SUPPORT "Build Qt4 support" ${QT_FOUND})
+if(GUI_QT4_SUPPORT)
+	include("${QT_USE_FILE}")
+	add_subdirectory("vlQt4")
+endif()
+
+################################################################################
+# Examples
+################################################################################
+
+cmake_dependent_option(GUI_GLUT_EXAMPLES "Build GLUT examples" ON "GUI_GLUT_SUPPORT" OFF)
+cmake_dependent_option(GUI_QT4_EXAMPLES "Build Qt4 examples" ON "GUI_QT4_SUPPORT" OFF)
+
+add_subdirectory("examples")
 
 
 ################################################################################
-# DISABLED - WORK IN PROGRESS
+# DISABLED - PENDING MODULES
 ################################################################################
 
 IF( FALSE )
 
-option(VL_MODULE_GRAPHICS "Enable VL Graphics Library" ON)
 if(VL_MODULE_GRAPHICS)
-	add_definitions(-DVL_MODULE_GRAPHICS)
-
 	if(MSVC)
 	  option(GUI_WIN32_SUPPORT "Build Win32 support" ON)
 	  option(GUI_MFC_SUPPORT "Build MFC support" OFF)
@@ -65,8 +86,6 @@ if(VL_MODULE_GRAPHICS)
 	  option(GUI_WIN32_SUPPORT "Build Win32 support" ON)
 	endif()
 	option(GUI_SDL_SUPPORT "Build SDL support" OFF)
-	option(GUI_GLUT_SUPPORT "Build GLUT support" OFF)
-	option(GUI_QT4_SUPPORT "Build QT4 support" OFF)
 	option(GUI_WXWIDGETS_SUPPORT "Build wxWidgets support" OFF)
 	#if(APPLE)
 	#  option(GUI_COCOA_SUPPORT "Build Cocoa support" ON)
@@ -124,20 +143,6 @@ else()
   unset(SDL_LIBRARY CACHE)
 endif()
 
-if(GUI_GLUT_SUPPORT)
-  option(GUI_GLUT_EXAMPLES "Build GLUT examples" ON)
-  if(WIN32)
-    set(GLUT_INCLUDE_DIR  "${VisualizationLibrarySDK_SOURCE_DIR}/3rdparty/include" CACHE PATH "Location of the GLUT include directory")
-    set(GLUT_glut_LIBRARY "${VisualizationLibrarySDK_SOURCE_DIR}/3rdparty/lib/freeglut.lib" CACHE FILEPATH "GLUT library path")
-  else(WIN32)
-    find_package(GLUT REQUIRED)
-  endif()
-  add_subdirectory("src/vlGLUT")
-else()
-  unset(GLUT_INCLUDE_DIR CACHE)
-  unset(GLUT_glut_LIBRARY CACHE)
-endif()
-
 if(GUI_WXWIDGETS_SUPPORT)
   option(GUI_WXWIDGETS_EXAMPLES "Build wxWidgets examples" OFF)
   set(WXWIDGETS_INCLUDE_DIR "FILLME" CACHE PATH "wxWidgets include directories")
@@ -154,41 +159,9 @@ else()
   unset(WXWIDGETS_LIBRARIES CACHE)
 endif()
 
-if(GUI_QT4_SUPPORT)
-  option(GUI_QT4_EXAMPLES "Build Qt4 examples" ON)
-  find_package(Qt4 REQUIRED)
-  set(QT_USE_QTCORE 1)
-  set(QT_USE_QTGUI 1)
-  #set(QT_USE_QT3SUPPORT 1)
-  #set(QT_USE_QTASSISTANT 1)
-  #set(QT_USE_QTDESIGNER 1)
-  #set(QT_USE_QTMOTIF 1)
-  set(QT_USE_QTMAIN 1)
-  #set(QT_USE_QTNETWORK 1)
-  #set(QT_USE_QTNSPLUGIN 1)
-  set(QT_USE_QTOPENGL 1)
-  #set(QT_USE_QTSQL 1)
-  #set(QT_USE_QTXML 1)
-  #set(QT_USE_QTSVG 1)
-  #set(QT_USE_QTTEST 1)
-  #set(QT_USE_QTUITOOLS 1)
-  #set(QT_USE_QTDBUS 1)
-  #set(QT_USE_QTSCRIPT 1)
-  #set(QT_USE_QTASSISTANTCLIENT 1)
-  #set(QT_USE_QTHELP 1)
-  #set(QT_USE_QTWEBKIT 1)
-  #set(QT_USE_QTXMLPATTERNS 1)
-  #set(QT_USE_PHONON 1)
-  include(${QT_USE_FILE})
-  add_subdirectory("src/vlQt4")
-endif()
-
 #if(GUI_COCOA_SUPPORT)
 #  option(GUI_COCOA_EXAMPLES "Build Cocoa examples" ON)
 #  add_subdirectory("src/vlCocoa")
 #endif()
-
-add_subdirectory("src/examples")
-add_subdirectory("src/examples/Applets")
 
 ENDIF(FALSE)
