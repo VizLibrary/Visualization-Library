@@ -57,7 +57,7 @@ extern "C" {
 #      define glewGetProcAddress(name) dlGetProcAddress(name)
 #    else /* __linux */
 #      define glewGetProcAddress(name) (*glXGetProcAddressARB)(name)
-       extern void (*glXGetProcAddress(const GLubyte *procName))(void);
+       extern void (*glXGetProcAddressARB(const GLubyte *procName))(void);
 #    endif
 #  endif
 #endif
