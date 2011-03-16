@@ -37,6 +37,7 @@
 #include <vlCore/Matrix4.hpp>
 #include <vector>
 #include <set>
+#include <algorithm>
 
 namespace vl
 {
