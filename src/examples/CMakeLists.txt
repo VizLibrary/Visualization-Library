@@ -4,7 +4,7 @@ project(EXAMPLES)
 # Compile all Applets
 ################################################################################
 
-add_subdirectory("applets")
+add_subdirectory("Applets")
 
 ################################################################################
 # Build the Example/Test executables
