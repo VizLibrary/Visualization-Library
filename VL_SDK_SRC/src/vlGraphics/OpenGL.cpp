@@ -684,6 +684,12 @@ void vl::VL_glUniform4uiv(GLint location, GLsizei count, const GLuint *value)
 int vl::glcheck(const char* file, int line)
 {
   unsigned int glerr = glGetError();
+  // if an OpenGL context is available this must be clear!
+  if ( glGetError() )
+  {
+    Log::bug( Say("%s:%n: NO OPENGL CONTEXT ACTIVE!\n") << file << line );
+  }
+  else
   if (glerr != GL_NO_ERROR)
   {
     String msg( (char*)gluErrorString(glerr) );
