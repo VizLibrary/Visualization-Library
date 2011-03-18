@@ -310,6 +310,12 @@ void Win32Window::destroyWin32GLWindow()
   {
     bool destroy_win = mWinMap.find(mHWND) != mWinMap.end();
 
+    // WM_DESTROY must be dispatched while the OpenGL context is still available!
+    if (destroy_win)
+    {
+      DestroyWindow(mHWND);
+      mHWND = NULL;
+    }
     if (mHGLRC)
     {
       if ( wglDeleteContext(mHGLRC) == FALSE )
@@ -323,11 +329,6 @@ void Win32Window::destroyWin32GLWindow()
     {
       DeleteDC(mHDC);
       mHDC = NULL;
-    }
-    if (destroy_win)
-    {
-      DestroyWindow(mHWND);
-      mHWND = NULL;
     }
   }
 }
