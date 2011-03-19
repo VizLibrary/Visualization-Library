@@ -149,6 +149,8 @@ namespace vl
         mBorder     = false;
         mGenMipmaps = false;
         mWidth = mHeight = mDepth = 0;
+        mSamples = 0;
+        mFixedSamplesLocation = true;
       }
 
       void setImagePath(const String& path) { mImagePath = path; }
@@ -183,6 +185,12 @@ namespace vl
       void setDepth(int d) { mDepth = d; }
       int depth() const { return mDepth; }
 
+      int samples() const { return mSamples; }
+      void setSamples(int samples) { mSamples = samples; }
+
+      bool fixedSamplesLocations() const { return mFixedSamplesLocation; }
+      void setFixedSamplesLocations(bool fixed) { mFixedSamplesLocation = fixed; }
+
     protected:
       String mImagePath;
       ref<GLBufferObject> mBufferObject;
@@ -190,8 +198,10 @@ namespace vl
       ETextureDimension mDimension;
       ETextureFormat mFormat;
       int mWidth, mHeight, mDepth; // used when no image is specified.
+      int mSamples;
       bool mBorder;
       bool mGenMipmaps;
+      bool mFixedSamplesLocation;
     };
 
   public:
@@ -245,7 +255,7 @@ namespace vl
 
     /** Creates an empty texture, with no mipmaps, of the specified type, format and dimensions.
     \note The OpenGL texture object is created immediately therefore an OpenGL context must be active when calling this function. */
-    bool createTexture(ETextureDimension tex_dimension, ETextureFormat tex_format, int w, int h, int d, bool border, GLBufferObject* bo);
+    bool createTexture(ETextureDimension tex_dimension, ETextureFormat tex_format, int w, int h, int d, bool border, GLBufferObject* bo, int samples, bool fixedsamplelocations);
 
     /** Copies the texture image to the specified mip-maping level. This function can be useful to 
     specify one by one the mipmapping images or to create texture animation effects.
@@ -449,6 +459,33 @@ namespace vl
       mSetupParams->setBorder(false);
     }
 
+    void prepareTexture2DMultisample(int samples, vl::ETextureFormat format, int width, int height, bool fixedsamplelocations)
+    {
+      mSetupParams = new SetupParams;
+      mSetupParams->setDimension(TD_TEXTURE_2D_MULTISAMPLE);
+      mSetupParams->setWidth(width);
+      mSetupParams->setHeight(height);
+      mSetupParams->setFormat(format);
+      mSetupParams->setSamples(samples);
+      mSetupParams->setFixedSamplesLocations(fixedsamplelocations);
+      mSetupParams->setGenMipmaps(false);
+      mSetupParams->setBorder(false);
+    }
+
+    void prepareTexture2DMultisampleArray(int samples, vl::ETextureFormat format, int width, int height, int depth, bool fixedsamplelocations)
+    {
+      mSetupParams = new SetupParams;
+      mSetupParams->setDimension(TD_TEXTURE_2D_MULTISAMPLE_ARRAY);
+      mSetupParams->setWidth(width);
+      mSetupParams->setHeight(height);
+      mSetupParams->setDepth(depth);
+      mSetupParams->setFormat(format);
+      mSetupParams->setSamples(samples);
+      mSetupParams->setFixedSamplesLocations(fixedsamplelocations);
+      mSetupParams->setGenMipmaps(false);
+      mSetupParams->setBorder(false);
+    }
+
     /** Returns \p true if the current texture configuration seems valid. */
     bool isValid() const;
 
@@ -487,6 +524,12 @@ namespace vl
     /** Whether the texture has a 1 pixel texture border or not. */
     bool border() const { return mBorder; }
 
+    /** Returns the number of samples of a multisample texture. */
+    int samples() const { return mSamples; }
+
+    /** Returns whether the samples location is fixed for a a multisample texture. */
+    bool fixedSamplesLocation() const { return mFixedSamplesLocation; }
+
     /** See SetupParams */
     const SetupParams* setupParams() const { return mSetupParams.get(); }
 
@@ -497,7 +540,7 @@ namespace vl
     void setSetupParams(SetupParams* setup_params) { mSetupParams = setup_params; }
 
     /** Checks whether the specified texture type, format and dimension combination is supported by the current OpenGL driver. */
-    static bool supports(ETextureDimension tex_dimension, ETextureFormat tex_format, int mip_level, EImageDimension img_dimension, int w, int h, int d, bool border, bool verbose);
+    static bool supports(ETextureDimension tex_dimension, ETextureFormat tex_format, int mip_level, EImageDimension img_dimension, int w, int h, int d, bool border, int samples, bool fixedsamplelocations, bool verbose);
 
     /** Returns \p true if the specified format is compressed. */
     static bool isCompressedFormat(int format);
@@ -517,7 +560,9 @@ namespace vl
     int mWidth;
     int mHeight;
     int mDepth;
+    int mSamples;
     bool mBorder;
+    bool mFixedSamplesLocation;
   };
 }
 

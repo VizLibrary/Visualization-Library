@@ -639,9 +639,9 @@ void TexParameter::apply(ETextureDimension dimension) const
   }
 #endif
 
-  // none of these are supported by texture buffers
+  // none of these are supported by texture buffers and multisample textures
 
-  if (dimension != TD_TEXTURE_BUFFER)
+  if (dimension != TD_TEXTURE_BUFFER && dimension != TD_TEXTURE_2D_MULTISAMPLE && dimension != TD_TEXTURE_2D_MULTISAMPLE_ARRAY)
   {
     glTexParameterfv(dimension, GL_TEXTURE_BORDER_COLOR, borderColor().ptr()); VL_CHECK_OGL()
     glTexParameteri(dimension, GL_TEXTURE_MIN_FILTER, minFilter()); VL_CHECK_OGL()
@@ -949,6 +949,8 @@ void TextureUnit::apply(const Camera* camera, OpenGLContext* ctx) const
       {
         case TD_TEXTURE_1D_ARRAY:
         case TD_TEXTURE_2D_ARRAY:
+        case TD_TEXTURE_2D_MULTISAMPLE:
+        case TD_TEXTURE_2D_MULTISAMPLE_ARRAY:
         case TD_TEXTURE_BUFFER:
           break;
         default:
@@ -1006,6 +1008,8 @@ void TextureUnit::apply(const Camera* camera, OpenGLContext* ctx) const
       {
         case TD_TEXTURE_1D_ARRAY:
         case TD_TEXTURE_2D_ARRAY:
+        case TD_TEXTURE_2D_MULTISAMPLE:
+        case TD_TEXTURE_2D_MULTISAMPLE_ARRAY:
         case TD_TEXTURE_BUFFER:
           break;
         default:

@@ -1182,8 +1182,8 @@ bool OpenGLContext::isCleanState(bool verbose)
   }
 
   // we expect these settings for the default blending equation
-  GLint blend_src;
-  GLint blend_dst;
+  GLint blend_src = 0;
+  GLint blend_dst = 0;
   glGetIntegerv( GL_BLEND_SRC, &blend_src );
   glGetIntegerv( GL_BLEND_DST, &blend_dst );
   if (blend_src != GL_SRC_ALPHA)
