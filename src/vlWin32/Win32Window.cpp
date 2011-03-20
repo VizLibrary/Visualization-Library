@@ -728,9 +728,9 @@ int vlWin32::choosePixelFormat(const vl::OpenGLContextFormat& fmt, bool verbose)
     else
     {
       // check the returned pixel format
-      #ifndef NEDBUG
+      #if defined(DEBUG) || !defined(NDEBUG)
         DescribePixelFormat(hDC, pixel_format_index, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
-        vl::Log::print(" --- Pixel Format ---\n");
+        vl::Log::print(" --- vlWin32::choosePixelFormat() ---\n");
         // This one returns "not supported" even when its supported...
         // vl::Log::print( vl::Say("  OpenGL        = %s\n") << (pfd.dwFlags & PFD_SUPPORT_OPENGL ? "Supported" : "Not supported") );
         vl::Log::print( vl::Say("RGBA Bits     = %n %n %n %n\n") << pfd.cRedBits << pfd.cGreenBits << pfd.cBlueBits << pfd.cAlphaBits);
