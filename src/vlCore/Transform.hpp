@@ -55,9 +55,9 @@ namespace vl
 
     virtual size_t childrenCount() const = 0;
     
-    virtual ITransform* getChildren(int i) = 0;
+    virtual ITransform* getChildren(size_t i) = 0;
     
-    virtual const ITransform* getChildren(int i) const = 0;
+    virtual const ITransform* getChildren(size_t i) const = 0;
     
     virtual ITransform* parent() = 0;
     
@@ -97,7 +97,7 @@ namespace vl
     void computeWorldMatrixRecursive(Camera* camera = NULL)
     {
       computeWorldMatrix(camera);
-      for(int i=0; i<childrenCount(); ++i)
+      for(size_t i=0; i<childrenCount(); ++i)
         getChildren(i)->computeWorldMatrixRecursive(camera);
     }
 
@@ -145,7 +145,7 @@ namespace vl
     bool hasDuplicatedChildren() const
     {
       std::set<const ITransform*> tr_set;
-      for(int i=0; i<childrenCount(); ++i)
+      for(size_t i=0; i<childrenCount(); ++i)
         tr_set.insert(getChildren(i));
       return tr_set.size() != childrenCount();
     }
@@ -180,9 +180,9 @@ namespace vl
 
     virtual size_t childrenCount() const { return mChildren.size(); }
 
-    virtual ITransform* getChildren(int i) { return mChildren[i].get(); }
+    virtual ITransform* getChildren(size_t i) { return mChildren[i].get(); }
     
-    virtual const ITransform* getChildren(int i) const { return mChildren[i].get(); }
+    virtual const ITransform* getChildren(size_t i) const { return mChildren[i].get(); }
 
     virtual const ITransform* parent() const { return mParent; }
     

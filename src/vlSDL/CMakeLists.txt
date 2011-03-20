@@ -8,6 +8,8 @@ project(VLSDL)
 file(GLOB VLSDL_SRC "*.cpp")
 file(GLOB VLSDL_INC "*.hpp")
 
+include_directories(${SDL_INCLUDE_DIR})
+
 add_library(VLSDL ${VL_SHARED_OR_STATIC} ${VLSDL_SRC} ${VLSDL_INC})
 VL_DEFAULT_TARGET_PROPERTIES(VLSDL)
 
