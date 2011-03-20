@@ -36,8 +36,12 @@
 
 //-----------------------------------------------------------------------------
 
-#define GLEW_STATIC
+#ifdef VL_STATIC_LINKING
+  #define GLEW_STATIC
+#endif
+
 #include "GL/glew.h"
+
 #ifdef _WIN32
   #ifndef NOMINMAX
     #define NOMINMAX
@@ -48,7 +52,7 @@
 namespace vl
 {
   //-----------------------------------------------------------------------------
-  int glcheck( const char* file, int line );
+  VLCORE_EXPORT int glcheck( const char* file, int line );
 
   #if defined( _DEBUG ) || !defined( NDEBUG ) || VL_FORCE_CHECKS == 1
 

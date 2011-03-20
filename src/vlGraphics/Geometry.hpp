@@ -64,7 +64,7 @@ namespace vl
    * - Transform
    * - Effect
   */
-  class VL_DllExport Geometry: public Renderable, public IVertexAttribSet
+  class VLGRAPHICS_EXPORT Geometry: public Renderable, public IVertexAttribSet
   {
   private:
     class TextureArray: public Object

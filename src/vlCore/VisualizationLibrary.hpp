@@ -37,7 +37,7 @@
 namespace vl
 {
   //! Used to initialize/shutdown VisualizationLibrary and to access important global data.
-  class VL_DllExport VisualizationLibrary
+  class VLCORE_EXPORT VisualizationLibrary
   {
   public:
     //! Initializes VLCore or VLCore and VLGraphics libraries (if VL_MODULE_GRAPHICS was enabled during CMake configuration).
@@ -71,7 +71,7 @@ namespace vl
   };
 
   //! Shows a console window that displays the standard output. This function is meant to be used only under Windows only.
-  VL_DllExport void showWin32Console();
+  VLCORE_EXPORT void showWin32Console();
 }
 
 #endif

@@ -69,7 +69,7 @@ namespace vl
    * The base class for all the reference counted objects.
    * See also vl::ref.
   */
-  class Object
+  class VLCORE_EXPORT Object
   {
   public:
 
@@ -252,7 +252,7 @@ namespace vl
       mObject = other.get();
       return *this;
     }
-    template<class T2> ref& operator=(const ref<T2> other)
+    template<class T2> ref& operator=(const ref<T2>& other)
     {
       if (other)
         other->incReference();

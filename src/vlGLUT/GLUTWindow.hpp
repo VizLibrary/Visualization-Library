@@ -32,8 +32,9 @@
 #ifndef GLUT_Window_INCLUDE_ONCE
 #define GLUT_Window_INCLUDE_ONCE
 
-#include <vlGraphics/OpenGLContext.hpp>
+#include <vlGLUT/config.hpp>
 #include <vlCore/Vector4.hpp>
+#include <vlGraphics/OpenGLContext.hpp>
 #include <map>
 #include <cstdlib> // exit()
 #if defined(__APPLE__)
@@ -55,7 +56,7 @@ namespace vlGLUT
   /**
    * The GLUTWindow class implements an OpenGLContext using the GLUT API.
   */
-  class VL_DllExport GLUTWindow: public vl::OpenGLContext
+  class VLGLUT_EXPORT GLUTWindow: public vl::OpenGLContext
   {
   public:
     GLUTWindow();
@@ -160,7 +161,7 @@ namespace vlGLUT
     static std::map< int, GLUTWindow* > mWinMap;
   };
 
-  VL_DllExport void atexit_visualization_library_shutdown();
+  VLGLUT_EXPORT void atexit_visualization_library_shutdown();
 }
 
 #endif

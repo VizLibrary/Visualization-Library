@@ -54,7 +54,7 @@ namespace vl
    * - SceneManagerActorTree
    * - Actor
   */
-  class VL_DllExport ActorKdTree: public ActorTreeAbstract
+  class VLGRAPHICS_EXPORT ActorKdTree: public ActorTreeAbstract
   {
   public:
     ActorKdTree()

@@ -99,8 +99,8 @@ namespace vl
   protected:
     fvec4 mColor;
     float mRadius;
-	  Atom* mAtom1;
-	  Atom* mAtom2;
+    Atom* mAtom1;
+    Atom* mAtom2;
     EBondType mType;
     unsigned int mId;
     bool mVisible;

@@ -55,7 +55,7 @@ namespace vl
    * - MemoryFile
    * - ZippedFile
   */
-  class VL_DllExport ZippedDirectory: public VirtualDirectory
+  class VLCORE_EXPORT ZippedDirectory: public VirtualDirectory
   {
   public:
     virtual const char* className() { return "vl::ZippedDirectory"; }

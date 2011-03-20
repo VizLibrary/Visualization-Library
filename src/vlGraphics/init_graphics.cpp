@@ -37,22 +37,22 @@
 using namespace vl;
 
 #if defined(VL_IO_3D_3DS)
-  #include <vlGraphics/vl3DS.hpp>
+  #include "plugins/vl3DS.hpp"
 #endif
 #if defined(VL_IO_3D_OBJ)
-  #include <vlGraphics/vlOBJ.hpp>
+  #include "plugins/vlOBJ.hpp"
 #endif
 #if defined(VL_IO_3D_AC3D)
-  #include <vlGraphics/vlAC3D.hpp>
+  #include "plugins/vlAC3D.hpp"
 #endif
 #if defined(VL_IO_3D_PLY)
-  #include <vlGraphics/vlPLY.hpp>
+  #include "plugins/vlPLY.hpp"
 #endif
 #if defined(VL_IO_3D_STL)
-  #include <vlGraphics/vlSTL.hpp>
+  #include "plugins/vlSTL.hpp"
 #endif
 #if defined(VL_IO_3D_MD2)
-  #include <vlGraphics/vlMD2.hpp>
+  #include "plugins/vlMD2.hpp"
 #endif
 
 //------------------------------------------------------------------------------

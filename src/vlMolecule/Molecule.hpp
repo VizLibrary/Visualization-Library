@@ -32,14 +32,15 @@
 #ifndef Molecule_INCLUDE_ONCE
 #define Molecule_INCLUDE_ONCE
 
+#include <vlMolecule/config.hpp>
 #include <vlMolecule/Atom.hpp>
 #include <vlMolecule/Bond.hpp>
 #include <vlGraphics/Geometry.hpp>
-#include <vlCore/KeyValues.hpp>
 #include <vlGraphics/Actor.hpp>
 #include <vlGraphics/ActorTree.hpp>
 #include <vlGraphics/Text.hpp>
 #include <vlCore/String.hpp>
+#include <vlCore/KeyValues.hpp>
 
 namespace vl
 {
@@ -60,7 +61,7 @@ namespace vl
    *
    * <img src="pics/pagGuideMolecule.png">
    */
-  class VL_DllExport Molecule: public Object
+  class VLMOLECULE_EXPORT Molecule: public Object
   {
   public:
     virtual const char* className() { return "vl::Molecule"; }
@@ -240,13 +241,13 @@ namespace vl
   //! The Molecule tags will contain the following key/value pairs:
   //! - \p "MultiMol2Index": the index (0-based) of the structure in a multi MOL2 file.
   //! - \p "FilePath": the full path of the file that contained the structure.
-  VL_DllExport bool loadMOL2(const String& path, std::vector< ref<Molecule> >& structures);
+  VLMOLECULE_EXPORT bool loadMOL2(const String& path, std::vector< ref<Molecule> >& structures);
 
   //! Loads a Tripos MOL2 file.
   //! The Molecule tags will contain the following key/value pairs:
   //! - \p "MultiMol2Index": the index (0-based) of the structure in a multi MOL2 file.
   //! - \p "FilePath": the full path of the file that contained the structure.
-  VL_DllExport bool loadMOL2(VirtualFile* vfile, std::vector< ref<Molecule> >& structures);
+  VLMOLECULE_EXPORT bool loadMOL2(VirtualFile* vfile, std::vector< ref<Molecule> >& structures);
 }
 
 #endif

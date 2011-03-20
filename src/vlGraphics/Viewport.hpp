@@ -36,6 +36,7 @@
 #include <vlCore/Rect.hpp>
 #include <vlCore/Vector4.hpp>
 #include <vlCore/vlnamespace.hpp>
+#include <vlGraphics/config.hpp>
 
 namespace vl
 {
@@ -47,7 +48,7 @@ namespace vl
    * Supports glClearColor, glClearColorIiEXT and glClearColorIuiEXT (see GL_EXT_texture_integer).
    * \sa Camera, Rendering, Renderer
   */
-  class VL_DllExport Viewport: public Object
+  class VLGRAPHICS_EXPORT Viewport: public Object
   {
   public:
     virtual const char* className() { return "vl::Viewport"; }

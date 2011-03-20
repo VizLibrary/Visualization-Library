@@ -52,7 +52,7 @@ namespace vl
   - \ref pagGuideEdgeRendering "Edge Enhancement and Wireframe Rendering Tutorial"
   - vl::EdgeExtractor
   */
-  class VL_DllExport EdgeRenderer: public Renderer
+  class VLGRAPHICS_EXPORT EdgeRenderer: public Renderer
   {
     class WFInfo: public Object
     {

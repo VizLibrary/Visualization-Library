@@ -35,9 +35,10 @@
 #include <vlCore/Collection.hpp>
 #include <vlCore/Sphere.hpp>
 #include <vlCore/AABB.hpp>
+#include <vlCore/Transform.hpp>
+#include <vlGraphics/config.hpp>
 #include <vlGraphics/Effect.hpp>
 #include <vlGraphics/Renderable.hpp>
-#include <vlCore/Transform.hpp>
 #include <vlGraphics/LODEvaluator.hpp>
 #include <vlGraphics/UniformSet.hpp>
 #include <vlGraphics/Scissor.hpp>
@@ -125,7 +126,7 @@ namespace vl
 
   \sa Transform, Effect, Renderable, Geometry
   */
-  class VL_DllExport Actor: public Object
+  class VLGRAPHICS_EXPORT Actor: public Object
   {
   public:
     virtual const char* className() { return "vl::Actor"; }

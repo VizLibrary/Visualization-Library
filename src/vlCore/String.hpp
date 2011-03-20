@@ -59,7 +59,7 @@ namespace vl
   - Fast substring find function based on the Quick Find algorithm.
   - Loads text from a variety of formats and sources.
   */
-  class VL_DllExport String
+  class VLCORE_EXPORT String
   {
   public:
     //! Detects the encoding

@@ -39,16 +39,16 @@
 namespace vlWin32
 {
 //-----------------------------------------------------------------------------
-  VL_DllExport int messageLoop();
-  VL_DllExport void peekMessage(MSG& msg);
-  VL_DllExport void dispatchUpdate();
+  VLWIN32_EXPORT int messageLoop();
+  VLWIN32_EXPORT void peekMessage(MSG& msg);
+  VLWIN32_EXPORT void dispatchUpdate();
 //-----------------------------------------------------------------------------
 // Win32Window
 //-----------------------------------------------------------------------------
   /**
    * The Win32Window class is a Win32Context that can be used as a top or child window.
   */
-  class VL_DllExport Win32Window: public Win32Context
+  class VLWIN32_EXPORT Win32Window: public Win32Context
   {
   public:
     static const wchar_t* Win32WindowClassName;
@@ -103,7 +103,7 @@ namespace vlWin32
     static std::map< HWND, Win32Window* > mWinMap;
   };
 //-----------------------------------------------------------------------------
-  VL_DllExport void translateKeyEvent(WPARAM wParam, LPARAM lParam, unsigned short& unicode_out, vl::EKey& key_out);
+  VLWIN32_EXPORT void translateKeyEvent(WPARAM wParam, LPARAM lParam, unsigned short& unicode_out, vl::EKey& key_out);
 //-----------------------------------------------------------------------------
 }
 

@@ -34,6 +34,7 @@
 
 #include <vlCore/Vector4.hpp>
 #include <vlCore/Transform.hpp>
+#include <vlGraphics/config.hpp>
 #include <vlGraphics/RenderState.hpp>
 
 namespace vl
@@ -47,7 +48,7 @@ namespace vl
    * See also the \ref pagGuideLights "Lights Tutorial" for a practical example of how to use OpenGL lights.
    * \sa Shader, Effect, Actor, vl::EN_LIGHTING
   */
-  class VL_DllExport Light: public RenderState
+  class VLGRAPHICS_EXPORT Light: public RenderState
   {
   public:
     Light(int light_index);

@@ -32,6 +32,7 @@
 #ifndef vlWXGLCanvas_INCLUDE_ONCE
 #define vlWXGLCanvas_INCLUDE_ONCE
 
+#include <vlWX/config.hpp>
 #include <vlGraphics/OpenGLContext.hpp>
 #include <vlCore/Time.hpp>
 #include <wx/frame.h>
@@ -48,7 +49,7 @@
 namespace vlWX
 {
   /** The WXGLCanvas class implements a vl::OpenGLContext using the wxWidgets library. */
-  class VL_DllExport WXGLCanvas: public wxGLCanvas, public vl::OpenGLContext
+  class VLWX_EXPORT WXGLCanvas: public wxGLCanvas, public vl::OpenGLContext
   {
   public:
     WXGLCanvas( wxWindow *parent,

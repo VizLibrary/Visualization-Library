@@ -89,7 +89,7 @@ namespace vl
    the LOD #0 is selected.
    \sa Shader, Actor, LODEvaluator, ShaderSequence
   */
-  class VL_DllExport Effect: public Object
+  class VLGRAPHICS_EXPORT Effect: public Object
   {
     // mic fixme: well define these
     Effect(const Effect&): Object() {}

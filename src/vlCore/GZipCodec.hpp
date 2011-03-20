@@ -40,7 +40,7 @@ namespace vl
   /**
    * The GZipCodec class is a VirtualFile that transparently encodes and decodes a stream of data using the GZip compression algorithm.
    */
-  class VL_DllExport GZipCodec: public VirtualFile
+  class VLCORE_EXPORT GZipCodec: public VirtualFile
   {
     // Lower this if you need to limit the amount of data allocated to the stack, for example to 16K.
     static const int CHUNK_SIZE = 128*1024;

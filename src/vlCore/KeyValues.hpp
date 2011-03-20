@@ -39,7 +39,7 @@
 namespace vl
 {
   //! A set of key/value pairs usually used to associate generic information, tags, attributes etc. to another class.
-  class VL_DllExport KeyValues: public Object
+  class VLCORE_EXPORT KeyValues: public Object
   {
   public:
     virtual const char* className() { return "vl::KeyValues"; }

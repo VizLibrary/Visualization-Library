@@ -52,7 +52,7 @@ namespace vl
    * - ActorKdTree
    * - ActorTree
    */
-  class VL_DllExport ActorTreeAbstract: public Object
+  class VLGRAPHICS_EXPORT ActorTreeAbstract: public Object
   {
   public:
     virtual const char* className() { return "vl::ActorTreeAbstract"; }

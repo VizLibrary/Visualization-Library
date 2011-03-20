@@ -50,7 +50,7 @@ namespace vl
    *
    * <img src="pics/pagGuideExtrusion3.jpg">
    */
-  class VL_DllExport Extrusion: public vl::Object
+  class VLGRAPHICS_EXPORT Extrusion: public vl::Object
   {
   public:
     virtual const char* className() { return "vl::Extrusion"; }

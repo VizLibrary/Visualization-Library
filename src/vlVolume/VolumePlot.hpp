@@ -32,6 +32,7 @@
 #ifndef VolumePlot_INCLUDE_ONCE
 #define VolumePlot_INCLUDE_ONCE
 
+#include <vlVolume/config.hpp>
 #include <vlGraphics/Actor.hpp>
 #include <vlGraphics/Geometry.hpp>
 #include <vlGraphics/Text.hpp>
@@ -46,7 +47,7 @@ namespace vl
   class SceneManager;
 
   //! Generates a 3D plot with labels and isosurface. The isosurface is generated using the MarchingCubes algorithm.
-  class VL_DllExport VolumePlot: public Object
+  class VLVOLUME_EXPORT VolumePlot: public Object
   {
   public:
     //! A function to be used with VolumePlot

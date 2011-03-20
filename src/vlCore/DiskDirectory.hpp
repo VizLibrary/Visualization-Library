@@ -52,7 +52,7 @@ namespace vl
    * - MemoryFile
    * - ZippedFile
   */
-  class VL_DllExport DiskDirectory: public VirtualDirectory
+  class VLCORE_EXPORT DiskDirectory: public VirtualDirectory
   {
   public:
     DiskDirectory();

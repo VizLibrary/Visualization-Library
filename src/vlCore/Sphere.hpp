@@ -40,7 +40,7 @@ namespace vl
 // Sphere
 //-----------------------------------------------------------------------------
   /** The Sphere class defines a sphere using a center and a radius using vl::Real precision. */
-  class VL_DllExport Sphere
+  class VLCORE_EXPORT Sphere
   {
   public:
     /** Constructor: creates a null sphere. */

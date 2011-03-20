@@ -32,6 +32,7 @@
 #ifndef MarchingCubes_INCLUDE_ONCE
 #define MarchingCubes_INCLUDE_ONCE
 
+#include <vlVolume/config.hpp>
 #include <vlGraphics/Geometry.hpp>
 
 namespace vl
@@ -42,7 +43,7 @@ namespace vl
   /**
    * Defines the volume data to be used with a MarchingCube object.
    */
-  class VL_DllExport Volume: public Object
+  class VLVOLUME_EXPORT Volume: public Object
   {
     /**
      * A Volume cell.
@@ -192,7 +193,7 @@ namespace vl
   /**
    * An efficient implementation of the Marching Cubes algorithm.
    */
-  class VL_DllExport MarchingCubes
+  class VLVOLUME_EXPORT MarchingCubes
   {
   public:
     MarchingCubes();

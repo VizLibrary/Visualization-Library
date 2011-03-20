@@ -77,7 +77,7 @@ namespace vl
     }
 
     /** Computes the world matrix by concatenating the parent's world matrix with its own local matrix. */
-    virtual void computeWorldMatrix(Camera* camera = NULL)
+    virtual void computeWorldMatrix(Camera* /*camera*/ = NULL)
     {
       if( assumeIdentityWorldMatrix() )
       {
@@ -97,7 +97,7 @@ namespace vl
     void computeWorldMatrixRecursive(Camera* camera = NULL)
     {
       computeWorldMatrix(camera);
-      for(size_t i=0; i<childrenCount(); ++i)
+      for(int i=0; i<childrenCount(); ++i)
         getChildren(i)->computeWorldMatrixRecursive(camera);
     }
 
@@ -145,7 +145,7 @@ namespace vl
     bool hasDuplicatedChildren() const
     {
       std::set<const ITransform*> tr_set;
-      for(size_t i=0; i<childrenCount(); ++i)
+      for(int i=0; i<childrenCount(); ++i)
         tr_set.insert(getChildren(i));
       return tr_set.size() != childrenCount();
     }
@@ -204,7 +204,7 @@ namespace vl
     }
     
     /** Adds \p count children transforms. */
-    void addChildren(const Ttype* children, size_t count)
+    void addChildren(Ttype*const* children, size_t count)
     {
       VL_CHECK(children != NULL)
 
@@ -231,11 +231,11 @@ namespace vl
         size_t insert_point = mChildren.size();
         mChildren.resize(mChildren.size() + count);
         vl::ref<Ttype>* ptr = &mChildren[insert_point];
-        for(size_t i=0; i<count; ++i, ++ptr)
+        for(size_t i=0; i<count; ++i)
         {
           VL_CHECK(children[i]->mParent == NULL);
           children[i]->mParent = this;
-          (*ptr) = children[i];
+          ptr[i] = children[i];
         }
       }
     }
@@ -369,7 +369,7 @@ namespace vl
     *
     * \sa setLocalAndWorldMatrix(), setAssumeIdentityWorldMatrix(), Rendering::transform()
     * \sa Actor, Rendering, Effect, Renderable, Geometry */
-  class VL_DllExport Transform: public TransformHierarchy<Transform>
+  class VLCORE_EXPORT Transform: public TransformHierarchy<Transform>
   {
   public:
     virtual const char* className() { return "vl::Transform"; }

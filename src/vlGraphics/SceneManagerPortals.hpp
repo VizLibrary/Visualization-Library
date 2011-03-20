@@ -50,7 +50,7 @@ namespace vl
   //! - SceneManagerPortals
   //! - Sector
   //! - \ref pagGuidePortals "Portal-Based Culling and Scene Management Tutorial"
-  class VL_DllExport Portal: public Object
+  class VLGRAPHICS_EXPORT Portal: public Object
   {
     friend class SceneManagerPortals;
   public:
@@ -107,7 +107,7 @@ namespace vl
    *  - Portal
    *  - \ref pagGuidePortals "Portal-Based Culling and Scene Management Tutorial"
    */
-  class VL_DllExport Sector: public Object
+  class VLGRAPHICS_EXPORT Sector: public Object
   {
   public:
     virtual const char* className() { return "vl::Sector"; }
@@ -184,7 +184,7 @@ namespace vl
    * - SceneManagerActorKdTree
    * - SceneManagerActorTree
    */
-  class VL_DllExport SceneManagerPortals: public SceneManager
+  class VLGRAPHICS_EXPORT SceneManagerPortals: public SceneManager
   {
   public:
     virtual const char* className() { return "vl::SceneManagerPortals"; }

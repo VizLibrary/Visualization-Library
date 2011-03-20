@@ -29,6 +29,7 @@
 /*                                                                                    */
 /**************************************************************************************/
 
+#include <vlVolume/config.hpp>
 #include <vlGraphics/Geometry.hpp>
 #include <vlGraphics/Actor.hpp>
 
@@ -37,7 +38,7 @@
 
 namespace vl
 {
-  class VL_DllExport RaycastVolume: public ActorEventCallback
+  class VLVOLUME_EXPORT RaycastVolume: public ActorEventCallback
   {
   public:
     virtual const char* className() { return "vl::RaycastVolume"; }

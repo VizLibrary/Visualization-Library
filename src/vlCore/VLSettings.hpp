@@ -38,7 +38,7 @@
 namespace vl
 {
   //! Global application settings controlling how Visualization Library behaves.
-  class VL_DllExport VLSettings: public Object
+  class VLCORE_EXPORT VLSettings: public Object
   {
     friend class VisualizationLibrary;
   public:
@@ -80,7 +80,7 @@ namespace vl
   };
 
   //! Returns VisulizationLibrary's global settings.
-  VLSettings* globalSettings();
+  VLCORE_EXPORT VLSettings* globalSettings();
 }
 
 #endif

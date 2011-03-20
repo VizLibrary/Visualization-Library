@@ -34,13 +34,14 @@
 
 #include <vlCore/Collection.hpp>
 #include <vlCore/vlnamespace.hpp>
+#include <vlGraphics/config.hpp>
 
 namespace vl
 {
   class RenderEventCallback;
 
   //! The RenderingAbstract class is the base of all the rendering related sub-classes.
-  class VL_DllExport RenderingAbstract: public Object
+  class VLGRAPHICS_EXPORT RenderingAbstract: public Object
   {
   public:
     virtual const char* className() { return "vl::RenderingAbstract"; }

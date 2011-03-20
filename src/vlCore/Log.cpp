@@ -35,8 +35,9 @@
 #include <vlCore/Vector3.hpp>
 #include <vlCore/Say.hpp>
 #include <vlCore/version.hpp>
-#include <iostream>
+#include <cstdio>
 #include <cstdlib>
+#include <iostream>
 
 using namespace vl;
 
@@ -101,12 +102,12 @@ namespace
       // "\033[34mThis is blue.\033[0m"
       // "\033[45;37mGrey on purple.\033[0m"
 
-      printf(color);
+      puts(color);
     }
     ~ScopedColor()
     {
       // restore normal color
-      printf("\033[0m");
+      puts("\033[0m");
     }
   };
   #define SET_TEXT_COLOR_YELLOW() ScopedColor set_scoped_color("\033[1;33m");

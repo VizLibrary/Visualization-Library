@@ -32,6 +32,7 @@
 #ifndef MFCWindow_INCLUDE_ONCE
 #define MFCWindow_INCLUDE_ONCE
 
+#include <vlMFC/config.hpp>
 #include <vlGraphics/OpenGLContext.hpp>
 #include <vlWin32/Win32Context.hpp>
 
@@ -43,7 +44,7 @@ namespace vlMFC
   /**
    * The MFCWindow class is an MFC CWnd with the functionalities of a Win32Context.
    */
-  class VL_DllExport MFCWindow: public CWnd, public vlWin32::Win32Context /* the order is important! */
+  class VLMFC_EXPORT MFCWindow: public CWnd, public vlWin32::Win32Context /* the order is important! */
   {
   public:
     MFCWindow() {}

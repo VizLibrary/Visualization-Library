@@ -35,6 +35,7 @@
 #include <vlCore/Object.hpp>
 #include <vlCore/Vector4.hpp>
 #include <vlCore/String.hpp>
+#include <vlGraphics/config.hpp>
 #include <map>
 
 //-----------------------------------------------------------------------------
@@ -125,7 +126,7 @@ namespace vl
   /**
    * A font to be used with a Text renderable.
   */
-  class VL_DllExport Font: public Object
+  class VLGRAPHICS_EXPORT Font: public Object
   {
     friend class Text;
     friend class FontManager;

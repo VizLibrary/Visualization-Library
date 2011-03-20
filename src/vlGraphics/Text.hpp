@@ -47,7 +47,7 @@ namespace vl
    * - Actor
    * - VectorGraphics
   */
-  class VL_DllExport Text: public Renderable
+  class VLGRAPHICS_EXPORT Text: public Renderable
   {
   public:
     virtual const char* className() { return "vl::Text"; }

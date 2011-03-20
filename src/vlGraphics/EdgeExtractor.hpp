@@ -34,6 +34,7 @@
 
 #include <vlCore/Object.hpp>
 #include <vlCore/Vector3.hpp>
+#include <vlGraphics/config.hpp>
 #include <vector>
 #include <set>
 
@@ -69,7 +70,7 @@ namespace vl
   - \ref pagGuideEdgeRendering "Edge Enhancement and Wireframe Rendering Tutorial"
   - vl::EdgeRenderer
   */
-  class VL_DllExport EdgeExtractor: public Object
+  class VLGRAPHICS_EXPORT EdgeExtractor: public Object
   {
   public:
     //! A single edge as extracted from the EdgeExtractor class.

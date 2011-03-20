@@ -46,7 +46,7 @@ namespace vl
   /**
    * Abstract class that represents a framebuffer object attachment to be used with FBORenderTarget.
    */
-  class VL_DllExport FBOAbstractAttachment: public Object
+  class VLGRAPHICS_EXPORT FBOAbstractAttachment: public Object
   {
     friend class FBORenderTarget;
 
@@ -84,7 +84,7 @@ namespace vl
    * \sa FBORenderTarget.
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferRenderbuffer.xml
    */
-  class VL_DllExport FBORenderbufferAttachment: public FBOAbstractAttachment
+  class VLGRAPHICS_EXPORT FBORenderbufferAttachment: public FBOAbstractAttachment
   {
     friend class FBORenderTarget;
 
@@ -349,7 +349,7 @@ namespace vl
    * A 1D texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture1D()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
-  class VL_DllExport FBOTexture1DAttachment: public FBOAbstractTextureAttachment
+  class VLGRAPHICS_EXPORT FBOTexture1DAttachment: public FBOAbstractTextureAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOTexture1DAttachment"; }
@@ -372,7 +372,7 @@ namespace vl
    * A 2D texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture2D()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
-  class VL_DllExport FBOTexture2DAttachment: public FBOAbstractTextureAttachment
+  class VLGRAPHICS_EXPORT FBOTexture2DAttachment: public FBOAbstractTextureAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOTexture2DAttachment"; }
@@ -405,7 +405,7 @@ namespace vl
    * A texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
-  class VL_DllExport FBOTextureAttachment: public FBOAbstractTextureAttachment
+  class VLGRAPHICS_EXPORT FBOTextureAttachment: public FBOAbstractTextureAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOTextureAttachment"; }
@@ -429,7 +429,7 @@ namespace vl
    * A 3D texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture3D()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
-  class VL_DllExport FBOTexture3DAttachment: public FBOAbstractTextureAttachment
+  class VLGRAPHICS_EXPORT FBOTexture3DAttachment: public FBOAbstractTextureAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOTexture3DAttachment"; }
@@ -461,7 +461,7 @@ namespace vl
    * A texture layer renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTextureLayer()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTextureLayer.xml
    */
-  class VL_DllExport FBOTextureLayerAttachment: public FBOAbstractTextureAttachment
+  class VLGRAPHICS_EXPORT FBOTextureLayerAttachment: public FBOAbstractTextureAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOTextureLayerAttachment"; }
@@ -520,7 +520,7 @@ namespace vl
    * - FBOTextureAttachment 
    * - FBOTextureLayerAttachment 
    */
-  class VL_DllExport FBORenderTarget: public RenderTarget
+  class VLGRAPHICS_EXPORT FBORenderTarget: public RenderTarget
   {
     friend class OpenGLContext;
 

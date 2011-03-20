@@ -33,6 +33,7 @@
 #define Billboard_INCLUDE_ONCE
 
 #include <vlCore/Transform.hpp>
+#include <vlGraphics/config.hpp>
 
 namespace vl
 {
@@ -42,7 +43,7 @@ namespace vl
   /**
    * A Transform that aligns an Actor towards the camera.
   */
-  class VL_DllExport Billboard: public Transform
+  class VLGRAPHICS_EXPORT Billboard: public Transform
   {
   public:
     Billboard();

@@ -58,7 +58,7 @@ namespace vl
    * Other transformations like shearing, scaling, projection, and so on can produce unspecified results.
    * \sa GhostCameraManipulator
    */
-  class VL_DllExport TrackballManipulator: public UIEventListener
+  class VLGRAPHICS_EXPORT TrackballManipulator: public UIEventListener
   {
   public:
     typedef enum { NoMode, RotationMode, TranslationMode, ZoomMode } ETrackballMode;

@@ -46,7 +46,7 @@ namespace vl
   /**
    * The Plane class defines a plane using a normal and an origin.
   */
-  class VL_DllExport Plane: public Object
+  class VLCORE_EXPORT Plane: public Object
   {
   public:
     virtual const char* className() { return "vl::Plane"; }

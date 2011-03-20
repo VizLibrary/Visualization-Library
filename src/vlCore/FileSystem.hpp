@@ -56,7 +56,7 @@ namespace vl
    * - MemoryFile
    * - ZippedFile
   */
-  class VL_DllExport FileSystem: public Object
+  class VLCORE_EXPORT FileSystem: public Object
   {
   public:
     virtual const char* className() { return "vl::FileSystem"; }
@@ -89,7 +89,7 @@ namespace vl
   };
 
   //! Returns the default FileSystem used by VisualizationLibrary
-  FileSystem* defFileSystem();
+  VLCORE_EXPORT FileSystem* defFileSystem();
 
   //! Sets the default FileSystem used by VisualizationLibrary
   void seDefFileSystem(FileSystem* fs);

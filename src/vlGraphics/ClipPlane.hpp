@@ -46,7 +46,7 @@ namespace vl
    *
    * \sa Shader, Effect, Actor
   */
-  class VL_DllExport ClipPlane: public RenderState
+  class VLGRAPHICS_EXPORT ClipPlane: public RenderState
   {
   public:
     virtual const char* className() { return "vl::ClipPlane"; }

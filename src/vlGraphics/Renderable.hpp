@@ -37,6 +37,7 @@
 #include <vlCore/AABB.hpp>
 #include <vlCore/Sphere.hpp>
 #include <vlCore/Log.hpp>
+#include <vlGraphics/config.hpp>
 
 namespace vl
 {

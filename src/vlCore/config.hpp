@@ -205,24 +205,23 @@
 // Visual Studio special settings
 #ifdef _MSC_VER
   #pragma warning( once : 4996 ) // function or variable may be unsafe
-  #pragma warning( once : 4800 )
+  #pragma warning( once : 4800 ) // forcing value to bool (performance warning)
   #pragma warning( once : 4127 ) // conditional expression is constant
   #pragma warning( once : 4100 ) // unreferenced formal parameter
+  #pragma warning( disable : 4251 ) // non-dll type exposed by a dll type
 #endif
 
 ///////////////////////////////////////////////////
 
-// Dll import/export settings
-#if defined(_WIN32) && defined(VL_COMPILE_DLL)
-  #ifdef VL_DLL_EXPORT
-    #define VL_DllExport __declspec(dllexport)
+// VLCORE_EXPORT macro
+#if defined(_WIN32) && !defined(VL_STATIC_LINKING)
+  #ifdef VLCore_EXPORTS
+    #define VLCORE_EXPORT __declspec(dllexport)
   #else
-    #define VL_DllExport __declspec(dllimport)
+    #define VLCORE_EXPORT __declspec(dllimport)
   #endif
+#else
+  #define VLCORE_EXPORT
 #endif
 
-#ifndef VL_DllExport
-  #define VL_DllExport
-#endif
-
-#endif
+#endif // VISUALIZATION_LIBRARY_CONFIG_INCLUDE_ONCE

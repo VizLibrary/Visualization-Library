@@ -32,13 +32,14 @@
 #ifndef SlicedVolume_INCLUDE_ONCE
 #define SlicedVolume_INCLUDE_ONCE
 
+#include <vlVolume/config.hpp>
 #include <vlGraphics/Actor.hpp>
 #include <vlGraphics/Geometry.hpp>
 #include <vlGraphics/Light.hpp>
 
 namespace vl
 {
-  class VL_DllExport SlicedVolume: public ActorEventCallback
+  class VLVOLUME_EXPORT SlicedVolume: public ActorEventCallback
   {
   public:
     virtual const char* className() { return "vl::SlicedVolume"; }

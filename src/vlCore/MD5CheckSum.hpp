@@ -43,7 +43,7 @@ namespace vl
   /**
    * Computes the MD5 of a given buffer or VirtualFile.
   */
-  class VL_DllExport MD5CheckSum
+  class VLCORE_EXPORT MD5CheckSum
   {
   public:
     MD5CheckSum()

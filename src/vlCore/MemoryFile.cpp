@@ -101,9 +101,10 @@ bool MemoryFile::seekSet_Implementation(long long offset)
 {
   if (!isOpen())
     return false;
-  mPtr = (long long)offset;
+  mPtr = offset;
   if (mPtr < 0) mPtr = 0;
-  if (mPtr > mBuffer->bytesUsed()) mPtr = mBuffer->bytesUsed();
+  if (mPtr > static_cast<long long>(mBuffer->bytesUsed()))
+	  mPtr = mBuffer->bytesUsed();
   return true;
 }
 //-----------------------------------------------------------------------------

@@ -41,7 +41,7 @@ namespace vl
   // VertexMapper
   //-----------------------------------------------------------------------------
   //! Generates a set of new vertices from the old one.
-  class VL_DllExport VertexMapper: public Object
+  class VLGRAPHICS_EXPORT VertexMapper: public Object
   {
   public:
     virtual const char* className() { return "vl::VertexMapper"; }
@@ -59,7 +59,7 @@ namespace vl
   //-----------------------------------------------------------------------------
   //! Removes from a Geometry the vertices with the same attributes. 
   //! As a result also all the DrawArrays prensent in the Geometry are substituted with DrawElements.
-  class VL_DllExport DoubleVertexRemover: public VertexMapper
+  class VLGRAPHICS_EXPORT DoubleVertexRemover: public VertexMapper
   {
   private:
     class CompareVertex

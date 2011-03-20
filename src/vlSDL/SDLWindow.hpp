@@ -32,6 +32,7 @@
 #ifndef SDLAdapter_INCLUDE_ONCE
 #define SDLAdapter_INCLUDE_ONCE
 
+#include <vlSDL/config.hpp>
 #include <vlGraphics/OpenGLContext.hpp>
 #include <vlCore/String.hpp>
 #include <vlCore/Vector4.hpp>
@@ -54,7 +55,7 @@ namespace vlSDL
    * @note
    * SDL notifies Unicode codes only on key-press events not on release events.
   */
-  class VL_DllExport SDLWindow: public vl::OpenGLContext
+  class VLSDL_EXPORT SDLWindow: public vl::OpenGLContext
   {
   public:
     SDLWindow();

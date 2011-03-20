@@ -44,28 +44,28 @@
 using namespace vl;
 
 #if defined(VL_IO_2D_JPG)
-  #include <vlCore/vlJPG.hpp>
+  #include "plugins/vlJPG.hpp"
 #endif
 #if defined(VL_IO_2D_PNG)
-  #include <vlCore/vlPNG.hpp>
+  #include "plugins/vlPNG.hpp"
 #endif
 #if defined(VL_IO_2D_TIFF)
-  #include <vlCore/vlTIFF.hpp>
+  #include "plugins/vlTIFF.hpp"
 #endif
 #if defined(VL_IO_2D_TGA)
-  #include <vlCore/vlTGA.hpp>
+  #include "plugins/vlTGA.hpp"
 #endif
 #if defined(VL_IO_2D_DAT)
-  #include <vlCore/vlDAT.hpp>
+  #include "plugins/vlDAT.hpp"
 #endif
 #if defined(VL_IO_2D_DDS)
-  #include <vlCore/vlDDS.hpp>
+  #include "plugins/vlDDS.hpp"
 #endif
 #if defined(VL_IO_2D_BMP)
-  #include <vlCore/vlBMP.hpp>
+  #include "plugins/vlBMP.hpp"
 #endif
 #if defined(VL_IO_2D_DICOM)
-  #include <vlCore/vlDICOM.hpp>
+  #include "plugins/vlDICOM.hpp"
 #endif
 
 //------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ VL_COMPILE_TIME_CHECK( sizeof(Sphere)    == sizeof(Real)*4 )
 namespace
 {
   std::string gVersionString = String( Say("%n.%n.%n") << VL_Major << VL_Minor << VL_Build ).toStdString();
-  const char* gCertificate = "[Visualization Library BSD License]";
+  //const char* gCertificate = "[Visualization Library BSD License]";
   bool gInitializedCore = false;
 };
 //------------------------------------------------------------------------------

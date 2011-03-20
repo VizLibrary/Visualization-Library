@@ -1,0 +1,13 @@
+# Ignore Special Dirs
+
+/_*/
+/@*/
+/build*/
+
+# Ignore OS-generated files
+
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
+

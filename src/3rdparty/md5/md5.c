@@ -22,7 +22,7 @@
    with Sun's original "cc". */
 
 #include <memory.h>		 /* for memcpy() */
-#include "md5/md5.h"
+#include "md5.h"
 
 #ifndef HIGHFIRST
 #define byteReverse(buf, len)	/* Nothing */

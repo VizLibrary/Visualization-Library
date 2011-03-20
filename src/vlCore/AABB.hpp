@@ -41,7 +41,7 @@ namespace vl
   // AABB
   //-----------------------------------------------------------------------------
   /** The AABB class implements an axis-aligned bounding box using vl::Real precision. */
-  class VL_DllExport AABB 
+  class VLCORE_EXPORT AABB 
   {
   public:
     /** Constructs a null AABB. */

@@ -32,6 +32,7 @@
 #ifndef ChemDatabase_INCLUDE_ONCE
 #define ChemDatabase_INCLUDE_ONCE
 
+#include <vlMolecule/config.hpp>
 #include <vlCore/Vector4.hpp>
 #include <vlCore/String.hpp>
 
@@ -259,10 +260,10 @@ namespace vl
   };
 
   //! Returns an AtomInfo representing the properties of the given atom type.
-  VL_DllExport const AtomInfo& atomInfo(EAtomType type);
+  VLMOLECULE_EXPORT const AtomInfo& atomInfo(EAtomType type);
 
   //! Translates a string containing atom type name, atom symbol or a Sybyl type into an EAtomType.
-  VL_DllExport EAtomType atomType(const char* type);
+  VLMOLECULE_EXPORT EAtomType atomType(const char* type);
 }
 
 #endif

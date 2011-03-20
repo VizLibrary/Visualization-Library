@@ -58,7 +58,7 @@ namespace vl
   /** The LoadWriterManager class loads and writes resources using the registered ResourceLoadWriter objects.
   You can install a LoadCallback to operate on loaded data or you can install a WriteCallback to operate on the data to be written,
   using the methods loadCallbacks() and writeCallbacks(). */
-  class VL_DllExport LoadWriterManager: public Object
+  class VLCORE_EXPORT LoadWriterManager: public Object
   {
   public:
     virtual const char* className() { return "vl::LoadWriterManager"; }
@@ -149,10 +149,10 @@ namespace vl
   };
 
   //! Returs the default LoadWriterManager used by Visualization Library.
-  VL_DllExport LoadWriterManager* defLoadWriterManager();
+  VLCORE_EXPORT LoadWriterManager* defLoadWriterManager();
 
   //! Sets the default LoadWriterManager used by Visualization Library.
-  VL_DllExport void setDefLoadWriterManager(LoadWriterManager* lwm);
+  VLCORE_EXPORT void setDefLoadWriterManager(LoadWriterManager* lwm);
 
   //! Short version of defLoadWriterManager()->registerLoadWriter(rlw).
   inline void registerLoadWriter(ResourceLoadWriter* rlw) { defLoadWriterManager()->registerLoadWriter(rlw); }

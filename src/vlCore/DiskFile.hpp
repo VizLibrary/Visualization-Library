@@ -62,7 +62,7 @@ namespace vl
    * - MemoryFile
    * - ZippedFile
   */
-  class VL_DllExport DiskFile: public VirtualFile
+  class VLCORE_EXPORT DiskFile: public VirtualFile
   {
     friend class DiskDirectory;
   protected:

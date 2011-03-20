@@ -129,7 +129,7 @@ namespace vl
    * - DiskFile
    * - MemoryFile
   */
-  class VL_DllExport ZippedFile: public VirtualFile
+  class VLCORE_EXPORT ZippedFile: public VirtualFile
   {
 
     // Lower this if you need to limit the amount of data allocated to the stack, for example to 16K.
