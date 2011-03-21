@@ -63,7 +63,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
 include_directories( "src" "${CMAKE_BINARY_DIR}/src" "${3RDPARTY_DIR}/glew" )
 
 # High Warning Level
-if(MSVC)
+if(MSVC10)
+	set(CMAKE_CXX_FLAGS "/W4 /EHsc /MP")
+elseif(MSVC)
 	set(CMAKE_CXX_FLAGS "/W4 /EHsc")
 else()
 	set(CMAKE_CXX_FLAGS "-W -Wall") # see also: -W -Wall -Wwrite-strings -Wcast-qual -Wconversion -Wshadow
