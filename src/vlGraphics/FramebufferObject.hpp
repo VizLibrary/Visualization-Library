@@ -182,7 +182,7 @@ namespace vl
   /**
    * A color renderbuffer to be attached to a FBORenderTarget.
    */
-  class FBOColorBufferAttachment: public FBORenderbufferAttachment
+  class VLGRAPHICS_EXPORT FBOColorBufferAttachment: public FBORenderbufferAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOColorBufferAttachment"; }
@@ -214,7 +214,7 @@ namespace vl
   /**
    * A depth renderbuffer to be attached to a FBORenderTarget.
    */
-  class FBODepthBufferAttachment: public FBORenderbufferAttachment
+  class VLGRAPHICS_EXPORT FBODepthBufferAttachment: public FBORenderbufferAttachment
   {
   public:
     virtual const char* className() { return "vl::FBODepthBufferAttachment"; }
@@ -246,7 +246,7 @@ namespace vl
   /**
    * A stencil renderbuffer to be attached to a FBORenderTarget.
    */
-  class FBOStencilBufferAttachment: public FBORenderbufferAttachment
+  class VLGRAPHICS_EXPORT FBOStencilBufferAttachment: public FBORenderbufferAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOStencilBufferAttachment"; }
@@ -278,7 +278,7 @@ namespace vl
   /**
    * A depth+stencil renderbuffer to be attached to a FBORenderTarget.
    */
-  class FBODepthStencilBufferAttachment: public FBORenderbufferAttachment
+  class VLGRAPHICS_EXPORT FBODepthStencilBufferAttachment: public FBORenderbufferAttachment
   {
   public:
     virtual const char* className() { return "vl::FBODepthStencilBufferAttachment"; }
@@ -310,7 +310,7 @@ namespace vl
   /**
    * Base class for all the framebuffer texture attachments (see also FBORenderTarget).
    */
-  class FBOAbstractTextureAttachment: public FBOAbstractAttachment
+  class VLGRAPHICS_EXPORT FBOAbstractTextureAttachment: public FBOAbstractAttachment
   {
   public:
     virtual const char* className() { return "vl::FBOAbstractTextureAttachment"; }

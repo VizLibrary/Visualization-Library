@@ -55,7 +55,7 @@ namespace vl
     * Note that the same Renderable can be associated to more than one Actor.
     * 
     * \sa Actor, Effect, Shader, Transform, Geometry */
-  class Renderable: public Object
+  class VLGRAPHICS_EXPORT Renderable: public Object
   {
     Renderable(const Renderable& other): Object(other)
     {

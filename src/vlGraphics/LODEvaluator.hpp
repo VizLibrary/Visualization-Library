@@ -47,7 +47,7 @@ namespace vl
    * - DistanceLODEvaluator
    * - PixelLODEvaluator
   */
-  class LODEvaluator: public Object
+  class VLGRAPHICS_EXPORT LODEvaluator: public Object
   {
   public:
     LODEvaluator()

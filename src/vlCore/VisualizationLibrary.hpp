@@ -33,41 +33,44 @@
 #define VisualizationLibrary_INCLUDE_ONCE
 
 #include <vlCore/config.hpp>
+#include <vlGraphics/config.hpp>
+
+// TODO: it would be nice not to have this VLGRAPHICS/VLCORE_EXPORT mix and not to include <vlGraphics/config.hpp> here.
 
 namespace vl
 {
   //! Used to initialize/shutdown VisualizationLibrary and to access important global data.
-  class VLCORE_EXPORT VisualizationLibrary
+  class VisualizationLibrary
   {
   public:
     //! Initializes VLCore and VLGraphics libraries.
     //! Call initCore() instead of init() when using only VLCore.
-    static void init();
+    VLGRAPHICS_EXPORT static void init();
 
     //! Releases all the resources acquired by VLCore and VLGraphics.
     //! Call shutdownCore() instead of shutdown() when using only VLCore.
-    static void shutdown();
+    VLGRAPHICS_EXPORT static void shutdown();
 
     //! Initializes only VLCore library.
     //! Call initCore() instead of init() ONLY when using VLCore alone.
-    static void initCore();
+    VLCORE_EXPORT static void initCore();
 
     //! Releases all the resources acquired by Visualization Library Core
     //! Call shutdownCore() instead of shutdown() ONLY when using VLCore alone.
-    static void shutdownCore();
+    VLCORE_EXPORT static void shutdownCore();
 
     //! Returns true if VLCore library is initialized and shutdown has not been called.
-    static bool isCoreInitialized();
+    VLCORE_EXPORT static bool isCoreInitialized();
 
     //! Returns true if VLGraphics library is initialized and shutdown has not been called.
-    static bool isGraphicsInitialized();
+    VLGRAPHICS_EXPORT static bool isGraphicsInitialized();
 
     //! Returns the Visualization Library's version string.
-    static const char* versionString();
+    VLCORE_EXPORT static const char* versionString();
   
   private:
-    static void initGraphics();
-    static void shutdownGraphics();
+    VLGRAPHICS_EXPORT static void initGraphics();
+    VLGRAPHICS_EXPORT static void shutdownGraphics();
   };
 
   //! Shows a console window that displays the standard output. This function is meant to be used only under Windows only.

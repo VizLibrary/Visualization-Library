@@ -32,9 +32,9 @@
 #ifndef RendererAbstract_INCLUDE_ONCE
 #define RendererAbstract_INCLUDE_ONCE
 
-#include <vlCore/Object.hpp>
-#include <vlGraphics/RenderEventCallback.hpp>
 #include <vlCore/Collection.hpp>
+#include <vlGraphics/RenderEventCallback.hpp>
+#include <vlGraphics/config.hpp>
 
 namespace vl
 {
@@ -48,7 +48,7 @@ namespace vl
   /** Base class providing all the basic funtionalities of a Renderer. 
 
   */
-  class RendererAbstract: public Object
+  class VLGRAPHICS_EXPORT RendererAbstract: public Object
   {
   public:
     virtual const char* className() { return "vl::RendererAbstract"; }

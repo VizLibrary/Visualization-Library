@@ -47,7 +47,7 @@ namespace vl
    *
    * \sa Shader, Effect, Actor
   */
-  class RenderState: public Object
+  class VLGRAPHICS_EXPORT RenderState: public Object
   {
   public:
     virtual const char* className() { return "vl::RenderState"; }
@@ -70,7 +70,7 @@ namespace vl
    *
    * \sa Shader, Effect, Actor, RenderState
   */
-  class TextureState: public RenderState
+  class VLGRAPHICS_EXPORT TextureState: public RenderState
   {
   public:
     virtual const char* className() { return "vl::TextureState"; }

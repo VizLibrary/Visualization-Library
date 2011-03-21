@@ -72,7 +72,7 @@ namespace vl
 
   \sa
   - Actor::actorEventCallbacks() */
-  class ActorEventCallback: public Object
+  class VLGRAPHICS_EXPORT ActorEventCallback: public Object
   {
   public:
     ActorEventCallback(): mEnabled(true) {}

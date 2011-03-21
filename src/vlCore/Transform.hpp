@@ -48,7 +48,7 @@ namespace vl
   //------------------------------------------------------------------------------
   // TransformHierarchy
   //------------------------------------------------------------------------------
-  class ITransform: public Object
+  class VLCORE_EXPORT ITransform: public Object
   {
   public:
     ITransform(): mWorldMatrixUpdateTick(0), mAssumeIdentityWorldMatrix(false)  {}

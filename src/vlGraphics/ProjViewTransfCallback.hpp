@@ -45,7 +45,7 @@ namespace vl
   // ProjViewTransfCallback
   //-----------------------------------------------------------------------------
   /** Vitual class used as a callback to update the state of the \p projection, \p view and \p transform matrices of a GLSLProgram or fixed function pipeline. */
-  class ProjViewTransfCallback: public Object
+  class VLGRAPHICS_EXPORT ProjViewTransfCallback: public Object
   {
   public:
     virtual const char* className() { return "vl::ProjViewTransfCallback"; }
