@@ -91,7 +91,6 @@ VL_COMPILE_TIME_CHECK( sizeof(Sphere)    == sizeof(Real)*4 )
 namespace
 {
   std::string gVersionString = String( Say("%n.%n.%n") << VL_Major << VL_Minor << VL_Build ).toStdString();
-  //const char* gCertificate = "[Visualization Library BSD License]";
   bool gInitializedCore = false;
 };
 //------------------------------------------------------------------------------
