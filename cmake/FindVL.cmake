@@ -34,14 +34,14 @@ macro(_vl_find_component _name)
 	if(VL_${_name}_LIBRARY AND VL_${_name}_LIBRARY_DEBUG)
 		set(VL_${_name}_LIBRARIES optimized ${VL_${_name}_LIBRARY} debug ${VL_${_name}_LIBRARY_DEBUG})
 	elseif(VL_${_name}_LIBRARY)
-		set(VL_${_name}_LIBRARY_LIBRARIES optimized ${VL_${_name}_LIBRARY})
+		set(VL_${_name}_LIBRARIES optimized ${VL_${_name}_LIBRARY})
 	elseif(VL_${_name}_LIBRARY_DEBUG)
-		set(VL_${_name}_LIBRARY_LIBRARIES debug ${VL_${_name}_LIBRARY}) ??? should be debug ???
+		set(VL_${_name}_LIBRARIES debug ${VL_${_name}_LIBRARY_DEBUG})
 	else()
 		set(VL_${_name}_LIBRARIES "")
 	endif()
 
-	mark_as_advanced(VL_${_name}_LIBRARY VL_${_name}_LIBRARY_DEBUG) ??? what is this ??? 
+	mark_as_advanced(VL_${_name}_LIBRARY VL_${_name}_LIBRARY_DEBUG)
 
 	if(VL_${_name}_LIBRARIES)
 		list(APPEND VL_LIBRARIES ${VL_${_name}_LIBRARIES})
@@ -50,7 +50,7 @@ endmacro()
 
 set(_vl_required_vars VL_INCLUDE_DIRS)
 find_path(VL_INCLUDE_DIRS "vlCore/VisualizationLibrary.hpp"
-	PATHS ${VL_ROOT} ENV VL_ROOT ??? what is this ??? 
+	PATHS ${VL_ROOT} ENV VL_ROOT
 	PATH_SUFFIXES "include"
 )
 
