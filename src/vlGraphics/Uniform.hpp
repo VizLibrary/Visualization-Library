@@ -36,6 +36,7 @@
 #include <vlCore/Object.hpp>
 #include <vlCore/Vector4.hpp>
 #include <vlCore/Matrix4.hpp>
+#include <vlGraphics/OpenGL.hpp>
 #include <cstring>
 #include <map>
 #include <vector>

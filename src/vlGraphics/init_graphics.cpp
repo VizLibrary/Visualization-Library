@@ -133,19 +133,17 @@ void VisualizationLibrary::shutdownGraphics()
   }
 }
 //------------------------------------------------------------------------------
-#if defined(VL_MODULE_GRAPHICS)
-  void VisualizationLibrary::init()
-  {
-    initCore();
-    initGraphics();
-  }
+void VisualizationLibrary::init()
+{
+  initCore();
+  initGraphics();
+}
 //------------------------------------------------------------------------------
-  void VisualizationLibrary::shutdown()
-  {
-    shutdownGraphics();
-    shutdownCore();
-  }
+void VisualizationLibrary::shutdown()
+{
+  shutdownGraphics();
+  shutdownCore();
+}
 //------------------------------------------------------------------------------
-  bool VisualizationLibrary::isGraphicsInitialized() { return gInitializedGraphics; }
-#endif
+bool VisualizationLibrary::isGraphicsInitialized() { return gInitializedGraphics; }
 //------------------------------------------------------------------------------

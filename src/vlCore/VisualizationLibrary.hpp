@@ -40,20 +40,20 @@ namespace vl
   class VLCORE_EXPORT VisualizationLibrary
   {
   public:
-    //! Initializes VLCore or VLCore and VLGraphics libraries (if VL_MODULE_GRAPHICS was enabled during CMake configuration).
-    //! Call initCore() instead of init() when using only VLCore if VL_MODULE_GRAPHICS was enabled during CMake configuration.
+    //! Initializes VLCore and VLGraphics libraries.
+    //! Call initCore() instead of init() when using only VLCore.
     static void init();
 
     //! Releases all the resources acquired by VLCore and VLGraphics.
-    //! Call shutdownCore() instead of shutdown() when using only VLCore if VL_MODULE_GRAPHICS was enabled during CMake configuration.
+    //! Call shutdownCore() instead of shutdown() when using only VLCore.
     static void shutdown();
 
-    //! Initializes only VLCore library, equivalent to init() when VL_MODULE_GRAPHICS is disabled during CMake configuration.
-    //! Call initCore() instead of init() ONLY when using VLCore alone (i.e. no VLGraphics) and if VL_MODULE_GRAPHICS was enabled during CMake configuration.
+    //! Initializes only VLCore library.
+    //! Call initCore() instead of init() ONLY when using VLCore alone.
     static void initCore();
 
     //! Releases all the resources acquired by Visualization Library Core
-    //! Call shutdownCore() instead of shutdown() ONLY when using VLCore alone (i.e. no VLGraphics) and if VL_MODULE_GRAPHICS was enabled during CMake configuration.
+    //! Call shutdownCore() instead of shutdown() ONLY when using VLCore alone.
     static void shutdownCore();
 
     //! Returns true if VLCore library is initialized and shutdown has not been called.

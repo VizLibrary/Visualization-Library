@@ -1,45 +1,21 @@
 ################################################################################
-# Core Modules
+# Modules
 ################################################################################
-
-# Graphics support can be toggled
-option(VL_MODULE_GRAPHICS "Enable VL Graphics Library" ON)
-if(VL_MODULE_GRAPHICS)
-	add_definitions(-DVL_MODULE_GRAPHICS)
-endif()
 
 # VLCore
 add_subdirectory("vlCore")
 
 # VLGraphics
-if(VL_MODULE_GRAPHICS)
-	add_subdirectory("vlGraphics")
-else()
-	unset(VL_IO_3D_MD2 CACHE)
-	unset(VL_IO_3D_PLY CACHE)
-	unset(VL_IO_3D_STL CACHE)
-	unset(VL_IO_3D_AC3D CACHE)
-	unset(VL_IO_3D_OBJ CACHE)
-	unset(VL_IO_3D_3DS CACHE)
-endif()
+add_subdirectory("vlGraphics")
 
 # VLVG
-cmake_dependent_option(VL_MODULE_VG "Enable VL Vector Graphics Library" ON "VL_MODULE_GRAPHICS" OFF)
-if(VL_MODULE_VG)
-	add_subdirectory("vlVG")
-endif()
+add_subdirectory("vlVG")
 
 # VLMolecule
-cmake_dependent_option(VL_MODULE_MOLECULE "Enable VL Molecule Library" ON "VL_MODULE_GRAPHICS" OFF)
-if(VL_MODULE_MOLECULE)
-	add_subdirectory("vlMolecule")
-endif()
+add_subdirectory("vlMolecule")
 
 # VLVolume
-cmake_dependent_option(VL_MODULE_VOLUME "Enable VL Volume Library" ON "VL_MODULE_GRAPHICS" OFF)
-if(VL_MODULE_VOLUME)
-	add_subdirectory("vlVolume")
-endif()
+add_subdirectory("vlVolume")
 
 ################################################################################
 # GUI Modules (automatically enabled when their requirements are met)

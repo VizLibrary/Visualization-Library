@@ -243,23 +243,6 @@ void VisualizationLibrary::shutdownCore()
   // gSettings = NULL;
 }
 //------------------------------------------------------------------------------
-#if !defined(VL_MODULE_GRAPHICS)
-  void VisualizationLibrary::init()
-  {
-    initCore();
-  }
-//------------------------------------------------------------------------------
-  void VisualizationLibrary::shutdown()
-  {
-    if (gInitializedCore)
-    {
-      shutdownCore();
-    }
-  }
-//------------------------------------------------------------------------------
-  bool VisualizationLibrary::isGraphicsInitialized() { return false; }
-#endif
-//------------------------------------------------------------------------------
 #if defined(_WIN32)
   // console includes
   #include <stdio.h>
