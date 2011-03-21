@@ -65,6 +65,8 @@ namespace vlQt4
       setMouseTracking(true);
       setAutoBufferSwap(false);
       setAcceptDrops(true);
+      // let Qt take care of object destruction.
+      vl::OpenGLContext::setAutomaticDelete(false);
     }
 
     ~Qt4Widget()
@@ -152,7 +154,7 @@ namespace vlQt4
       setContext(glctx);
 
       initGLContext();
-      
+
       mRenderTarget->setWidth(width);
       mRenderTarget->setHeight(height);
 
