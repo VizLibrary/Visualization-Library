@@ -83,6 +83,7 @@ BOOL MDIWindow::PreCreateWindow(CREATESTRUCT & cs)
 //-----------------------------------------------------------------------------
 MDIWindow::~MDIWindow()
 {
+  dispatchDestroyEvent();
 }
 //-----------------------------------------------------------------------------
 void MDIWindow::destroyGLContext()

@@ -81,6 +81,7 @@ END_MESSAGE_MAP()
 //-----------------------------------------------------------------------------
 MFCWindow::~MFCWindow()
 {
+  dispatchDestroyEvent();
 }
 //-----------------------------------------------------------------------------
 int MFCWindow::OnCreate(LPCREATESTRUCT lpCreateStruct)
