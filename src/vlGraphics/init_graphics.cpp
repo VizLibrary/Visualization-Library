@@ -133,9 +133,9 @@ void VisualizationLibrary::shutdownGraphics()
   }
 }
 //------------------------------------------------------------------------------
-void VisualizationLibrary::init()
+void VisualizationLibrary::init(bool log_info)
 {
-  initCore();
+  initCore(log_info);
   initGraphics();
 }
 //------------------------------------------------------------------------------

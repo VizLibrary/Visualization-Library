@@ -45,7 +45,7 @@ namespace vl
   public:
     //! Initializes VLCore and VLGraphics libraries.
     //! Call initCore() instead of init() when using only VLCore.
-    VLGRAPHICS_EXPORT static void init();
+    VLGRAPHICS_EXPORT static void init(bool log_info=true);
 
     //! Releases all the resources acquired by VLCore and VLGraphics.
     //! Call shutdownCore() instead of shutdown() when using only VLCore.
@@ -53,7 +53,7 @@ namespace vl
 
     //! Initializes only VLCore library.
     //! Call initCore() instead of init() ONLY when using VLCore alone.
-    VLCORE_EXPORT static void initCore();
+    VLCORE_EXPORT static void initCore(bool log_info=true);
 
     //! Releases all the resources acquired by Visualization Library Core
     //! Call shutdownCore() instead of shutdown() ONLY when using VLCore alone.

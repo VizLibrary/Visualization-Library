@@ -154,7 +154,7 @@ void vl::seDefFileSystem(FileSystem* fs)
   gDefaultFileSystem = fs;
 }
 //------------------------------------------------------------------------------
-void VisualizationLibrary::initCore()
+void VisualizationLibrary::initCore(bool log_info)
 {
   VL_CHECK(!gInitializedCore);
   if (gInitializedCore)
@@ -207,7 +207,7 @@ void VisualizationLibrary::initCore()
   #endif
 
   // Log VL and system information.
-  if (globalSettings()->verbosityLevel())
+  if (globalSettings()->verbosityLevel() && log_info)
     Log::logSystemInfo();
 
   // Initialized = on
