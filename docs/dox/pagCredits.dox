@@ -59,7 +59,7 @@
 			<td>Ludovic Silvestre</td><td>Framebuffer objects and texturing feedback and suggestions.</td>
 		</tr>
 		<tr>
-			<td>Thiago Bastos</td><td>CMake scripts refactory, DLL support.</td>
+			<td>Thiago Bastos</td><td>CMake scripts refactory, FindVL.cmake, DLL support.</td>
 		</tr>
 		<tr>
 			<td colspan=2>Thanks to all the people (especially in the forum) who tested VL, reported bugs and 
