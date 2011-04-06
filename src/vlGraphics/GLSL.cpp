@@ -570,15 +570,16 @@ bool GLSLProgram::useProgram() const
     return false;
   }
 
-#ifndef NDEBUG
-  if (!validateProgram())
-  {
-    Log::bug("GLSLProgram::useProgram() failed validation! (" + String(objectName().c_str()) + ")\n");
-    Log::bug( Say("Info log:\n%s\n") << infoLog() );
-    VL_TRAP();
-    return false;
-  }
-#endif
+// The program validation should be done only after all the uniforms have been applied, just before rendering an object.
+//#ifndef NDEBUG
+//  if (!validateProgram())
+//  {
+//    Log::bug("GLSLProgram::useProgram() failed validation! (" + String(objectName().c_str()) + ")\n");
+//    Log::bug( Say("Info log:\n%s\n") << infoLog() );
+//    VL_TRAP();
+//    return false;
+//  }
+//#endif
 
   // bind the GLSL program
   glUseProgram(handle()); VL_CHECK_OGL()
