@@ -203,7 +203,11 @@ public:
       // load the files
       std::vector< ref<Image> > images;
       for(unsigned int i=0; i<files_sorted.size(); ++i)
+      {
         images.push_back( loadImage(files_sorted[i]) );
+        if (files_sorted[i].endsWith(".dcm"))
+          images.back()->contrastHounsfieldAuto();
+      }
       // assemble the volume
       ref<Image> vol_img = assemble3DImage(images);
       // set the volume
