@@ -43,15 +43,25 @@ namespace vl
 {
   class Camera;
 
-  // mic fixme : remake all the documentation
+  // mic fixme: finalize the generalization by
+  // - moving the local matrix management away from ITransform
+  // - implementing a Quat/Scale/Translation-based transform type: QuScTrTransform?
+  // - rename Transform to MatrixTransform
+  // - the engine, rendering, actors etc. should use ITransform instead of MatrixTransform
 
   //------------------------------------------------------------------------------
   // TransformHierarchy
   //------------------------------------------------------------------------------
+  //! Abstract interface for a generic transform.
   class VLCORE_EXPORT ITransform: public Object
   {
   public:
-    ITransform(): mWorldMatrixUpdateTick(0), mAssumeIdentityWorldMatrix(false)  {}
+    ITransform(): mWorldMatrixUpdateTick(0), mAssumeIdentityWorldMatrix(false)  
+    {
+      #if VL_TRANSFORM_USER_DATA 
+        mTransformUserData = NULL;
+      #endif
+    }
 
     virtual size_t childrenCount() const = 0;
     
@@ -170,6 +180,7 @@ namespace vl
   //------------------------------------------------------------------------------
   // TransformHierarchy
   //------------------------------------------------------------------------------
+  //! Adds parent/child management functions to the specified transform type.
   template<class Ttype>
   class TransformHierarchy: public ITransform
   {
@@ -305,7 +316,7 @@ namespace vl
       mChildren.clear();
     }
     
-    /** Removes all the children of a Ttype recursively descending the hierachy. */
+    /** Removes all the children of a Ttype recursively descending the hierarchy. */
     void eraseAllChildrenRecursive()
     {
       for(int i=0; i<(int)mChildren.size(); ++i)
@@ -377,25 +388,15 @@ namespace vl
     /** Constructor. */
     Transform()
     { 
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
-      #if VL_TRANSFORM_USER_DATA 
-        mTransformUserData = NULL;
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
     }
 
     /** Constructor. The \p matrix parameter is used to set both the local and world matrix. */
     Transform(const mat4& matrix)
     { 
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
       setLocalMatrix(matrix);
       setWorldMatrix(matrix);
-      #if VL_TRANSFORM_USER_DATA 
-        mTransformUserData = NULL;
-      #endif
     }
 
     /** Sets both the local and the world matrices.

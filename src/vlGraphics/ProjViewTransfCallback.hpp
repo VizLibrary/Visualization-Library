@@ -33,7 +33,7 @@
 #define ProjViewTransfCallback_INCLUDE_ONCE
 
 #include <vlCore/Object.hpp>
-#include <vlGraphics/config.hpp>
+#include <vlGraphics/link_config.hpp>
 
 namespace vl
 {
@@ -83,9 +83,7 @@ namespace vl
     
     ProjViewTransfCallbackStandard(): mLastTransform(NULL) 
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
     }
     
     virtual void programFirstUse(const Renderer*, const GLSLProgram* glsl, const Transform*, const Camera*, bool first_overall );

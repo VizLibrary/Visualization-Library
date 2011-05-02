@@ -33,7 +33,7 @@
 #define UniformSet_INCLUDE_ONCE
 
 #include <vlCore/Object.hpp>
-#include <vlGraphics/config.hpp>
+#include <vlGraphics/link_config.hpp>
 #include <vlGraphics/Uniform.hpp>
 
 namespace vl
@@ -53,9 +53,7 @@ namespace vl
     virtual const char* className() { return "vl::UniformSet"; }
     UniformSet()
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
     }
 
     // uniform getters and setters

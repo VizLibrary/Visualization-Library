@@ -34,6 +34,7 @@
 
 #include <vlGraphics/Camera.hpp>
 #include <vlGraphics/Texture.hpp>
+#include <vlGraphics/RenderEventCallback.hpp>
 
 namespace vl
 {
@@ -58,12 +59,13 @@ namespace vl
     virtual const char* className() { return "vl::CopyTexSubImage"; }
     CopyTexSubImage(): mReadBuffer(RDB_BACK_LEFT) 
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
     }
 
+    /** The source buffer used when copying color buffers, ignored when using depth textures. */
     EReadDrawBuffer readBuffer() const { return mReadBuffer; }
+
+    /** The source buffer used when copying color buffers, ignored when using depth textures. */
     void setReadBuffer(EReadDrawBuffer render_buffer) { mReadBuffer = render_buffer; }
 
     virtual bool onRenderingStarted(const RenderingAbstract*)
@@ -105,9 +107,7 @@ namespace vl
   public:
     CopyTexSubImage1D(int level, int xoffset, int x, int y, int width, Texture* texture=NULL, EReadDrawBuffer read_buffer=RDB_BACK_LEFT)
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
       mLevel = level;
       mXOffset = xoffset;
       mX = x;
@@ -145,12 +145,18 @@ namespace vl
       VL_CHECK(xoffset()+width() <= texture()->width())
 
       int read_buffer = 0;
-      glGetIntegerv(GL_READ_BUFFER, &read_buffer);
-      glReadBuffer(readBuffer());
+      if (!texture()->isDepthTexture())
+      {
+        glGetIntegerv(GL_READ_BUFFER, &read_buffer); VL_CHECK_OGL()
+        glReadBuffer(readBuffer()); VL_CHECK_OGL()
+      }
       glBindTexture(TD_TEXTURE_1D, texture()->handle() ); VL_CHECK_OGL()
       glCopyTexSubImage1D(TD_TEXTURE_1D, level(), xoffset(), x(), y(), width()); VL_CHECK_OGL()
       glBindTexture(TD_TEXTURE_1D, 0 ); VL_CHECK_OGL()
-      glReadBuffer(read_buffer);
+      if (read_buffer)
+      {
+        glReadBuffer( read_buffer ); VL_CHECK_OGL()
+      }
     }
 
   protected:
@@ -169,9 +175,7 @@ namespace vl
 
     CopyTexSubImage2D(int level, int xoffset, int yoffset, int x, int y, int width, int height, Texture* texture=NULL, ETex2DTarget target=T2DT_TEXTURE_2D, EReadDrawBuffer read_buffer=RDB_BACK_LEFT)
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
 
       mLevel = level;
       mXOffset = xoffset;
@@ -220,8 +224,11 @@ namespace vl
       VL_CHECK(yoffset()+height() <= texture()->height())
 
       int read_buffer = 0;
-      glGetIntegerv(GL_READ_BUFFER, &read_buffer); VL_CHECK_OGL()
-      glReadBuffer(readBuffer()); VL_CHECK_OGL()
+      if (!texture()->isDepthTexture())
+      {
+        glGetIntegerv(GL_READ_BUFFER, &read_buffer); VL_CHECK_OGL()
+        glReadBuffer(readBuffer()); VL_CHECK_OGL()
+      }
 
       int bind_target = 0;
       switch( target() )
@@ -241,9 +248,10 @@ namespace vl
       glBindTexture( bind_target, texture()->handle() ); VL_CHECK_OGL()
       glCopyTexSubImage2D( target(), level(), xoffset(), yoffset(), x(), y(), width(), height() ); VL_CHECK_OGL()
       glBindTexture( bind_target, 0 ); VL_CHECK_OGL()
-      glReadBuffer( read_buffer ); VL_CHECK_OGL()
-      
-      VL_CHECK_OGL()
+      if (read_buffer)
+      {
+        glReadBuffer( read_buffer ); VL_CHECK_OGL()
+      }
     }
 
   protected:
@@ -264,9 +272,7 @@ namespace vl
   public:
     CopyTexSubImage3D(int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height, Texture* texture, EReadDrawBuffer read_buffer=RDB_BACK_LEFT)
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
 
       mLevel = level;
       mXOffset = xoffset;
@@ -320,15 +326,21 @@ namespace vl
         VL_CHECK(zoffset() < texture()->depth())
 
         int read_buffer = 0;
-        glGetIntegerv(GL_READ_BUFFER, &read_buffer);
-        glReadBuffer(readBuffer());
+        if (!texture()->isDepthTexture())
+        {
+          glGetIntegerv(GL_READ_BUFFER, &read_buffer); VL_CHECK_OGL()
+          glReadBuffer(readBuffer()); VL_CHECK_OGL()
+        }
         glBindTexture(texture()->dimension(), texture()->handle() ); VL_CHECK_OGL()
         glCopyTexSubImage3D(texture()->dimension(), level(), xoffset(), yoffset(), zoffset(), x(), y(), width(), height()); VL_CHECK_OGL()
         glBindTexture(texture()->dimension(), 0 );
-        glReadBuffer(read_buffer);
+        if (read_buffer)
+        {
+          glReadBuffer( read_buffer ); VL_CHECK_OGL()
+        }
       }
       else
-        Log::error("CopyTexSubImage3D requires GL_VERSION_1_2.\n");
+        Log::error("CopyTexSubImage3D requires OpenGL 1.2!\n");
     }
 
   protected:

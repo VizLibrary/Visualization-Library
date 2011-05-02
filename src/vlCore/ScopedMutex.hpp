@@ -29,82 +29,36 @@
 /*                                                                                    */
 /**************************************************************************************/
 
-#if !defined(ioPNG_INCLUDE_ONCE)
-#define ioPNG_INCLUDE_ONCE
+#ifndef ScopedMutex_INCLUDE_ONCE
+#define ScopedMutex_INCLUDE_ONCE
 
-#include <vlCore/ResourceLoadWriter.hpp>
-#include <vlCore/ResourceDatabase.hpp>
-#include <vlCore/Image.hpp>
+#include <vlCore/IMutex.hpp>
 
 namespace vl
 {
-  class VirtualFile;
-  class String;
-  class Image;
-
-  VLCORE_EXPORT ref<Image> loadPNG(VirtualFile* file);
-  VLCORE_EXPORT ref<Image> loadPNG(const String& path);
-  VLCORE_EXPORT bool isPNG(VirtualFile* file);
-  VLCORE_EXPORT bool savePNG(const Image* src, const String& path, int compression = 6);
-  VLCORE_EXPORT bool savePNG(const Image* src, VirtualFile* file, int compression = 6);
-
-  //---------------------------------------------------------------------------
-  // LoadWriterPNG
-  //---------------------------------------------------------------------------
-  /**
-   * The LoadWriterPNG class is a ResourceLoadWriter capable of reading PNG files.
-   */
-  class LoadWriterPNG: public ResourceLoadWriter
+  //------------------------------------------------------------------------------
+  // ScopedMutex
+  //------------------------------------------------------------------------------
+  //! A class that locks the specified mutex when constructed and unlocks it when destructed.
+  class ScopedMutex
   {
   public:
-    virtual const char* className() { return "vl::LoadWriterPNG"; }
-    
-    LoadWriterPNG(): ResourceLoadWriter("|png|", "|png|"), mCompression(6) 
+    //! Constructor: locks the mutex.
+    ScopedMutex(IMutex* mutex): mMutex(mutex)
     {
-      VL_DEBUG_SET_OBJECT_NAME()
+      if (mMutex)
+        mMutex->lock();
     }
 
-    ref<ResourceDatabase> loadResource(const String& path) const 
+    //! Destructor: unlocks the mutex.
+    ~ScopedMutex()
     {
-      ref<ResourceDatabase> res_db = new ResourceDatabase;
-      ref<Image> img = loadPNG(path);
-      if (img)
-        res_db->resources().push_back(img);
-      return res_db;
+      if (mMutex)
+        mMutex->unlock();
     }
 
-    ref<ResourceDatabase> loadResource(VirtualFile* file) const
-    {
-      ref<ResourceDatabase> res_db = new ResourceDatabase;
-      ref<Image> img = loadPNG(file);
-      if (img)
-        res_db->resources().push_back(img);
-      return res_db;
-    }
-
-    bool writeResource(const String& path, ResourceDatabase* resource) const
-    {
-      bool ok = true;
-      for(unsigned i=0; i<resource->count<Image>(); ++i)
-        ok &= savePNG(resource->get<Image>(i), path, compression());
-      return ok;
-    }
-
-    bool writeResource(VirtualFile* file, ResourceDatabase* resource) const
-    {
-      bool ok = true;
-      for(unsigned i=0; i<resource->count<Image>(); ++i)
-        ok &= savePNG(resource->get<Image>(i), file, compression());
-      return ok;
-    }
-
-    int compression() const { return mCompression; }
-    //! Sets the compression level used when saving a file. Should be between 0 and 9
-    void setCompression(int compression) { mCompression = compression; }
-
-  protected:
-    int mCompression;
+  private:
+    IMutex* mMutex;
   };
 }
-
 #endif

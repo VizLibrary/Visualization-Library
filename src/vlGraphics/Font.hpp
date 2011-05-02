@@ -35,7 +35,7 @@
 #include <vlCore/Object.hpp>
 #include <vlCore/Vector4.hpp>
 #include <vlCore/String.hpp>
-#include <vlGraphics/config.hpp>
+#include <vlGraphics/link_config.hpp>
 #include <map>
 
 //-----------------------------------------------------------------------------
@@ -57,9 +57,7 @@ namespace vl
   private:
     Glyph(const Glyph& other): Object(other)  
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
     }
     void operator=(const Glyph&){}
 

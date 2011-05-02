@@ -71,9 +71,7 @@ Example:
 //-----------------------------------------------------------------------------
 VolumePlot::VolumePlot()
 {
-  #ifndef NDEBUG
-    mObjectName = className();
-  #endif
+  VL_DEBUG_SET_OBJECT_NAME()
   mActorTreeMulti = new ActorTree;
   mPlotTransform = new Transform;
   mIsosurfaceActor = new Actor;
@@ -131,7 +129,7 @@ void VolumePlot::compute(const Function& func, float threshold)
   mActors.push_back( new Actor(box_outline.get(),mBoxEffect.get(),mPlotTransform.get()) );
 
   ref<Volume> volume = new Volume;
-  volume->setup( NULL, minCorner(), maxCorner(), mSamplingResolution );
+  volume->setup( NULL, false, false, minCorner(), maxCorner(), mSamplingResolution );
   
   mc.volumeInfo()->push_back( new VolumeInfo( volume.get(), threshold ) );
 

@@ -32,7 +32,7 @@
 #ifndef EventListener_INCLUDE_ONCE
 #define EventListener_INCLUDE_ONCE
 
-#include <vlGraphics/config.hpp>
+#include <vlGraphics/link_config.hpp>
 #include <vlCore/String.hpp>
 
 namespace vl
@@ -61,9 +61,7 @@ namespace vl
     /** Constructor. */
     UIEventListener(): mOpenGLContext(NULL), mEnabled(true) 
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
     }
 
     /** Event generated when the bound OpenGLContext bocomes initialized or when the event listener is bound to an initialized OpenGLContext. */

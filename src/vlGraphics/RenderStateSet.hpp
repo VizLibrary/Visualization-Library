@@ -34,7 +34,7 @@
 
 #include <vlCore/Object.hpp>
 #include <vlCore/vlnamespace.hpp>
-#include <vlGraphics/config.hpp>
+#include <vlGraphics/link_config.hpp>
 #include <vector>
 
 namespace vl
@@ -49,9 +49,7 @@ namespace vl
   public:
     RenderStateSet(): mGLSLProgram(NULL)
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
     }
     virtual const char* className() { return "vl::RenderStateSet"; }
 

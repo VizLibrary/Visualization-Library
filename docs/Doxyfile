@@ -1318,3 +1318,11 @@ DOT_CLEANUP            = YES
 SEARCHENGINE           = YES
 
 SERVER_BASED_SEARCH    = YES
+ 
+#--------------------------------------------------------------------------- 
+# Automatically added by build script 
+#--------------------------------------------------------------------------- 
+ 
+PROJECT_NUMBER = "v2011.05.1140RC2" 
+HTML_OUTPUT = Visualization_Library_SDK-docs 
+OUTPUT_DIRECTORY = ../.. 

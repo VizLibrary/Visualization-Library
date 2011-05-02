@@ -19,8 +19,8 @@ cmake_minimum_required(VERSION 2.6)
 
 # Current Version
 set(VLVERSION_MAJOR "2011")
-set(VLVERSION_MINOR "03")
-set(VLVERSION_PATCH "1135")
+set(VLVERSION_MINOR "05")
+set(VLVERSION_PATCH "1140")
 set(VLVERSION "${VLVERSION_MAJOR}.${VLVERSION_MINOR}")
 
 # Common Dirs
@@ -42,7 +42,7 @@ include( InternalMacros )
 ################################################################################
 
 # Dynamic vs Static Linking
-option(VL_DYNAMIC_LINKING "Set to ON to build VL for dynamic linking, or OFF for static." OFF)
+option(VL_DYNAMIC_LINKING "Set to ON to build VL for dynamic linking, or OFF for static." ON)
 if(VL_DYNAMIC_LINKING)
 	add_definitions(-DVL_DYNAMIC_LINKING)
 	set(VL_SHARED_OR_STATIC "SHARED")

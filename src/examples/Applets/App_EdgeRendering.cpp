@@ -41,9 +41,21 @@ using namespace vl;
 class App_EdgeRendering: public BaseDemo
 {
 public:
+  virtual String appletInfo()
+  {
+    return BaseDemo::appletInfo() + 
+    "'1' = edge rendering off.\n" +
+    "'2' = edge rendering on: silhouette only.\n" +
+    "'3' = edge rendering on: silhouette + creases.\n" +
+    "'4' = edge rendering on: silhouette + creases + hidden lines.\n" +
+    "'5' = edges only: silhouette + creases.\n" + 
+    "'6' = edges only: silhouette + creases + hidden lines.\n" +
+    "\n";
+  }
+
   void initEvent()
   {
-    BaseDemo::initEvent();
+    vl::Log::print(appletInfo());
 
     // retrieve the default rendering
     mMainRendering = rendering()->as<Rendering>();
@@ -129,8 +141,8 @@ public:
   // '2' = edge rendering on: silhouette only.
   // '3' = edge rendering on: silhouette + creases.
   // '4' = edge rendering on: silhouette + creases + hidden lines.
-  // '5' = hidden line removal wireframe: silhouette + creases.
-  // '6' = hidden line removal wireframe: silhouette + creases + hidden lines.
+  // '5' = edges only: silhouette + creases.
+  // '6' = edges only: silhouette + creases + hidden lines.
   void keyPressEvent(unsigned short ch, EKey key)
   {
     BaseDemo::keyPressEvent(ch, key);

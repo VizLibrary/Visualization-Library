@@ -2,8 +2,43 @@
 
    \page pagChangelog Changelog
 
-	<div class="featuretitle">Visualization Library 2011.02.1133</div>
+	<div class="featuretitle">Visualization Library 2011.04.1140 RC1</div>
+
+	- Added ScopedMutex class and IMutex interface class.
+	- Synchronized log functions for multithreaded usage of VL.
+	- Added VL_SHADER_USER_DATA config variable, to bind user data to a vl::Shader.
+	- Added ShaderNode getter functions.
+	- CopyTexSubImage calls glReadBuffer only for color textures.
+	- Added vl::Texture::isDepthTexture() method.
+	- DLL compilation enabled by default.
+	- Fixed OpenGL context creation attributes handling.
+	- setUniform(int/unsigned/float/double) renamed setUniformI/U/F/D() for better clarity.
+	- CMake variables starting with GUI_* renamed VL_GUI_*
+	- Fixed double precision pipeline compilation.
+	- Marching cube volume can now use directly the user's data without duplication and perform an optional copy on the internal volume buffer.
+	- MarchingCubes demo-tests uses VBOs and shows polygon tessellation in wireframe.
+	- Added Texture::clone() function. Useful when one needs to use the same texture object with different texture parameters.
+	- Added direct texture creation functions: vl::Texture::createTexture1D()/createTexture2D() etc.
+	- VL_DEBUG_LIVING_OBJECTS enabled also in release mode.
+	- Optional debugging living objects code after tests.
+	- Print demo-applet info on startup.
+	- More coherent template parameters naming conventions.
+	- config.hpp renamed to link_config.hpp.
+	- Updated READMEs.
+
+	<div class="featuretitle">Visualization Library 2011.04.1135</div>
 	
+	- Multisample textures.
+	- Texture buffers support.
+	- Tessellation shaders demo-test.
+	- New directory layout.
+	- New building scripts.
+	- VL can now be compiled as a DLL.
+	- Restored wxWidgets GUI bindings.
+	- A ton of bug fixes and enhancements.
+
+	<div class="featuretitle">Visualization Library 2011.02.1133</div>
+
 	- <b>API CHANGES</b>
 		- Visualization Library splitted into:
 			- \b VLCore: all classes not requiring OpenGL, including vl::Image and 2D image IO modules, virtual file system, resource management, vl::String, math classes and functions etc.

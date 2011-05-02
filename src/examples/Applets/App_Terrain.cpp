@@ -44,7 +44,7 @@ public:
       openglContext()->quitApplication();
       return;
     }
-    BaseDemo::initEvent();
+    vl::Log::print(appletInfo());
 
     ghostCameraManipulator()->setMovementSpeed(5);
     // allocate terrain scene manager
@@ -88,7 +88,7 @@ public:
       // install and enable fog
       terrain->shaderNode()->setRenderState(fog.get());
       terrain->shaderNode()->setEnable(vl::EN_FOG,true);
-      terrain->shaderNode()->updateHierachy();
+      terrain->shaderNode()->updateHierarchy();
     }
 
     // for debugging purposes

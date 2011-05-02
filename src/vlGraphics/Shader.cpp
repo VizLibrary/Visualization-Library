@@ -44,10 +44,12 @@ using namespace vl;
 //------------------------------------------------------------------------------
 Shader::Shader()
 {
-  #ifndef NDEBUG
-    mObjectName = className();
-  #endif
+  VL_DEBUG_SET_OBJECT_NAME()
   mLastUpdateTime = 0;
+  // shader user data
+  #if VL_SHADER_USER_DATA
+    mShaderUserData = NULL;
+  #endif
 }
 //------------------------------------------------------------------------------
 Shader::~Shader()
@@ -292,9 +294,7 @@ void AlphaFunc::apply(const Camera*, OpenGLContext*) const
 //------------------------------------------------------------------------------
 Material::Material()
 {
-  #ifndef NDEBUG
-    mObjectName = className();
-  #endif
+  VL_DEBUG_SET_OBJECT_NAME()
   mFrontAmbient = fvec4(0.2f, 0.2f, 0.2f, 1.0f);
   mFrontDiffuse = fvec4(0.8f, 0.8f, 0.8f, 1.0f);
   mFrontSpecular = fvec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -447,17 +447,13 @@ void PointSize::apply(const Camera*, OpenGLContext*) const
 //------------------------------------------------------------------------------
 PolygonStipple::PolygonStipple()
 {
-  #ifndef NDEBUG
-    mObjectName = className();
-  #endif
+  VL_DEBUG_SET_OBJECT_NAME()
   memset(mMask, 0xFF, sizeof(unsigned char)*32*32/8);
 }
 //------------------------------------------------------------------------------
 PolygonStipple::PolygonStipple(const unsigned char* mask)
 {
-  #ifndef NDEBUG
-    mObjectName = className();
-  #endif
+  VL_DEBUG_SET_OBJECT_NAME()
   set(mask);
 }
 //------------------------------------------------------------------------------
@@ -708,9 +704,7 @@ namespace
 //------------------------------------------------------------------------------
 TexEnv::TexEnv(int texunit)
 {
-  #ifndef NDEBUG
-    mObjectName = className();
-  #endif
+  VL_DEBUG_SET_OBJECT_NAME()
 
   mTextureUnit = texunit;
   mMode = TEM_MODULATE;
@@ -805,9 +799,7 @@ void TexEnv::apply(const Camera*, OpenGLContext*) const
 //! the eye plane is specified in camera coordinates.
 TexGen::TexGen(int texunit)
 {
-  #ifndef NDEBUG
-    mObjectName = className();
-  #endif
+  VL_DEBUG_SET_OBJECT_NAME()
   mTextureUnit  = texunit;
   mEyePlaneS    = fvec4(1,0,0,0);
   mObjectPlaneS = fvec4(1,0,0,0);

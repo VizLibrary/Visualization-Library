@@ -34,7 +34,7 @@
 
 #include <vlCore/Collection.hpp>
 #include <vlGraphics/RenderEventCallback.hpp>
-#include <vlGraphics/config.hpp>
+#include <vlGraphics/link_config.hpp>
 
 namespace vl
 {
@@ -55,9 +55,7 @@ namespace vl
 
     RendererAbstract()
     {
-      #ifndef NDEBUG
-        mObjectName = className();
-      #endif
+      VL_DEBUG_SET_OBJECT_NAME()
       mOnStartedCallbacks  = new Collection<RenderEventCallback>;
       mOnFinishedCallbacks = new Collection<RenderEventCallback>;
       mClearFlags = CF_CLEAR_COLOR_DEPTH;
