@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -34,7 +34,7 @@
 #include <vlGraphics/SceneManager.hpp>
 #include <vlGraphics/RenderQueue.hpp>
 #include <vlCore/Log.hpp>
-#include <vlCore/Array.hpp>
+#include <vlGraphics/Array.hpp>
 #include <vlGraphics/Geometry.hpp>
 
 using namespace vl;
@@ -64,27 +64,27 @@ void EdgeExtractor::addEdge(std::set<EdgeExtractor::Edge>& edges, const EdgeExtr
 }
 //-----------------------------------------------------------------------------
 //! Extracts the edges from the given Geometry and appends them to edges().
-//! The given geometry must have a vertex array of format ArrayFloat3.
 void EdgeExtractor::extractEdges(Geometry* geom)
 {
-  ArrayFloat3* verts = dynamic_cast<ArrayFloat3*>(geom->vertexArray());
+  ArrayAbstract* verts = geom->vertexArray() ? geom->vertexArray() : geom->vertexAttribArray(vl::VA_Position) ? geom->vertexAttribArray(vl::VA_Position)->data() : NULL;
 
   // mic fixme:
   // here the bottle-neck seems to be the continuous allocation/deallocation and insertion/search time,
   // maybe a memory-pool-managed hash table would help?
-  std::set<Edge> edges;
   if (!verts)
   {
     vl::Log::error("EdgeExtractor::extractEdges(geom): 'geom' must have a vertex array of type ArrayFloat3.\n");
     return;
   }
 
+  std::set<Edge> edges;
+
   // iterate all primitives
   for(int iprim=0; iprim<geom->drawCalls()->size(); ++iprim)
   {
     DrawCall* prim = geom->drawCalls()->at(iprim);
     // iterate triangles (if present)
-    for(TriangleIterator trit = prim->triangleIterator(); !trit.isEnd(); trit.next())
+    for(TriangleIterator trit = prim->triangleIterator(); trit.hasNext(); trit.next())
     {
       size_t a = trit.a();
       size_t b = trit.b();
@@ -92,15 +92,15 @@ void EdgeExtractor::extractEdges(Geometry* geom)
       if (a == b || b == c || c == a)
         continue;
       // compute normal
-      fvec3 v0 = verts->at(a);
-      fvec3 v1 = verts->at(b) - v0;
-      fvec3 v2 = verts->at(c) - v0;
+      fvec3 v0 = (fvec3)verts->getAsVec3(a);
+      fvec3 v1 = (fvec3)verts->getAsVec3(b) - v0;
+      fvec3 v2 = (fvec3)verts->getAsVec3(c) - v0;
       fvec3 n = cross(v1,v2).normalize();
       if (n.isNull())
         continue;
-      addEdge(edges, Edge( verts->at(a), verts->at(b) ), n );
-      addEdge(edges, Edge( verts->at(b), verts->at(c) ), n );
-      addEdge(edges, Edge( verts->at(c), verts->at(a) ), n );
+      addEdge(edges, Edge( (fvec3)verts->getAsVec3(a), (fvec3)verts->getAsVec3(b) ), n );
+      addEdge(edges, Edge( (fvec3)verts->getAsVec3(b), (fvec3)verts->getAsVec3(c) ), n );
+      addEdge(edges, Edge( (fvec3)verts->getAsVec3(c), (fvec3)verts->getAsVec3(a) ), n );
     }
   }
 
@@ -127,8 +127,7 @@ void EdgeExtractor::extractEdges(Geometry* geom)
 ref<Geometry> EdgeExtractor::generateEdgeGeometry() const
 {
   ref<Geometry> geom = new Geometry;
-  geom->setColor(vl::black);
-  geom->setVBOEnabled(false);
+  geom->setBufferObjectEnabled(false);
   ref<ArrayFloat3> vert_array = new ArrayFloat3;
   geom->setVertexArray(vert_array.get());
   #ifdef SHOW_NORMALS
@@ -163,7 +162,7 @@ ref<Geometry> EdgeExtractor::generateEdgeGeometry() const
 //-----------------------------------------------------------------------------
 bool EdgeExtractor::extractEdges(Actor* actor)
 {
-  Geometry* geom = dynamic_cast<Geometry*>(actor->lod(0).get());
+  Geometry* geom = cast<Geometry>(actor->lod(0));
   if (geom)
     extractEdges(geom);
   return geom != NULL;
@@ -173,7 +172,7 @@ void EdgeExtractor::extractEdges(ActorCollection* actors)
 {
   for(int i=0; i<actors->size(); ++i)
   {
-    Geometry* geom = dynamic_cast<Geometry*>(actors->at(i)->lod(0).get());
+    Geometry* geom = cast<Geometry>(actors->at(i)->lod(0));
     if (geom)
       extractEdges(geom);
   }

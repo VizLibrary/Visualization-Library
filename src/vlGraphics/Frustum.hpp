@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -48,9 +48,9 @@ namespace vl
   */
   class Frustum: public Object
   {
-  public:
-    virtual const char* className() { return "vl::Frustum"; }
+    VL_INSTRUMENT_CLASS(vl::Frustum, Object)
 
+  public:
     std::vector<Plane>& planes() { return mPlanes; }
     const std::vector<Plane>& planes() const { return mPlanes; }
 

@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -52,12 +52,6 @@ public:
   {
     program->setAppletName(title);
 
-    /* open a console so we can see the program's output on stdout */
-    vl::showWin32Console();
-
-    /* init Visualization Library */
-    vl::VisualizationLibrary::init();
-
     setupApplet(program, mVLCWin, bk_color, eye, center);
 
     /* Initialize the OpenGL context and window properties */
@@ -102,9 +96,6 @@ int MFC_Test::ExitInstance()
   /* destroy the window and OpenGL rendering context */
   mVLCWin = NULL;
 
-  /* shut down Visualization Library*/
-  vl::VisualizationLibrary::shutdown();
-
   return 0;
 }
 //-----------------------------------------------------------------------------
@@ -114,9 +105,12 @@ BOOL MFC_Test::InitInstance()
   CWinApp::InitInstance();
 
   /* parse the command line */
-  vl::String cmdline = m_lpCmdLine;
-  int   test  = 0;
-  /*int   count = */sscanf(cmdline.toStdString().c_str(), "%d", &test);
+  vl::String cmd = m_lpCmdLine;
+  int test  = 0;
+  std::vector<String> parms;
+  cmd.split(' ', parms);
+  if (parms.size()>=1)
+    test = parms[0].toInt();
 
   /* setup the OpenGL context format */
   vl::OpenGLContextFormat format;
@@ -129,7 +123,7 @@ BOOL MFC_Test::InitInstance()
   format.setMultisample(true);*/
 
   TestBatteryMFC test_battery(mVLCWin.get());
-  test_battery.run(test, format);
+  test_battery.run(test, parms[0].toStdString(), format);
 
   /* MFC specific stuff */
   if (mVLCWin->m_hWnd)

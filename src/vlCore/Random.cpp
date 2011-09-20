@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -32,13 +32,11 @@
 #include <vlCore/Random.hpp>
 #include <vlCore/Time.hpp>
 #include <vlCore/Log.hpp>
+#include <vlCore/MersenneTwister.hpp>
 #include <cstdlib>
 
-#if defined(_MSC_VER) || defined(__MINGW32__)
-  #include <windows.h>
+#if defined(VL_PLATFORM_WINDOWS)
   #include <wincrypt.h>
-  // #include <NTSecAPI.h>
-  // #pragma comment(lib,"Advapi32.lib")
 #endif
 
 using namespace vl;
@@ -51,6 +49,8 @@ Random::Random()
   hCryptProv = NULL;
   if( !CryptAcquireContext( (HCRYPTPROV*)&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0) )
     hCryptProv = NULL;
+#elif defined(__GNUG__) && !defined(__MINGW32__)
+  mDefURandom = fopen("/dev/urandom", "rb");
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -58,7 +58,16 @@ Random::~Random()
 {
 #if defined(_MSC_VER) || defined(__MINGW32__)
   if( hCryptProv  )
+  {
     CryptReleaseContext( (HCRYPTPROV)hCryptProv, 0 );
+    hCryptProv = NULL;
+  }
+#elif defined(__GNUG__) && !defined(__MINGW32__)
+  if (mDefURandom)
+  {
+    fclose(mDefURandom);
+    mDefURandom = NULL;
+  }
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -67,54 +76,38 @@ bool Random::fillRandom(void* ptr, size_t bytes) const
 #if defined(_MSC_VER) || defined(__MINGW32__)
   if( !(hCryptProv && CryptGenRandom( (HCRYPTPROV)hCryptProv, bytes, (BYTE*)ptr)) )
   {
-    standardFillRandom(ptr, bytes);
+    fillRandomMersenneTwister(ptr, bytes);
     return false;
   }
   else
     return true;
 #elif defined(__GNUG__) && !defined(__MINGW32__)
-  FILE* fin = fopen("/dev/urandom", "rb");
-  if (fin)
+  if ( mDefURandom && fread(ptr, 1, bytes, mDefURandom) == bytes )
+    return true;
+  else
   {
-    if ( fread(ptr, 1, bytes, fin) == bytes )
-    {
-      fclose(fin);
-      return true;
-    }
+    fillRandomMersenneTwister(ptr, bytes);
+    return false;
   }
-  standardFillRandom(ptr, bytes);
-  return false;
 #else
-  standardFillRandom(ptr, bytes);
+  fillRandomMersenneTwister(ptr, bytes);
   return false;
 #endif
 }
 //-----------------------------------------------------------------------------
-void Random::standardFillRandom(void* ptr, size_t bytes)
+void Random::fillRandomMersenneTwister(void* ptr, size_t bytes) const
 {
+  unsigned int rnd = 0;
+
   unsigned char* cptr = (unsigned char*)ptr;
   memset(cptr, 0, bytes);
   for (size_t i=0; i<bytes; ++i)
   {
-    unsigned int r = (unsigned int)rand();
-    cptr[i] ^= (r>>0)  & 0xFF;
-    cptr[i] ^= (r>>8)  & 0xFF;
-    cptr[i] ^= (r>>16) & 0xFF;
-    cptr[i] ^= (r>>12) & 0xFF;
+    defMersenneTwister()->randInt( rnd );
+    cptr[i] ^= (rnd>>0)  & 0xFF;
+    cptr[i] ^= (rnd>>8)  & 0xFF;
+    cptr[i] ^= (rnd>>16) & 0xFF;
+    cptr[i] ^= (rnd>>12) & 0xFF;
   }
-
-  vl::Log::warning("Random::standardFillRandom() is being used.\n");
-}
-//-----------------------------------------------------------------------------
-void Random::standardRandomize()
-{
-  Time time;
-  int stack_pos = 0;
-  static int static_pos = 0;
-  int* dyn_pos = new int[10]; delete [] dyn_pos;
-  unsigned int rand_start = time.microsecond() ^ time.second() ^ time.minute() ^ time.hour() ^ 
-                            time.dayOfMonth() ^ time.month() ^ time.year() ^ 
-                            (unsigned long long)&static_pos ^ (unsigned long long)&stack_pos ^ (unsigned long long)dyn_pos;
-  srand(rand_start);
 }
 //-----------------------------------------------------------------------------

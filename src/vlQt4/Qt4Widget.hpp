@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -155,8 +155,8 @@ namespace vlQt4
 
       initGLContext();
 
-      mRenderTarget->setWidth(width);
-      mRenderTarget->setHeight(height);
+      mFramebuffer->setWidth(width);
+      mFramebuffer->setHeight(height);
 
       #ifndef NDEBUG
         printf("--------------------------------------------\n");

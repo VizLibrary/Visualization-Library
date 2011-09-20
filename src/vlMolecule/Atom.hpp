@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -50,9 +50,9 @@ namespace vl
    */
   class Atom: public Object
   {
-  public:
-    virtual const char* className() { return "vl::Atom"; }
+    VL_INSTRUMENT_CLASS(vl::Atom, Object)
 
+  public:
     Atom()
     {
       VL_DEBUG_SET_OBJECT_NAME()

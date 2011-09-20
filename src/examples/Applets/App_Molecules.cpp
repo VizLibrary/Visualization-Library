@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -138,7 +138,7 @@ public:
   /* initialization */
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
 
     /* initialize the text actor */
     mText->setText("Drop a MOL2 file inside the window.");

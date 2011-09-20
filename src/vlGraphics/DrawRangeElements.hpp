@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -34,7 +34,7 @@
 
 #include <vlGraphics/DrawCall.hpp>
 #include <vlGraphics/TriangleIterator.hpp>
-#include <vlCore/Array.hpp>
+#include <vlGraphics/Array.hpp>
 #include <vlCore/Log.hpp>
 #include <vlCore/Say.hpp>
 #include <algorithm>
@@ -52,6 +52,8 @@ namespace vl
    * vl::DrawRangeElementsUInt, vl::DrawRangeElementsUShort or vl::DrawRangeElementsUByte. */
   class DrawRangeElementsBase: public DrawCall
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::DrawRangeElementsBase, DrawCall)
+
   public:
     /** Sets the range start. See also http://www.opengl.org/sdk/docs/man3/xhtml/glDrawRangeElements.xml */
     void setRangeStart(int rstart) { mRangeStart = rstart; }
@@ -65,16 +67,8 @@ namespace vl
     /** Returns the range end. See also http://www.opengl.org/sdk/docs/man3/xhtml/glDrawRangeElements.xml */
     int rangeEnd() const { return mRangeEnd; }
 
-    /** Returns the special index which idendifies a primitive restart. By default it is set to ~0 that is 
-      * 0xFF, 0xFFFF, 0xFFFFFFFF respectively for ubyte, ushort, uint index types. */
-    GLuint primitiveRestartIndex() const { return mPrimitiveRestartIndex; }
-
-    /** Sets the special index which idendifies a primitive restart. By default it is set to ~0 that is 
-      * 0xFF, 0xFFFF, 0xFFFFFFFF respectively for ubyte, ushort, uint index types. */
-    void setPrimitiveRestartIndex(GLuint index) { mPrimitiveRestartIndex = index; }
-
     /** Returns whether the primitive-restart functionality is enabled or not. See http://www.opengl.org/registry/specs/NV/primitive_restart.txt */
-    bool primitiveRestartEnabled() const { return mPrimitiveRestartEnabled; }
+    virtual bool primitiveRestartEnabled() const { return mPrimitiveRestartEnabled; }
 
     /** Enables the primitive-restart functionality. See http://www.opengl.org/registry/specs/NV/primitive_restart.txt */
     void setPrimitiveRestartEnabled(bool enabled) { mPrimitiveRestartEnabled = enabled; }
@@ -92,20 +86,23 @@ namespace vl
   protected:
     int mRangeStart;
     int mRangeEnd;
-    int  mBaseVertex;
-    GLuint mPrimitiveRestartIndex;
+    GLuint mBaseVertex;
     bool mPrimitiveRestartEnabled;
   };
   //------------------------------------------------------------------------------
   // DrawRangeElements
   //------------------------------------------------------------------------------
   /** 
-    * Wrapper for the OpenGL function glDrawRangeElements(). See also http://www.opengl.org/sdk/docs/man3/xhtml/glDrawRangeElements.xml for more information.
+   * Wrapper for the OpenGL function glDrawRangeElements(). See also http://www.opengl.org/sdk/docs/man3/xhtml/glDrawRangeElements.xml for more information.
    *
-   * Features supported: 
-   * - <b>multi instancing</b>: NO 
-   * - <b>base vertex</b>: YES
-   * - <b>primitive restart</b>: YES
+   * This class wraps the following OpenGL functions:
+   * - glDrawRangeElements (http://www.opengl.org/sdk/docs/man4/xhtml/glDrawRangeElements.xml)
+   * - glDrawRangeElementsBaseVertex (http://www.opengl.org/sdk/docs/man4/xhtml/glDrawRangeElementsBaseVertex.xml)
+   *
+   * Supports:
+   * - <b>Multi instancing</b>: NO 
+   * - <b>Base vertex</b>: YES
+   * - <b>Primitive restart</b>: YES
    *
    * Use the functions setPrimitiveRestartIndex() and setPrimitiveRestartEnabled() to use the <b>primitive 
    * restart</b> functionality (requires OpenGL 3.1). For more information see http://www.opengl.org/sdk/docs/man3/xhtml/glPrimitiveRestartIndex.xml
@@ -114,13 +111,22 @@ namespace vl
    * Requires OpenGL 3.2 or GL_ARB_draw_elements_base_vertex. For more information see http://www.opengl.org/sdk/docs/man3/xhtml/glDrawRangeElementsBaseVertex.xml
    *
    * DrawElements, MultiDrawElements, DrawRangeElements, DrawArrays are used by Geometry to define a set of primitives to be rendered, see Geometry::drawCalls().
-   * The indices are stored in a GLBufferObject and thus they can be stored locally or on the GPU. 
-   * To gain direct access to the GLBufferObject use the indices() function.
+   * The indices are stored in a BufferObject and thus they can be stored locally or on the GPU. 
+   * To gain direct access to the BufferObject use the indexBuffer() function.
    *
-   * \sa DrawCall, DrawElements, MultiDrawElements, DrawArrays, Geometry, Actor */
-  template <typename index_type, GLenum Tgltype, class arr_type>
+   * DrawArrays, DrawElements, MultiDrawElements and DrawRangeElements are used by Geometry to define a set of primitives to be rendered.
+   * @sa Geometry::drawCalls(), DrawCall, DrawElements, MultiDrawElements, DrawRangeElements, Geometry, Actor */
+  template <class arr_type>
   class DrawRangeElements: public DrawRangeElementsBase
   {
+    VL_INSTRUMENT_CLASS(vl::DrawRangeElements<arr_type>, DrawRangeElementsBase)
+
+  public:
+    typedef typename arr_type::scalar_type index_type;
+    //! The special index which identifies a primitive restart. By default it is set to ~0 that is 0xFF, 0xFFFF, 0xFFFFFFFF respectively for GLubyte, GLushort, GLuint index types. */
+    static const index_type primitive_restart_index = index_type(~0);
+    virtual unsigned int primitiveRestartIndex() { return (unsigned int)primitive_restart_index; }
+
   private:
     template<typename T>
     class Triangle
@@ -147,29 +153,29 @@ namespace vl
     };
 
   public:
-    virtual const char* className() { return "vl::DrawRangeElements"; }
-
-    DrawRangeElements(EPrimitiveType primitive = PT_TRIANGLES, int r_start=0, int r_end=index_type(~0))
+    DrawRangeElements(EPrimitiveType primitive = PT_TRIANGLES, int r_start=0, int r_end=primitive_restart_index)
     {
       VL_DEBUG_SET_OBJECT_NAME()
       mType                    = primitive;
       mRangeStart              = r_start;
       mRangeEnd                = r_end;
       mIndexBuffer             = new arr_type;
-      mPrimitiveRestartIndex   = index_type(~0);
       mPrimitiveRestartEnabled = false;
       mBaseVertex              = 0;
+      mCount                   = -1; // till the end of the indexBuffer()
+      mOffset                  = 0; // from the beginning of the indexBuffer()
     }
 
     DrawRangeElements& operator=(const DrawRangeElements& other)
     {
-      DrawRangeElementsBase::operator=(other);
-      *indices()               = *other.indices();
+      super::operator=(other);
+      *indexBuffer()               = *other.indexBuffer();
       mRangeStart              = other.mRangeStart;
       mRangeEnd                = other.mRangeEnd;
       mPrimitiveRestartEnabled = other.mPrimitiveRestartEnabled;
-      mPrimitiveRestartIndex   = other.mPrimitiveRestartIndex;
       mBaseVertex              = other.mBaseVertex;
+      mCount                   = other.mCount;
+      mOffset                  = other.mOffset;
       return *this;
     }
 
@@ -180,34 +186,44 @@ namespace vl
       return de;
     }
 
-    virtual unsigned int handle() const { return indices()->gpuBuffer()->handle(); }
+    //! The number of indices to render, default is -1 which means 'till the end of the indexBuffer() from offset()'.
+    void setCount(i32 count) { mCount = count; }
 
-    arr_type* indices() { return mIndexBuffer.get(); }
+    //! The number of indices to render, default is -1 which means 'till the end of the indexBuffer() from offset()'.
+    i32 count() const { return mCount; }
 
-    const arr_type* indices() const { return mIndexBuffer.get(); }
+    //! The offset in bytes from which the index buffer will be read.
+    void setOffset(u32 offset) { mOffset = offset; }
 
-    virtual void updateVBOs(bool discard_local_data=false, bool force_update=false)
+    //! The offset in bytes from which the index buffer will be read.
+    u32 offset() const { return mOffset; }
+
+    //! The BufferObject containing the indices used to render
+    void setIndexBuffer(arr_type* index_buffer) { mIndexBuffer = index_buffer; }
+
+    //! The BufferObject containing the indices used to render
+    arr_type* indexBuffer() { return mIndexBuffer.get(); }
+
+    //! The BufferObject containing the indices used to render
+    const arr_type* indexBuffer() const { return mIndexBuffer.get(); }
+
+    virtual void updateDirtyBufferObject(EBufferObjectUpdateMode mode)
     {
-      if (indices()->isVBODirty() || force_update)
-        indices()->updateVBO(discard_local_data);
+      if (indexBuffer()->isBufferObjectDirty() || (mode & BUF_ForceUpdate))
+        indexBuffer()->updateBufferObject(mode);
     }
 
-    virtual void deleteVBOs()
+    virtual void deleteBufferObject()
     {
-      indices()->gpuBuffer()->deleteGLBufferObject();
+      indexBuffer()->bufferObject()->deleteBufferObject();
     }
 
-    virtual void clearLocalBuffer()
+    virtual void render(bool use_bo) const
     {
-      indices()->gpuBuffer()->resize(0);
-    }
-
-    virtual void render(bool use_vbo) const
-    {
-      VL_CHECK(mBaseVertex>=0)
-      VL_CHECK(!use_vbo || (use_vbo && (GLEW_ARB_vertex_buffer_object||GLEW_VERSION_1_5||GLEW_VERSION_3_0)))
-      use_vbo &= GLEW_ARB_vertex_buffer_object||GLEW_VERSION_1_5||GLEW_VERSION_3_0; // && indices()->gpuBuffer()->handle() && indices()->sizeGPU();
-      if ( !use_vbo && !indices()->size() )
+      VL_CHECK_OGL()
+      VL_CHECK(!use_bo || (use_bo && Has_BufferObject))
+      use_bo &= Has_BufferObject; // && indexBuffer()->bufferObject()->handle() && indexBuffer()->sizeBufferObject();
+      if ( !use_bo && !indexBuffer()->size() )
         return;
 
       // apply patch parameters if any and if using PT_PATCHES
@@ -216,49 +232,62 @@ namespace vl
       // primitive restart enable
       if(primitiveRestartEnabled())
       {
-        if(GLEW_VERSION_3_1)
-        {
-          glEnable(GL_PRIMITIVE_RESTART);
-          glPrimitiveRestartIndex(primitiveRestartIndex());
-        }
-        else
-        if(GLEW_NV_primitive_restart)
-        {
-          glEnable(GL_PRIMITIVE_RESTART_NV);
-          glPrimitiveRestartIndexNV(primitiveRestartIndex());
-        }
-        else
-        {
-          vl::Log::error("DrawRangeElements error: primitive restart not supported by this OpenGL implementation!\n");
-          VL_TRAP();
-          return;
-        }
+        VL_CHECK(Has_Primitive_Restart);
+        glEnable(GL_PRIMITIVE_RESTART); VL_CHECK_OGL();
+        glPrimitiveRestartIndex(primitive_restart_index); VL_CHECK_OGL();
       }
 
-      const GLvoid* ptr = indices()->gpuBuffer()->ptr();
+      // compute base pointer
 
-      if (use_vbo && indices()->gpuBuffer()->handle())
+      const GLvoid* ptr = indexBuffer()->bufferObject()->ptr();
+      if (use_bo && indexBuffer()->bufferObject()->handle())
       {
-        VL_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices()->gpuBuffer()->handle());
+        VL_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer()->bufferObject()->handle()); VL_CHECK_OGL()
         ptr = 0;
       }
       else
-        VL_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      {
+        VL_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); VL_CHECK_OGL()
+      }
+
+      // compute final pointer and count
+
+      const char*ptr_end = NULL;
+      if(mCount < 0)
+      {
+        // compute the end of the index buffer
+        ptr_end = (char*)ptr + sizeof(index_type)*(use_bo ? indexBuffer()->sizeBufferObject() : indexBuffer()->size());
+
+        // offset in the index buffer
+        ptr = (char*)ptr + mOffset;
+      }
+      else
+      {
+        // offset in the index buffer
+        ptr = (char*)ptr + mOffset;
+
+        // compute the end of the indices
+        ptr_end = (char*)ptr + sizeof(index_type)*mCount;
+      }
+
+      // compute the remaining indices
+      const GLsizei count = (GLsizei)((index_type*)ptr_end - (index_type*)ptr);
 
       if (mBaseVertex == 0)
-        glDrawRangeElements( primitiveType(), mRangeStart, mRangeEnd, use_vbo ? (GLsizei)indices()->sizeGPU() : (GLsizei)indices()->size(), indices()->glType(), ptr );
+      {
+        glDrawRangeElements( primitiveType(), mRangeStart, mRangeEnd, count, arr_type::gl_type, ptr ); VL_CHECK_OGL()
+      }
       else
-        VL_glDrawRangeElementsBaseVertex( primitiveType(), mRangeStart, mRangeEnd, use_vbo ? (GLsizei)indices()->sizeGPU() : (GLsizei)indices()->size(), indices()->glType(), ptr, mBaseVertex );
+      {
+        VL_CHECK(Has_Base_Vertex)
+        VL_glDrawRangeElementsBaseVertex( primitiveType(), mRangeStart, mRangeEnd, count, arr_type::gl_type, ptr, mBaseVertex ); VL_CHECK_OGL()
+      }
 
       // primitive restart disable
 
       if(primitiveRestartEnabled())
       {
-        if(GLEW_VERSION_3_1)
-          glDisable(GL_PRIMITIVE_RESTART);
-        else
-        if(GLEW_NV_primitive_restart)
-          glDisable(GL_PRIMITIVE_RESTART_NV);
+        glDisable(GL_PRIMITIVE_RESTART); VL_CHECK_OGL()
       }
     }
 
@@ -266,7 +295,7 @@ namespace vl
     {
       ref< TriangleIteratorIndexed<arr_type> > it = 
         new TriangleIteratorIndexed<arr_type>( mIndexBuffer.get(), primitiveType(), 
-            baseVertex(), primitiveRestartEnabled(), primitiveRestartIndex() );
+            baseVertex(), primitiveRestartEnabled(), primitive_restart_index );
       it->initialize();
       return TriangleIterator(it.get());
     }
@@ -274,7 +303,7 @@ namespace vl
     IndexIterator indexIterator() const
     {
       ref< IndexIteratorElements<arr_type> > iie = new IndexIteratorElements<arr_type>;
-      iie->initialize( mIndexBuffer.get(), NULL, NULL, mBaseVertex, mPrimitiveRestartEnabled, mPrimitiveRestartIndex );
+      iie->initialize( mIndexBuffer.get(), NULL, NULL, mBaseVertex, mPrimitiveRestartEnabled, primitive_restart_index );
       IndexIterator iit;
       iit.initialize( iie.get() );
       return iit;
@@ -282,10 +311,10 @@ namespace vl
 
     void computeRange()
     {
-      mRangeStart = index_type(~0);
+      mRangeStart = primitive_restart_index;
       mRangeEnd   = 0;
 
-      for(IndexIterator it=indexIterator(); !it.isEnd(); it.next())
+      for(IndexIterator it=indexIterator(); it.hasNext(); it.next())
       {
         if (it.index() < mRangeStart)
           mRangeStart = it.index();
@@ -296,38 +325,55 @@ namespace vl
       if (mRangeEnd < mRangeStart)
       {
         mRangeStart = 0;
-        mRangeEnd   = index_type(~0);
+        mRangeEnd   = primitive_restart_index;
       }
     }
 
   protected:
     ref< arr_type > mIndexBuffer;
+    i32 mCount;
+    u32 mOffset;
   };
   //------------------------------------------------------------------------------
   // typedefs
   //------------------------------------------------------------------------------
   /** See DrawRangeElements. A DrawRangeElements using indices of type \p GLuint. */
-  class DrawRangeElementsUInt: public DrawRangeElements<GLuint, GL_UNSIGNED_INT, ArrayUInt1>
+  class DrawRangeElementsUInt: public DrawRangeElements<ArrayUInt1>
   {
+    VL_INSTRUMENT_CLASS(vl::DrawRangeElementsUInt, DrawRangeElements<ArrayUInt1>)
+
   public:
     DrawRangeElementsUInt(EPrimitiveType primitive = PT_TRIANGLES, int r_start=0, int r_end=GLuint(~0))
-    :DrawRangeElements<GLuint, GL_UNSIGNED_INT, ArrayUInt1>(primitive, r_start, r_end) {}
+    :DrawRangeElements<ArrayUInt1>(primitive, r_start, r_end)
+    {
+      VL_DEBUG_SET_OBJECT_NAME();
+    }
   };
   //------------------------------------------------------------------------------
   /** See DrawRangeElements. A DrawRangeElements using indices of type \p GLushort. */
-  class DrawRangeElementsUShort: public DrawRangeElements<GLushort, GL_UNSIGNED_SHORT, ArrayUShort1>
+  class DrawRangeElementsUShort: public DrawRangeElements<ArrayUShort1>
   {
+    VL_INSTRUMENT_CLASS(vl::DrawRangeElementsUShort, DrawRangeElements<ArrayUShort1>)
+
   public:
     DrawRangeElementsUShort(EPrimitiveType primitive = PT_TRIANGLES, int r_start=0, int r_end=GLushort(~0))
-    :DrawRangeElements<GLushort, GL_UNSIGNED_SHORT, ArrayUShort1>(primitive, r_start, r_end) {}
+    :DrawRangeElements<ArrayUShort1>(primitive, r_start, r_end)
+    {
+      VL_DEBUG_SET_OBJECT_NAME();
+    }
   };
   //------------------------------------------------------------------------------
   /** See DrawRangeElements. A DrawRangeElements using indices of type \p GLubyte. */
-  class DrawRangeElementsUByte: public DrawRangeElements<GLubyte, GL_UNSIGNED_BYTE, ArrayUByte1>
+  class DrawRangeElementsUByte: public DrawRangeElements<ArrayUByte1>
   {
+    VL_INSTRUMENT_CLASS(vl::DrawRangeElementsUByte, DrawRangeElements<ArrayUByte1>)
+
   public:
     DrawRangeElementsUByte(EPrimitiveType primitive = PT_TRIANGLES, int r_start=0, int r_end=GLubyte(~0))
-    :DrawRangeElements<GLubyte, GL_UNSIGNED_BYTE, ArrayUByte1>(primitive, r_start, r_end) {}
+    :DrawRangeElements<ArrayUByte1>(primitive, r_start, r_end)
+    {
+      VL_DEBUG_SET_OBJECT_NAME();
+    }
   };
   //------------------------------------------------------------------------------
 }

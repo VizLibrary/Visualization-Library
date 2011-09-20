@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -44,12 +44,6 @@ public:
     /* used to display the application title next to FPS counter */
     applet->setAppletName(title);
 
-    /* open a console so we can see the applet's output on stdout */
-    showWin32Console();
-
-    /* init Visualization Library */
-    vl::VisualizationLibrary::init();
-
     /* install Visualization Library shutdown function */
     atexit( vlGLUT::atexit_visualization_library_shutdown );
 
@@ -71,9 +65,6 @@ public:
 
     ///* deallocate the window with all the OpenGL resources before shutting down Visualization Library */
     //glut_window = NULL;
-
-    ///* shutdown Visualization Library */
-    //vl::VisualizationLibrary::shutdown();
   }
 };
 int main ( int argc, char *argv[] )
@@ -85,7 +76,7 @@ int main ( int argc, char *argv[] )
   /* parse command line arguments */
   int   test = 0;
   if (argc>=2)
-    test = String(argv[1]).toInt();
+    test = atoi(argv[1]);
 
   /* setup the OpenGL context format */
   vl::OpenGLContextFormat format;
@@ -98,7 +89,7 @@ int main ( int argc, char *argv[] )
   //format.setMultisample(true);
 
   TestBatteryGLUT test_battery;
-  test_battery.run(test, format);
+  test_battery.run(test, argv[1], format);
 
   return 0;
 }

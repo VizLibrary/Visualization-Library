@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -40,7 +40,7 @@ class App_Primitives: public BaseDemo
 public:
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
 
     const float objdim = 1;
     const float scene_radius = 4;
@@ -49,9 +49,10 @@ public:
     ref<Effect> fx = new Effect;
     fx->shader()->enable(EN_DEPTH_TEST);
     fx->shader()->enable(EN_LIGHTING);
-    fx->shader()->setRenderState( new Light(0) );
+    fx->shader()->setRenderState( new Light, 0 );
     fx->shader()->gocMaterial()->setDiffuse(vl::royalblue);
     
+#if defined(VL_OPENGL)
     /* wireframe shader */
     fx->lod(0)->push_back( new Shader );
     fx->shader(0,1)->enable(EN_BLEND);
@@ -60,6 +61,14 @@ public:
     fx->shader(0,1)->enable(EN_POLYGON_OFFSET_LINE);
     fx->shader(0,1)->gocPolygonOffset()->set(-1.0f, -1.0f);
     fx->shader(0,1)->gocPolygonMode()->set(PM_LINE, PM_LINE);
+    fx->shader(0,1)->gocColor()->setValue(vl::lightgreen);
+
+    // speedup tricks: 
+    // we don't use lighting here so these won't be used, however including them in the second pass 
+    // will allow VL to avoid restoring and resetting them back and forth all the time.
+    fx->shader(0,1)->setRenderState( fx->shader()->getMaterial() );
+    fx->shader(0,1)->setRenderState( fx->shader()->getLight(0), 0 );
+#endif
 
     /* create our primitives */
     mGeometries.push_back( vl::makeBox( vec3( 0, 0, 0 ), objdim*0.8f, objdim*0.8f, objdim*0.8f )  );
@@ -81,7 +90,7 @@ public:
       ref<Transform> tr = new Transform;
       rendering()->as<Rendering>()->transform()->addChild( tr.get() );
 
-      mat4 m = mat4::getRotation( 360 * i / (Real)mGeometries.size(), 0, 1, 0) * 
+      mat4 m = mat4::getRotation( 360 * i / (real)mGeometries.size(), 0, 1, 0) * 
                mat4::getTranslation(0,0,-scene_radius);
       tr->setLocalMatrix( m );
 
@@ -89,9 +98,6 @@ public:
       mGeometries[i]->computeBounds();
       m = mat4::getTranslation( -mGeometries[i]->boundingBox().center() );
       mGeometries[i]->transform( m );
-
-      /* sets the wireframe color */
-      mGeometries[i]->setColor(vl::lightgreen);
 
       /* computes normals if not present */
       if (!mGeometries[i]->normalArray())

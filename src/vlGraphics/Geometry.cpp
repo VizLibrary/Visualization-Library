@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -32,7 +32,10 @@
 #include <vlGraphics/Geometry.hpp>
 #include <vlGraphics/OpenGLContext.hpp>
 #include <vlGraphics/DoubleVertexRemover.hpp>
+#include <vlGraphics/MultiDrawElements.hpp>
+#include <vlGraphics/DrawRangeElements.hpp>
 #include <cmath>
+#include <algorithm>
 
 using namespace vl;
 
@@ -45,9 +48,6 @@ Geometry::Geometry()
   mVertexAttribArrays.setAutomaticDelete(false);
   mTexCoordArrays.setAutomaticDelete(false);
   mDrawCalls.setAutomaticDelete(false);
-  mColor = vl::white;
-  mSecondaryColor = vl::white;
-  mNormal = fvec3(0,0,1);
 }
 //-----------------------------------------------------------------------------
 Geometry::~Geometry()
@@ -56,27 +56,36 @@ Geometry::~Geometry()
 //-----------------------------------------------------------------------------
 void Geometry::computeBounds_Implementation()
 {
-  const ArrayAbstract* coords = vertexArray();
-  if (!coords && vertexAttribInfo(0))
-    coords = vertexAttribInfo(0)->data();
+  const ArrayAbstract* coords = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+
+  if (coords == NULL)
+  {
+    Log::debug("Geometry::computeBounds_Implementation() failed! No vertex buffer present!\n");
+    return;
+  }
+
+  if (coords->size() == 0)
+  {
+    Log::debug("Geometry::computeBounds_Implementation() failed! No vertices present in the local buffer! Did you forget to call setBoundingBox() and setBoundingSphere()?\n");
+    return;
+  }
 
   AABB aabb;
-
   for(int i=0; i<drawCalls()->size(); ++i)
   {
-    for(IndexIterator iit = drawCalls()->at(i)->indexIterator(); !iit.isEnd(); iit.next())
+    for(IndexIterator iit = drawCalls()->at(i)->indexIterator(); iit.hasNext(); iit.next())
     {
-      aabb += coords->vectorAsVec3( iit.index() );
+      aabb += coords->getAsVec3( iit.index() );
     }
   }
 
-  Real radius = 0, r = 0;
+  real radius = 0, r = 0;
   vec3 center = aabb.center();
   for(int i=0; i<drawCalls()->size(); ++i)
   {
-    for(IndexIterator iit = drawCalls()->at(i)->indexIterator(); !iit.isEnd(); iit.next())
+    for(IndexIterator iit = drawCalls()->at(i)->indexIterator(); iit.hasNext(); iit.next())
     {
-      r = (coords->vectorAsVec3(iit.index()) - center).lengthSquared();
+      r = (coords->getAsVec3(iit.index()) - center).lengthSquared();
       if (r > radius)
         radius = r;
     }
@@ -89,45 +98,57 @@ void Geometry::computeBounds_Implementation()
 ref<Geometry> Geometry::deepCopy() const
 {
   ref<Geometry> geom = new Geometry;
-  deepCopy(geom.get());
+  geom->deepCopyFrom(*this);
   return geom;
 }
 //-----------------------------------------------------------------------------
-void Geometry::deepCopy(Geometry* geom) const
+Geometry& Geometry::deepCopyFrom(const Geometry& other)
 {
   // copy the base class Renderable
-  geom->Renderable::operator=(*this);
+  super::operator=(other);
+
   // copy Geometry
-  geom->mVertexArray         = mVertexArray         ? mVertexArray->clone().get()         : NULL;
-  geom->mNormalArray         = mNormalArray         ? mNormalArray->clone().get()         : NULL;
-  geom->mColorArray          = mColorArray          ? mColorArray->clone().get()          : NULL;
-  geom->mSecondaryColorArray = mSecondaryColorArray ? mSecondaryColorArray->clone().get() : NULL;
-  geom->mFogCoordArray       = mFogCoordArray       ? mFogCoordArray->clone().get()       : NULL;
-  geom->mTexCoordArrays.resize(mTexCoordArrays.size());
+  mVertexArray         = other.mVertexArray         ? other.mVertexArray->clone().get()         : NULL;
+  mNormalArray         = other.mNormalArray         ? other.mNormalArray->clone().get()         : NULL;
+  mColorArray          = other.mColorArray          ? other.mColorArray->clone().get()          : NULL;
+  mSecondaryColorArray = other.mSecondaryColorArray ? other.mSecondaryColorArray->clone().get() : NULL;
+  mFogCoordArray       = other.mFogCoordArray       ? other.mFogCoordArray->clone().get()       : NULL;
+
+  mTexCoordArrays.resize( other.mTexCoordArrays.size() );
   for(int i=0; i<mTexCoordArrays.size(); ++i)
-    geom->mTexCoordArrays[i] = new TextureArray(mTexCoordArrays[i]->mTextureUnit, mTexCoordArrays[i]->mTexCoordArray ? mTexCoordArrays[i]->mTexCoordArray->clone().get() : NULL);
+    mTexCoordArrays[i] = new TextureArray(other.mTexCoordArrays[i]->mTextureSampler, other.mTexCoordArrays[i]->mTexCoordArray ? other.mTexCoordArrays[i]->mTexCoordArray->clone().get() : NULL);
+
   // custom arrays
-  geom->mVertexAttribArrays.resize(mVertexAttribArrays.size());
+  mVertexAttribArrays.resize( other.mVertexAttribArrays.size() );
   for(int i=0; i<mVertexAttribArrays.size(); ++i)
   {
-    geom->mVertexAttribArrays[i] = new VertexAttribInfo;
-    geom->mVertexAttribArrays[i]->setNormalize( mVertexAttribArrays[i]->normalize() );
-    geom->mVertexAttribArrays[i]->setDataBehavior( mVertexAttribArrays[i]->dataBehavior() );
-    geom->mVertexAttribArrays[i]->setAttribIndex( mVertexAttribArrays[i]->attribIndex() );
-    geom->mVertexAttribArrays[i]->setData( geom->mVertexAttribArrays[i]->data() ? geom->mVertexAttribArrays[i]->data()->clone().get() : NULL );
+    mVertexAttribArrays[i] = new VertexAttribInfo;
+    mVertexAttribArrays[i]->setNormalize( other.mVertexAttribArrays[i]->normalize() );
+    mVertexAttribArrays[i]->setInterpretation( other.mVertexAttribArrays[i]->interpretation() );
+    mVertexAttribArrays[i]->setAttribLocation( other.mVertexAttribArrays[i]->attribLocation() );
+    mVertexAttribArrays[i]->setData( other.mVertexAttribArrays[i]->data() ? other.mVertexAttribArrays[i]->data()->clone().get() : NULL );
   }
+
   // primitives
-  for(int i=0; i<mDrawCalls.size(); ++i)
-    geom->mDrawCalls.push_back( mDrawCalls[i]->clone().get() );
-  geom->mColor = mColor;
-  geom->mSecondaryColor = mSecondaryColor;
-  geom->mNormal = mNormal;
+  mDrawCalls.clear();
+  for(int i=0; i<other.mDrawCalls.size(); ++i)
+    mDrawCalls.push_back( other.mDrawCalls[i]->clone().get() );
+
+  return *this;
 }
 //-----------------------------------------------------------------------------
-Geometry& Geometry::operator=(const Geometry& other)
+ref<Geometry> Geometry::shallowCopy() const
+{
+  ref<Geometry> geom = new Geometry;
+  geom->shallowCopyFrom(*this);
+  return geom;
+}
+//-----------------------------------------------------------------------------
+Geometry& Geometry::shallowCopyFrom(const Geometry& other)
 {
   // copy the base class Renderable
-  Renderable::operator=(*this);
+  super::operator=(other);
+
   // copy Geometry attributes
   mVertexArray = other.mVertexArray;
   mNormalArray = other.mNormalArray;
@@ -136,23 +157,9 @@ Geometry& Geometry::operator=(const Geometry& other)
   mFogCoordArray = other.mFogCoordArray;
   mTexCoordArrays = other.mTexCoordArrays;
   mVertexAttribArrays = other.mVertexAttribArrays;
-  mColor = other.mColor;
-  mSecondaryColor = other.mSecondaryColor;
-  mNormal = other.mNormal;
   mDrawCalls = other.mDrawCalls;
+
   return *this;
-}
-//-----------------------------------------------------------------------------
-ref<Geometry> Geometry::shallowCopy()
-{
-  ref<Geometry> geom = new Geometry;
-  geom->operator=(*this);
-  return geom;
-}
-//-----------------------------------------------------------------------------
-void Geometry::shallowCopy(Geometry* geom)
-{
-  geom->operator=(*this);
 }
 //-----------------------------------------------------------------------------
 void Geometry::setVertexArray(ArrayAbstract* data)
@@ -236,7 +243,7 @@ void Geometry::setTexCoordArray(int tex_unit, ArrayAbstract* data)
 
   for(int i=0; i<mTexCoordArrays.size(); ++i)
   {
-    if (mTexCoordArrays.at(i)->mTextureUnit == tex_unit)
+    if (mTexCoordArrays.at(i)->mTextureSampler == tex_unit)
     {
       if (data)
         mTexCoordArrays.at(i)->mTexCoordArray = data;
@@ -264,12 +271,14 @@ void Geometry::clearArrays(bool clear_draw_calls)
 //-----------------------------------------------------------------------------
 bool Geometry::flipNormals()
 {
-  if (normalArray())
+  ArrayAbstract* normarr = normalArray() ? normalArray() : vertexAttribArray(vl::VA_Normal) ? vertexAttribArray(vl::VA_Normal)->data() : NULL;
+
+  if (normarr)
   {
-    ArrayFloat3* norm3f = dynamic_cast<ArrayFloat3*>(normalArray());
+    ArrayFloat3* norm3f = normarr->as<ArrayFloat3>();
     if (norm3f)
     {
-      for(size_t i=0; i<norm3f->size(); ++i)
+      for(u32 i=0; i<norm3f->size(); ++i)
       {
         norm3f->at(i) = -norm3f->at(i);
       }
@@ -279,72 +288,92 @@ bool Geometry::flipNormals()
   return false;
 }
 //-----------------------------------------------------------------------------
-void Geometry::toGenericVertexAttribs()
+void Geometry::convertToVertexAttribs()
 {
-  vertexAttribArrays()->clear();
-  int index = 0;
-  
+  std::map<int, ref<ArrayAbstract> > attrib_map;
+
   if (vertexArray())
   {
-    setVertexAttribArray(index++, vertexArray());
+    attrib_map[VA_Position] = vertexArray();
     setVertexArray(NULL);
   }
   
   if (normalArray())
   {
-    setVertexAttribArray(index++, normalArray());
+    attrib_map[VA_Normal] = normalArray();
     setNormalArray(NULL);
   }
   
   if (colorArray())
   {
-    setVertexAttribArray(index++, colorArray());
+    attrib_map[VA_Color] = colorArray();
     setColorArray(NULL);
   }
 
+  // Texture coordinates starting from VA_TexCoord0
   for(int i=0; i<mTexCoordArrays.size(); i++)
-    setVertexAttribArray( index++, mTexCoordArrays[i]->mTexCoordArray.get() );
+  {
+    attrib_map[VA_TexCoord0+i] = mTexCoordArrays[i]->mTexCoordArray;
+  }
   mTexCoordArrays.clear();
   
+  // Secondary color and fog are packed right after the texture coordinates
+  int index = VA_TexCoord0 + mTexCoordArrays.size();
   if (secondaryColorArray())
   {
-    setVertexAttribArray(index++, secondaryColorArray());
+    attrib_map[index++] = secondaryColorArray();
     setSecondaryColorArray(NULL);
   }
 
   if (fogCoordArray())
   {
-    setVertexAttribArray(index++, fogCoordArray());
+    attrib_map[index++] = fogCoordArray();
     setFogCoordArray(NULL);
   }
+
+  // copy over the collected attributes
+  // note: we override eventual existing vertex attributes if they are in busy positions, the other are left where they are
+  for(std::map<int, ref<ArrayAbstract> >::iterator it=attrib_map.begin(); it != attrib_map.end(); ++it)
+  {
+    if (vertexAttribArray(it->first) != NULL)
+      Log::warning( Say("Geometry::convertToVertexAttribs(): vertex attrib index #%n is already in use, it will be overwritten.\n") << it->first );
+    setVertexAttribArray(it->first, it->second.get());
+  }
+
 }
 //-----------------------------------------------------------------------------
 void Geometry::computeNormals(bool verbose)
 {
-  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttrib(0);
+  // Retrieve vertex position array
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
   if (!posarr || posarr->size() == 0)
   {
-    Log::warning("Geometry::computeNormals() not performed: no vertex coordinate array present!\n");
+    Log::warning("Geometry::computeNormals() failed: no vertices found!\n");
     return;
   }
 
   ref<ArrayFloat3> norm3f = new ArrayFloat3;
   norm3f->resize( posarr->size() );
-  setNormalArray( norm3f.get() );
+
+  // Install the normal array
+  if (vertexArray())
+    setNormalArray( norm3f.get() );
+  else
+    setVertexAttribArray(VA_Normal, norm3f.get());
 
   // zero the normals
-  for(int i=0; i<(int)posarr->size(); ++i)
+  for(u32 i=0; i<norm3f->size(); ++i)
     (*norm3f)[i] = 0;
 
   // iterate all draw calls
   for(int prim=0; prim<(int)drawCalls()->size(); prim++)
   {
     // iterate all triangles, if present
-    for(TriangleIterator trit = mDrawCalls[prim]->triangleIterator(); !trit.isEnd(); trit.next())
+    for(TriangleIterator trit = mDrawCalls[prim]->triangleIterator(); trit.hasNext(); trit.next())
     {
-      size_t a = trit.a();
-      size_t b = trit.b();
-      size_t c = trit.c();
+      u32 a = trit.a();
+      u32 b = trit.b();
+      u32 c = trit.c();
 
       if (verbose)
       if (a == b || b == c || c == a)
@@ -359,9 +388,9 @@ void Geometry::computeNormals(bool verbose)
 
       vec3 n, v0, v1, v2;
 
-      v0 = posarr->vectorAsVec4(a).xyz();
-      v1 = posarr->vectorAsVec4(b).xyz();
-      v2 = posarr->vectorAsVec4(c).xyz();
+      v0 = posarr->getAsVec3(a);
+      v1 = posarr->getAsVec3(b);
+      v2 = posarr->getAsVec3(c);
 
       if (verbose)
       if (v0 == v1 || v1 == v2 || v2 == v0)
@@ -393,94 +422,80 @@ void Geometry::computeNormals(bool verbose)
     (*norm3f)[i].normalize();
 }
 //-----------------------------------------------------------------------------
-void Geometry::deleteVBOs()
+void Geometry::deleteBufferObject()
 {
-  if (!(GLEW_ARB_vertex_buffer_object||GLEW_VERSION_1_5||GLEW_VERSION_3_0))
+  if (!Has_BufferObject)
     return;
 
   for(int i=0; i<(int)drawCalls()->size(); ++i)
-    drawCalls()->at(i)->deleteVBOs();
+    drawCalls()->at(i)->deleteBufferObject();
 
   if (mVertexArray)
-    mVertexArray->gpuBuffer()->deleteGLBufferObject();
+    mVertexArray->bufferObject()->deleteBufferObject();
   
   if (mNormalArray)
-    mNormalArray->gpuBuffer()->deleteGLBufferObject();
+    mNormalArray->bufferObject()->deleteBufferObject();
   
   if (mColorArray)
-    mColorArray->gpuBuffer()->deleteGLBufferObject();
+    mColorArray->bufferObject()->deleteBufferObject();
   
   if (mSecondaryColorArray)
-    mSecondaryColorArray->gpuBuffer()->deleteGLBufferObject();
+    mSecondaryColorArray->bufferObject()->deleteBufferObject();
   
   if (mFogCoordArray)
-    mFogCoordArray->gpuBuffer()->deleteGLBufferObject();
+    mFogCoordArray->bufferObject()->deleteBufferObject();
   
   for (int i=0; i<mTexCoordArrays.size(); ++i)
-    mTexCoordArrays[i]->mTexCoordArray->gpuBuffer()->deleteGLBufferObject();
+    mTexCoordArrays[i]->mTexCoordArray->bufferObject()->deleteBufferObject();
 
   for(int i=0; i<vertexAttribArrays()->size(); ++i)
     if ( vertexAttribArrays()->at(i)->data() )
-      vertexAttribArrays()->at(i)->data()->gpuBuffer()->deleteGLBufferObject();
+      vertexAttribArrays()->at(i)->data()->bufferObject()->deleteBufferObject();
 }
 //-----------------------------------------------------------------------------
-void Geometry::updateVBOs(bool discard_local_data, bool force_update)
+void Geometry::updateDirtyBufferObject(EBufferObjectUpdateMode mode)
 {
-  setVBODirty(false);
-
-  if (!(GLEW_ARB_vertex_buffer_object||GLEW_VERSION_1_5||GLEW_VERSION_3_0))
+  if (!Has_BufferObject)
     return;
 
-  if ( mVertexArray && (mVertexArray->isVBODirty() || force_update) )
-    mVertexArray->updateVBO(discard_local_data);
+  bool force_update = (mode & BUF_ForceUpdate) != 0;
+
+  if ( mVertexArray && (mVertexArray->isBufferObjectDirty() || force_update) )
+    mVertexArray->updateBufferObject(mode);
   
-  if ( mNormalArray && (mNormalArray->isVBODirty() || force_update) )
-    mNormalArray->updateVBO(discard_local_data);
+  if ( mNormalArray && (mNormalArray->isBufferObjectDirty() || force_update) )
+    mNormalArray->updateBufferObject(mode);
   
-  if ( mColorArray && (mColorArray->isVBODirty() || force_update) )
-    mColorArray->updateVBO(discard_local_data);
+  if ( mColorArray && (mColorArray->isBufferObjectDirty() || force_update) )
+    mColorArray->updateBufferObject(mode);
   
-  if ( mSecondaryColorArray && (mSecondaryColorArray->isVBODirty() || force_update) )
-    mSecondaryColorArray->updateVBO(discard_local_data);
+  if ( mSecondaryColorArray && (mSecondaryColorArray->isBufferObjectDirty() || force_update) )
+    mSecondaryColorArray->updateBufferObject(mode);
   
-  if ( mFogCoordArray && (mFogCoordArray->isVBODirty() || force_update) )
-    mFogCoordArray->updateVBO(discard_local_data);
+  if ( mFogCoordArray && (mFogCoordArray->isBufferObjectDirty() || force_update) )
+    mFogCoordArray->updateBufferObject(mode);
   
   for(int i=0; i<mTexCoordArrays.size(); ++i)
   {
-    if ( mTexCoordArrays[i]->mTexCoordArray->isVBODirty() || force_update )
-      mTexCoordArrays[i]->mTexCoordArray->updateVBO(discard_local_data);
+    if ( mTexCoordArrays[i]->mTexCoordArray->isBufferObjectDirty() || force_update )
+      mTexCoordArrays[i]->mTexCoordArray->updateBufferObject(mode);
   }
   
   for(int i=0; i<vertexAttribArrays()->size(); ++i)
-    if ( vertexAttribArrays()->at(i)->data() )
-      vertexAttribArrays()->at(i)->data()->updateVBO(discard_local_data);
+    if ( vertexAttribArrays()->at(i)->data() && (vertexAttribArrays()->at(i)->data()->isBufferObjectDirty() || force_update) )
+      vertexAttribArrays()->at(i)->data()->updateBufferObject(mode);
 
   for(int i=0; i<drawCalls()->size(); ++i)
-    drawCalls()->at(i)->updateVBOs(discard_local_data, force_update);
+    drawCalls()->at(i)->updateDirtyBufferObject(mode);
 }
 //-----------------------------------------------------------------------------
 void Geometry::render_Implementation(const Actor*, const Shader*, const Camera*, OpenGLContext* gl_context) const
 {
   VL_CHECK_OGL()
 
-  // set default normal, color and secondary colors
-
-  if (gl_context->isCompatible())
-  {
-    if (!normalArray())
-      glNormal3fv(mNormal.ptr());
-
-    if (!colorArray())
-      glColor4fv(mColor.ptr());
-
-    if (!secondaryColorArray() && GLEW_VERSION_1_4)
-      glSecondaryColor3fv(mSecondaryColor.ptr());
-  }
-
   // bind Vertex Attrib Set
 
-  bool vbo_on = (GLEW_ARB_vertex_buffer_object||GLEW_VERSION_1_5||GLEW_VERSION_3_0) && vboEnabled() && !isDisplayListEnabled();
+  bool vbo_on = Has_BufferObject && isBufferObjectEnabled() && !isDisplayListEnabled();
   gl_context->bindVAS(this, vbo_on, false);
 
   // actual draw
@@ -494,16 +509,17 @@ void Geometry::render_Implementation(const Actor*, const Shader*, const Camera*,
 //-----------------------------------------------------------------------------
 void Geometry::transform(const mat4& m, bool normalize)
 {
-  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttrib(0);
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
   if (posarr)
     posarr->transform(m);
 
-  if (normalArray())
+  ArrayAbstract* normarr = normalArray() ? normalArray() : vertexAttribArray(vl::VA_Normal) ? vertexAttribArray(vl::VA_Normal)->data() : NULL;
+  if (normarr)
   {
-    mat4 nmat = m.as3x3().getInverse().transpose();
-    normalArray()->transform(nmat);
+    mat4 nmat = m.as3x3().invert().transpose();
+    normarr->transform(nmat);
     if (normalize)
-      normalArray()->normalize();
+      normarr->normalize();
   }
 }
 //-----------------------------------------------------------------------------
@@ -512,7 +528,7 @@ void Geometry::setVertexAttribArray(const VertexAttribInfo& info)
   for(int i=0; i<vertexAttribArrays()->size(); ++i)
   {
     VL_CHECK(vertexAttribArrays()->at(i))
-    if (vertexAttribArrays()->at(i)->attribIndex() == info.attribIndex())
+    if (vertexAttribArrays()->at(i)->attribLocation() == info.attribLocation())
     {
       *vertexAttribArrays()->at(i) = info;
       return;
@@ -521,102 +537,350 @@ void Geometry::setVertexAttribArray(const VertexAttribInfo& info)
   mVertexAttribArrays.push_back( new VertexAttribInfo(info) );
 }
 //-----------------------------------------------------------------------------
-const ArrayAbstract* Geometry::vertexAttrib(unsigned int name) const
-{
-  const VertexAttribInfo* attrib_info = vertexAttribInfo(name);
-  if (attrib_info)
-    return attrib_info->data();
-  else
-    return NULL;
-}
-//-----------------------------------------------------------------------------
-ArrayAbstract* Geometry::vertexAttrib(unsigned int name)
-{
-  VertexAttribInfo* attrib_info = vertexAttribInfo(name);
-  if (attrib_info)
-    return attrib_info->data();
-  else
-    return NULL;
-}
-//-----------------------------------------------------------------------------
-const VertexAttribInfo* Geometry::vertexAttribInfo(unsigned int name) const
+const VertexAttribInfo* Geometry::vertexAttribArray(unsigned int attrib_location) const
 {
   for(int i=0; i<vertexAttribArrays()->size(); ++i)
-    if (vertexAttribArrays()->at(i)->attribIndex() == name)
+    if (vertexAttribArrays()->at(i)->attribLocation() == attrib_location)
       return vertexAttribArrays()->at(i);
   return NULL;
 }
 //-----------------------------------------------------------------------------
-VertexAttribInfo* Geometry::vertexAttribInfo(unsigned int name)
+VertexAttribInfo* Geometry::vertexAttribArray(unsigned int attrib_location)
 {
   for(int i=0; i<vertexAttribArrays()->size(); ++i)
-    if (vertexAttribArrays()->at(i)->attribIndex() == name)
+    if (vertexAttribArrays()->at(i)->attribLocation() == attrib_location)
       return vertexAttribArrays()->at(i);
   return NULL;
 }
 //-----------------------------------------------------------------------------
-ref<VertexAttribInfo> Geometry::eraseVertexAttrib(unsigned int name)
+DrawCall* Geometry::mergeTriangleStrips()
 {
-  ref<VertexAttribInfo> vai;
-  for(int i=0; i<vertexAttribArrays()->size(); ++i)
-  {
-    if (vertexAttribArrays()->at(i)->attribIndex() == name)
-    {
-      vai = vertexAttribArrays()->at(i);
-      vertexAttribArrays()->eraseAt(i);
-      return vai;
-    }
-  }
-  return NULL;
-}
-//-----------------------------------------------------------------------------
-void Geometry::mergeTriangleStrips()
-{
-  std::vector< ref<DrawElementsUInt> > de;
-  std::vector<size_t> indices;
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+
+  if (!posarr)
+    return NULL;
+
+  std::vector< ref<DrawElementsBase> > de_vector;
+  std::vector<u32> indices;
 
   // collect DrawElementsUInt
   for(int i=drawCalls()->size(); i--; )
   {
-    ref<DrawElementsUInt> de_uint = dynamic_cast<DrawElementsUInt*>( drawCalls()->at(i) );
-    if (de_uint && de_uint->primitiveType() == PT_TRIANGLE_STRIP)
+    ref<DrawElementsBase> deb = cast<DrawElementsBase>( drawCalls()->at(i) );
+    if (deb && deb->primitiveType() == PT_TRIANGLE_STRIP)
     {
-      de.push_back(de_uint);
-      drawCalls()->erase(i,1);
+      // preserve order
+      de_vector.push_back( deb );
+      drawCalls()->eraseAt(i);
     }
   }
+  // preseve rendering order
+  std::reverse(de_vector.begin(), de_vector.end());
 
   // generate new strip
-  indices.reserve( vertexArray()->size()*2 );
-  for(size_t i=0; i<de.size(); ++i)
+  indices.reserve( posarr->size()*2 );
+  for(u32 i=0; i<de_vector.size(); ++i)
   {
-    if (!de[i]->indices()->size())
+    u32 index_count = 0;
+    for(IndexIterator it=de_vector[i]->indexIterator(); it.hasNext(); it.next(), ++index_count)
+      indices.push_back(it.index());
+
+    if (index_count == 0)
       continue;
-    for(size_t j=0; j<de[i]->indices()->size(); ++j)
-      indices.push_back(de[i]->indices()->at(j));
+    
     // odd -> even
-    if ( de[i]->indices()->size() % 2 )
-      indices.push_back(indices.back());
+    if ( index_count % 2 )
+      indices.push_back( indices.back() );
+
     // concatenate next strip inserting degenerate triangles
-    if ( i != de.size()-1 )
+    if ( i != de_vector.size()-1 )
     {
-      indices.push_back(indices.back());
-      indices.push_back(de[i+1]->indices()->at(0));
-      indices.push_back(de[i+1]->indices()->at(0));
-      indices.push_back(de[i+1]->indices()->at(1));
+      // grab the first two indices of the next draw call
+      IndexIterator it = de_vector[i+1]->indexIterator();
+      int A = it.index();
+      it.next();
+      int B = it.index();
+
+      if (A == -1 || B == -1)
+        continue;
+
+      indices.push_back( indices.back() );
+      indices.push_back(A);
+      indices.push_back(A);
+      indices.push_back(B);
     }
   }
 
   if (indices.size())
   {
     ref<DrawElementsUInt> draw_elems = new DrawElementsUInt(PT_TRIANGLE_STRIP);
-    draw_elems->indices()->resize(indices.size());
-    memcpy(draw_elems->indices()->ptr(), &indices[0], sizeof(unsigned int)*indices.size());
+    draw_elems->indexBuffer()->resize(indices.size());
+    memcpy(draw_elems->indexBuffer()->ptr(), &indices[0], sizeof(indices[0])*indices.size());
     drawCalls()->push_back(draw_elems.get());
+    return draw_elems.get();
   }
+  else
+    return NULL;
 }
 //-----------------------------------------------------------------------------
-void Geometry::regenerateVertices(const std::vector<size_t>& map_new_to_old)
+void Geometry::mergeDrawCallsWithPrimitiveRestart(EPrimitiveType primitive_type)
+{
+  u32 total_index_count = 0;
+  std::vector< ref<DrawCall> > mergendo_calls;
+  for( u32 i=drawCalls()->size(); i--; )
+  {
+    if (drawCalls()->at(i)->primitiveType() == primitive_type)
+    {
+      int index_count = drawCalls()->at(i)->countIndices();
+      VL_CHECK(index_count >= 0);
+      total_index_count += index_count;
+      // insert at the head to preserve the primitive rendering order
+      mergendo_calls.push_back( drawCalls()->at(i) );
+      drawCalls()->eraseAt(i);
+    }
+  }
+  // preseve rendering order
+  std::reverse(mergendo_calls.begin(), mergendo_calls.end());
+
+  Log::debug( Say("%n draw calls will be merged using primitive restart.\n") << mergendo_calls.size() );
+
+  if (mergendo_calls.empty())
+    return;
+
+#ifndef NDEBUG
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+#endif
+
+  ref<DrawElementsUInt> de_prim_restart = new DrawElementsUInt(primitive_type);
+  // make space for all the indices plus the primitive restart markers.
+  de_prim_restart->indexBuffer()->resize(total_index_count + mergendo_calls.size()-1);
+  GLuint* index = de_prim_restart->indexBuffer()->begin();
+  // merge draw calls using primitive restart!
+  for( u32 i=0; i<mergendo_calls.size(); ++i )
+  {
+    for( IndexIterator it = mergendo_calls[i]->indexIterator(); it.hasNext(); it.next(), ++index )
+    {
+      *index = it.index();
+      VL_CHECK(*index < posarr->size());
+    }
+    if ( i != mergendo_calls.size() -1 )
+    {
+      *index = DrawElementsUInt::primitive_restart_index;
+      ++index;
+    }
+  }
+  VL_CHECK( index == de_prim_restart->indexBuffer()->end() )
+
+  // enable primitive restart!
+  de_prim_restart->setPrimitiveRestartEnabled(true);
+
+  drawCalls()->push_back( de_prim_restart.get() );
+}
+//-----------------------------------------------------------------------------
+void Geometry::mergeDrawCallsWithMultiDrawElements(EPrimitiveType primitive_type)
+{
+  u32 total_index_count = 0;
+  std::vector< ref<DrawCall> > mergendo_calls;
+  std::vector<GLsizei> count_vector;
+  for( u32 i=drawCalls()->size(); i--; )
+  {
+    if (drawCalls()->at(i)->primitiveType() == primitive_type)
+    {
+      int index_count = drawCalls()->at(i)->countIndices();
+      VL_CHECK(index_count >= 0);
+      total_index_count += index_count;
+      count_vector.push_back( index_count );
+      mergendo_calls.push_back( drawCalls()->at(i) );
+      drawCalls()->eraseAt(i);
+    }
+  }
+  // preseve rendering order
+  std::reverse(mergendo_calls.begin(), mergendo_calls.end());
+  std::reverse(count_vector.begin(), count_vector.end());
+
+  Log::debug( Say("%n draw calls will be merged using MultiDrawElements.\n") << mergendo_calls.size() );
+
+  if (mergendo_calls.empty())
+    return;
+
+#ifndef NDEBUG
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+#endif
+
+  ref<MultiDrawElementsUInt> de_multi = new MultiDrawElementsUInt(primitive_type);
+  // make space for all the indices plus the primitive restart markers.
+  de_multi->indexBuffer()->resize(total_index_count);
+  GLuint* index = de_multi->indexBuffer()->begin();
+  // merge draw calls using primitive restart!
+  for( u32 i=0; i<mergendo_calls.size(); ++i )
+  {
+    for( IndexIterator it = mergendo_calls[i]->indexIterator(); it.hasNext(); it.next(), ++index )
+    {
+      *index = it.index();
+      VL_CHECK(*index < posarr->size());
+    }
+  }
+  VL_CHECK( index == de_multi->indexBuffer()->end() )
+
+  // Specify primitive boundaries. This must be done last!
+  de_multi->setCountVector( count_vector );
+
+  drawCalls()->push_back( de_multi.get() );
+}
+//-----------------------------------------------------------------------------
+void Geometry::mergeDrawCallsWithTriangles(EPrimitiveType primitive_type)
+{
+  u32 triangle_count = 0;
+  std::vector< ref<DrawCall> > mergendo_calls;
+  for( u32 i=drawCalls()->size(); i--; )
+  {
+    const DrawCall& dc = *drawCalls()->at(i);
+
+    // ignore primitives that cannot be triangulated
+    switch(dc.primitiveType())
+    {
+    case PT_TRIANGLES:
+    case PT_TRIANGLE_STRIP:
+    case PT_TRIANGLE_FAN:
+    case PT_QUADS:
+    case PT_QUAD_STRIP:
+    case PT_POLYGON:
+      break;
+    default:
+      continue;
+    }
+
+    if (primitive_type == PT_UNKNOWN || dc.primitiveType() == primitive_type || dc.primitiveType() == PT_TRIANGLES)
+    {
+      triangle_count += dc.countTriangles();
+      // insert at the head to preserve the primitive rendering order
+      mergendo_calls.insert( mergendo_calls.begin(), drawCalls()->at(i) );
+      drawCalls()->eraseAt(i);
+    }
+  }
+  // preseve rendering order
+  std::reverse(mergendo_calls.begin(), mergendo_calls.end());
+
+  if (mergendo_calls.empty())
+    return;
+
+  // if there was one single PT_TRIANGLES draw calls then we are done.
+  if ( mergendo_calls.size() == 1 && mergendo_calls[0]->primitiveType() == PT_TRIANGLES )
+  {
+    drawCalls()->push_back( mergendo_calls[0].get() );
+    return;
+  }
+
+#ifndef NDEBUG
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+#endif
+
+  ref<DrawElementsUInt> de = new DrawElementsUInt;
+  ArrayUInt1& index_buffer = *de->indexBuffer();
+  index_buffer.resize( triangle_count * 3 );
+  u32 idx = 0;
+  for(u32 i=0; i<mergendo_calls.size(); ++i)
+  {
+    for(TriangleIterator it = mergendo_calls[i]->triangleIterator(); it.hasNext(); it.next(), idx+=3)
+    {
+      VL_CHECK( idx+2 < index_buffer.size() );
+
+      index_buffer[idx+0] = it.a();
+      index_buffer[idx+1] = it.b();
+      index_buffer[idx+2] = it.c();
+
+      // some sanity checks since we are here...
+      VL_CHECK( it.a() < (int)posarr->size() && it.b() < (int)posarr->size() && it.c() < (int)posarr->size() );
+      VL_CHECK( it.a() >= 0 && it.b() >= 0 && it.c() >= 0 );
+    }
+  }
+  VL_CHECK( idx == index_buffer.size() );
+  drawCalls()->push_back(de.get());
+}
+//-----------------------------------------------------------------------------
+void Geometry::fixTriangleWinding()
+{
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+
+  ArrayAbstract* normarr = normalArray() ? normalArray() : vertexAttribArray(vl::VA_Normal) ? vertexAttribArray(vl::VA_Normal)->data() : NULL;
+
+  // fixing the triangle winding requires normals
+  if ( normarr == NULL || posarr == NULL )
+    return;
+
+  u32 triangle_count = 0;
+  std::vector< ref<DrawCall> > mergendo_calls;
+  for( u32 i=drawCalls()->size(); i--; )
+  {
+    const DrawCall& dc = *drawCalls()->at(i);
+
+    // ignore primitives that cannot be triangulated
+    switch(dc.primitiveType())
+    {
+    case PT_TRIANGLES:
+    case PT_TRIANGLE_STRIP:
+    case PT_TRIANGLE_FAN:
+    case PT_QUADS:
+    case PT_QUAD_STRIP:
+    case PT_POLYGON:
+      break;
+    default:
+      continue;
+    }
+
+    triangle_count += dc.countTriangles();
+    // insert at the head to preserve the primitive rendering order
+    mergendo_calls.insert( mergendo_calls.begin(), drawCalls()->at(i) );
+    drawCalls()->eraseAt(i);
+  }
+  // preseve rendering order
+  std::reverse(mergendo_calls.begin(), mergendo_calls.end());
+
+  ref<DrawElementsUInt> de = new DrawElementsUInt;
+  ArrayUInt1& index_buffer = *de->indexBuffer();
+  index_buffer.resize( triangle_count * 3 );
+  u32 idx = 0;
+  for(u32 i=0; i<mergendo_calls.size(); ++i)
+  {
+    for(TriangleIterator it = mergendo_calls[i]->triangleIterator(); it.hasNext(); it.next(), idx+=3)
+    {
+      VL_CHECK( idx+2 < index_buffer.size() );
+
+      vec3 p0 = posarr->getAsVec3(it.a());
+      vec3 p1 = posarr->getAsVec3(it.b());
+      vec3 p2 = posarr->getAsVec3(it.c());
+      p1 = (p1 - p0).normalize();
+      p2 = (p2 - p0).normalize();
+      vec3 n1 = vl::cross(p1, p2);
+
+      vec3 v0 = normarr->getAsVec3(it.a());
+      vec3 v1 = normarr->getAsVec3(it.b());
+      vec3 v2 = normarr->getAsVec3(it.c());
+      vec3 n2 = (v0+v1+v2).normalize();
+
+      if (dot(n1, n2) > 0)
+      {
+        index_buffer[idx+0] = it.a();
+        index_buffer[idx+1] = it.b();
+        index_buffer[idx+2] = it.c();
+      }
+      else
+      {
+        index_buffer[idx+0] = it.a();
+        index_buffer[idx+1] = it.c();
+        index_buffer[idx+2] = it.b();
+      }
+
+      // some sanity checks since we are here...
+      VL_CHECK( it.a() < (int)posarr->size() && it.b() < (int)posarr->size() && it.c() < (int)posarr->size() );
+      VL_CHECK( it.a() >= 0 && it.b() >= 0 && it.c() >= 0 );
+    }
+  }
+  VL_CHECK( idx == index_buffer.size() );
+  drawCalls()->push_back(de.get());
+}
+//-----------------------------------------------------------------------------
+void Geometry::regenerateVertices(const std::vector<u32>& map_new_to_old)
 {
   VertexMapper mapper;
 
@@ -645,14 +909,16 @@ void Geometry::regenerateVertices(const std::vector<size_t>& map_new_to_old)
 //-----------------------------------------------------------------------------
 void Geometry::convertDrawCallToDrawArrays()
 {
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+
   // generate mapping 
-  std::vector<size_t> map_new_to_old;
-  map_new_to_old.reserve( vertexArray()->size() * 3 );
+  std::vector<u32> map_new_to_old;
+  map_new_to_old.reserve( posarr ? (posarr->size() * 3) : (1024 * 64) );
 
   for(int i=drawCalls()->size(); i--; )
   {
     int start = (int)map_new_to_old.size();
-    for(IndexIterator it=drawCalls()->at(i)->indexIterator(); !it.isEnd(); it.next())
+    for(IndexIterator it=drawCalls()->at(i)->indexIterator(); it.hasNext(); it.next())
       map_new_to_old.push_back(it.index());
     int count = (int)map_new_to_old.size() - start;
 
@@ -665,78 +931,383 @@ void Geometry::convertDrawCallToDrawArrays()
   regenerateVertices(map_new_to_old);
 }
 //-----------------------------------------------------------------------------
+void Geometry::triangulateDrawCalls()
+{
+  // converts PT_QUADS, PT_QUADS_STRIP and PT_POLYGON into PT_TRIANGLES
+  for( int idraw=this->drawCalls()->size(); idraw--; )
+  {
+    DrawCall* dc = this->drawCalls()->at(idraw);
+    switch(dc->primitiveType())
+    {
+    case PT_QUADS:
+    case PT_QUAD_STRIP:
+    case PT_POLYGON:
+      break;
+    default:
+      continue;
+    }
+
+    u32 tri_count = dc->countTriangles();
+
+    ref<DrawElementsUInt> triangles = new DrawElementsUInt(PT_TRIANGLES, dc->instances());
+    triangles->indexBuffer()->resize( tri_count*3 );
+    unsigned int* ptr = triangles->indexBuffer()->begin();
+    for( TriangleIterator it = dc->triangleIterator(); it.hasNext(); ++it, ptr+=3 )
+    {
+      ptr[0] = it.a();
+      ptr[1] = it.b();
+      ptr[2] = it.c();
+    }
+    VL_CHECK( ptr == triangles->indexBuffer()->end() )
+    // substitute the draw call
+    (*drawCalls())[idraw] = triangles;
+  }
+}
+//-----------------------------------------------------------------------------
+void Geometry::shrinkDrawCalls()
+{
+#ifndef NDEBUG
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+  VL_CHECK(posarr);
+#endif
+
+  for( int idraw=this->drawCalls()->size(); idraw--; )
+  {
+    ref<DrawCall> dc = this->drawCalls()->at(idraw);
+
+    unsigned int restart_idx = dc->primitiveRestartIndex();
+    bool restart_on = dc->primitiveRestartEnabled();
+
+    // find max index
+    int max_idx = -1;
+    int idx_count = 0;
+    for( vl::IndexIterator it = dc->indexIterator(); it.hasNext(); it.next(), ++idx_count )
+    {
+      // skip primitive restart indices
+      if (restart_on && it.index() == (int)restart_idx)
+        continue;
+      else
+        max_idx = it.index() > max_idx ? it.index() : max_idx;
+    }
+    
+    // can use UByte
+    if ( max_idx < 0xFF || (max_idx == 0xFF && !restart_on) )
+    {
+      if (dc->isOfType(DrawElementsBase::Type()))
+      {
+        ref<DrawElementsUByte> de = new DrawElementsUByte( dc->primitiveType(), dc->instances() );
+        // prim restart
+        de->setPrimitiveRestartEnabled( dc->primitiveRestartEnabled() );
+        // base vertex
+        de->setBaseVertex( dc->as<DrawElementsBase>()->baseVertex() );
+        // regenerate indices
+        de->indexBuffer()->resize( idx_count );
+        u32 i=0;
+        for( vl::IndexIterator it = dc->indexIterator(); it.hasNext(); ++it, ++i )
+        {
+          // skip primitive restart indices
+          if (restart_on && it.index() == (int)restart_idx)
+            de->indexBuffer()->at(i) = DrawElementsUByte::primitive_restart_index;
+          else
+          {
+            VL_CHECK( it.index() >= 0 && it.index() < (int)posarr->size() );
+            de->indexBuffer()->at(i) = (DrawElementsUByte::index_type)it.index();
+          }
+        }
+        VL_CHECK( i == de->indexBuffer()->size() );
+        // substitute new draw call
+        (*drawCalls())[idraw] = de;
+      }
+      else
+      if (dc->isOfType(DrawRangeElementsBase::Type()))
+      {
+        ref<DrawRangeElementsUByte> de = new DrawRangeElementsUByte( dc->primitiveType(), dc->instances() );
+        // prim restart
+        de->setPrimitiveRestartEnabled( dc->primitiveRestartEnabled() );
+        // base vertex
+        de->setBaseVertex( dc->as<DrawRangeElementsBase>()->baseVertex() );
+        // range
+        de->setRangeStart( dc->as<DrawRangeElementsBase>()->rangeStart() );
+        de->setRangeEnd( dc->as<DrawRangeElementsBase>()->rangeEnd() );
+        // regenerate indices
+        de->indexBuffer()->resize( idx_count );
+        u32 i=0;
+        for( vl::IndexIterator it = dc->indexIterator(); it.hasNext(); ++it, ++i )
+        {
+          // skip primitive restart indices
+          if (restart_on && it.index() == (int)restart_idx)
+            de->indexBuffer()->at(i) = DrawRangeElementsUByte::primitive_restart_index;
+          else
+            de->indexBuffer()->at(i) = (DrawRangeElementsUByte::index_type)it.index();
+        }
+        VL_CHECK( i == de->indexBuffer()->size() );
+        // substitute new draw call
+        (*drawCalls())[idraw] = de;
+      }
+      else
+      if (dc->isOfType(MultiDrawElementsBase::Type()))
+      {
+        ref<MultiDrawElementsUByte> de = new MultiDrawElementsUByte( dc->primitiveType() );
+        // regenerate indices
+        de->indexBuffer()->resize( idx_count );
+        u32 i=0;
+        for( vl::IndexIterator it = dc->indexIterator(); it.hasNext(); ++it, ++i )
+        {
+          // skip primitive restart indices
+          if (restart_on && it.index() == (int)restart_idx)
+            de->indexBuffer()->at(i) = DrawElementsUByte::primitive_restart_index;
+          else
+            de->indexBuffer()->at(i) = (MultiDrawElementsUByte::index_type)it.index();
+        }
+        VL_CHECK( i == de->indexBuffer()->size() );
+        // prim restart
+        de->setPrimitiveRestartEnabled( dc->primitiveRestartEnabled() );
+        // base vertex
+        de->setBaseVertices( dc->as<MultiDrawElementsBase>()->baseVertices() );
+        // count vector
+        de->setCountVector( dc->as<MultiDrawElementsBase>()->countVector() );
+        // substitute new draw call
+        (*drawCalls())[idraw] = de;
+      }
+    } // can use UByte
+    else
+    // can use UShort
+    if ( max_idx < 0xFFFF || (max_idx == 0xFFFF && !restart_on) )
+    {
+      if (dc->isOfType(DrawElementsBase::Type()))
+      {
+        ref<DrawElementsUShort> de = new DrawElementsUShort( dc->primitiveType(), dc->instances() );
+        // prim restart
+        de->setPrimitiveRestartEnabled( dc->primitiveRestartEnabled() );
+        // base vertex
+        de->setBaseVertex( dc->as<DrawElementsBase>()->baseVertex() );
+        // regenerate indices
+        de->indexBuffer()->resize( idx_count );
+        u32 i=0;
+        for( vl::IndexIterator it = dc->indexIterator(); it.hasNext(); ++it, ++i )
+        {
+          // skip primitive restart indices
+          if (restart_on && it.index() == (int)restart_idx)
+            de->indexBuffer()->at(i) = DrawElementsUShort::primitive_restart_index;
+          else
+          {
+            VL_CHECK( it.index() >= 0 && it.index() < (int)posarr->size() );
+            de->indexBuffer()->at(i) = (DrawElementsUShort::index_type)it.index();
+          }
+        }
+        VL_CHECK( i == de->indexBuffer()->size() );
+        // substitute new draw call
+        (*drawCalls())[idraw] = de;
+      }
+      else
+      if (dc->isOfType(DrawRangeElementsBase::Type()))
+      {
+        ref<DrawRangeElementsUShort> de = new DrawRangeElementsUShort( dc->primitiveType(), dc->instances() );
+        // prim restart
+        de->setPrimitiveRestartEnabled( dc->primitiveRestartEnabled() );
+        // base vertex
+        de->setBaseVertex( dc->as<DrawRangeElementsBase>()->baseVertex() );
+        // range
+        de->setRangeStart( dc->as<DrawRangeElementsBase>()->rangeStart() );
+        de->setRangeEnd( dc->as<DrawRangeElementsBase>()->rangeEnd() );
+        // regenerate indices
+        de->indexBuffer()->resize( idx_count );
+        u32 i=0;
+        for( vl::IndexIterator it = dc->indexIterator(); it.hasNext(); ++it, ++i )
+        {
+          // skip primitive restart indices
+          if (restart_on && it.index() == (int)restart_idx)
+            de->indexBuffer()->at(i) = DrawRangeElementsUShort::primitive_restart_index;
+          else
+            de->indexBuffer()->at(i) = (DrawRangeElementsUShort::index_type)it.index();
+        }
+        VL_CHECK( i == de->indexBuffer()->size() );
+        // substitute new draw call
+        (*drawCalls())[idraw] = de;
+      }
+      else
+      if (dc->isOfType(MultiDrawElementsBase::Type()))
+      {
+        ref<MultiDrawElementsUShort> de = new MultiDrawElementsUShort( dc->primitiveType() );
+        // regenerate indices
+        de->indexBuffer()->resize( idx_count );
+        u32 i=0;
+        for( vl::IndexIterator it = dc->indexIterator(); it.hasNext(); ++it, ++i )
+        {
+          // skip primitive restart indices
+          if (restart_on && it.index() == (int)restart_idx)
+            de->indexBuffer()->at(i) = DrawElementsUShort::primitive_restart_index;
+          else
+            de->indexBuffer()->at(i) = (MultiDrawElementsUShort::index_type)it.index();
+        }
+        VL_CHECK( i == de->indexBuffer()->size() );
+        // prim restart
+        de->setPrimitiveRestartEnabled( dc->primitiveRestartEnabled() );
+        // base vertex
+        de->setBaseVertices( dc->as<MultiDrawElementsBase>()->baseVertices() );
+        // count vector
+        de->setCountVector( dc->as<MultiDrawElementsBase>()->countVector() );
+        // substitute new draw call
+        (*drawCalls())[idraw] = de;
+      }
+    } // can use UShort
+
+  } // for()
+}
+//-----------------------------------------------------------------------------
+void Geometry::makeGLESFriendly()
+{
+  // converts legacy vertex arrays into generic vertex attributes
+#if defined(VL_OPENGL_ES2)
+  convertToVertexAttribs();
+#endif
+
+  // converts quads and polygons into triangles
+  triangulateDrawCalls();
+  
+  // use short or byte instead of int
+  shrinkDrawCalls();
+
+  // check primitive type is supported by OpenGL ES
+  for(int i=0; i<drawCalls()->size(); ++i)
+  {
+    DrawCall* dc = drawCalls()->at(i);
+    // check supported primitive types
+    switch(dc->primitiveType())
+    {
+    case GL_POINTS:
+    case GL_LINE_STRIP:
+    case GL_LINE_LOOP:
+    case GL_LINES:
+    case GL_TRIANGLE_STRIP:
+    case GL_TRIANGLE_FAN:
+    case GL_TRIANGLES:
+      break;
+
+    case PT_QUADS:
+    case PT_QUAD_STRIP:
+    case PT_POLYGON:
+    case PT_LINES_ADJACENCY:
+    case PT_LINE_STRIP_ADJACENCY:
+    case PT_TRIANGLES_ADJACENCY:
+    case PT_TRIANGLE_STRIP_ADJACENCY:
+    case PT_PATCHES:
+      dc->setEnabled(false);
+      Log::error("Geometry::makeGLESFriendly(): primitive type illegal under GLES, draw call disabled.\n");
+      break;
+
+    default:
+      VL_TRAP();
+      break;
+    }
+  }
+}
+//-----------------------------------------------------------------------------
 bool Geometry::sortVertices()
 {
-  // works only if the primitive types are all DrawElements
-  std::vector< ref<DrawElementsUInt> >   de_uint;
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+
+  if (!posarr)
+  {
+    Log::warning("Geometry::sortVertices() failed. No vertices found.\n");
+    return false;
+  }
+
+  // supports only DrawElements* and generates DrawElementsUInt
+
+  std::vector< ref<DrawElementsUInt> > de_u32_set;
 
   // collect DrawElements
   for(int i=0; i<drawCalls()->size(); ++i)
   {
-    DrawElementsUInt*   dei = dynamic_cast<DrawElementsUInt*>(drawCalls()->at(i));
-    DrawElementsUShort* des = dynamic_cast<DrawElementsUShort*>(drawCalls()->at(i));
-    DrawElementsUByte*  deb = dynamic_cast<DrawElementsUByte*>(drawCalls()->at(i));
-    if (dei)
-      de_uint.push_back(dei);
-    else
-    if(des)
+    DrawCall* dc = drawCalls()->at(i);
+    if (dc->primitiveRestartEnabled())
     {
-      dei = new DrawElementsUInt(des->primitiveType(), des->instances());
-      de_uint.push_back(dei);
-      dei->indices()->resize( des->indices()->size() );
-      for(unsigned int j=0; j<des->indices()->size(); ++j)
-        dei->indices()->at(j) = des->indices()->at(j);
-    }
-    else
-    if(deb)
-    {
-      dei = new DrawElementsUInt(deb->primitiveType(), deb->instances());
-      de_uint.push_back(dei);
-      dei->indices()->resize( deb->indices()->size() );
-      for(unsigned int j=0; j<deb->indices()->size(); ++j)
-        dei->indices()->at(j) = deb->indices()->at(j);
-    }
-    else
+      Log::error("Geometry::sortVertices() does not support DrawCalls with primitive restart enabled.\n");
       return false;
+    }
+
+    DrawElementsUInt*   de_u32 = dc->as<DrawElementsUInt>();
+    DrawElementsUShort* de_u16 = dc->as<DrawElementsUShort>();
+    DrawElementsUByte*  de_u8  = dc->as<DrawElementsUByte>();
+    if (de_u32)
+    {
+      ref<DrawElementsUInt> de = new DrawElementsUInt(de_u32->primitiveType(), de_u32->instances());
+      de_u32_set.push_back(de);
+      de->indexBuffer()->resize( de_u32->indexBuffer()->size() );
+      for(unsigned int j=0; j<de_u32->indexBuffer()->size(); ++j)
+        de->indexBuffer()->at(j) = de_u32->indexBuffer()->at(j) + de_u32->baseVertex(); // bake base vertex
+    }
+    else
+    if(de_u16)
+    {
+      ref<DrawElementsUInt> de = new DrawElementsUInt(de_u16->primitiveType(), de_u16->instances());
+      de_u32_set.push_back(de);
+      de->indexBuffer()->resize( de_u16->indexBuffer()->size() );
+      for(unsigned int j=0; j<de_u16->indexBuffer()->size(); ++j)
+        de->indexBuffer()->at(j) = de_u16->indexBuffer()->at(j) + de_u16->baseVertex(); // bake base vertex
+    }
+    else
+    if(de_u8)
+    {
+      ref<DrawElementsUInt> de = new DrawElementsUInt(de_u8->primitiveType(), de_u8->instances());
+      de_u32_set.push_back(de);
+      de->indexBuffer()->resize( de_u8->indexBuffer()->size() );
+      for(unsigned int j=0; j<de_u8->indexBuffer()->size(); ++j)
+        de->indexBuffer()->at(j) = de_u8->indexBuffer()->at(j) + de_u8->baseVertex(); // bake base vertex
+    }
+    else
+    {
+      Log::error("Geometry::sortVertices() supports only DrawElements* draw calls.\n");
+      return false;
+    }
   }
 
+  // erase all draw calls
   drawCalls()->clear();
 
-  // generate mapping 
-  std::vector<size_t> map_new_to_old;
-  map_new_to_old.resize( vertexArray()->size() );
-  memset(&map_new_to_old[0], 0xFF, map_new_to_old.size()*sizeof(map_new_to_old[0]));
+  // reset tables
+  std::vector<u32> map_new_to_old;
+  map_new_to_old.resize( posarr->size() );
+  memset(&map_new_to_old[0], 0xFF, map_new_to_old.size()*sizeof(map_new_to_old[0])); // fill with 0xFF for debugging
 
-  std::vector<size_t> map_old_to_new;
-  map_old_to_new.resize( vertexArray()->size() );
-  memset(&map_old_to_new[0], 0xFF, map_old_to_new.size()*sizeof(map_old_to_new[0]));
+  std::vector<u32> map_old_to_new;
+  map_old_to_new.resize( posarr->size() );
+  memset(&map_old_to_new[0], 0xFF, map_old_to_new.size()*sizeof(map_old_to_new[0])); // fill with 0xFF for debugging
 
-  std::vector<size_t> used;
-  used.resize( vertexArray()->size() );
+  std::vector<u32> used;
+  used.resize( posarr->size() );
   memset(&used[0], 0, used.size()*sizeof(used[0]));
 
-  size_t index = 0;
-  for(int i=(int)de_uint.size(); i--; )
+  // assign new vertex indices in order of appearence
+  u32 new_idx = 0;
+  for(u32 i=0; i<de_u32_set.size(); ++i)
   {
-    for(size_t idx=0; idx<de_uint[i]->indices()->size(); ++idx)
-      if (!used[de_uint[i]->indices()->at(idx)])
+    ArrayUInt1* index_buffer = de_u32_set[i]->indexBuffer();
+    for(u32 idx=0; idx<index_buffer->size(); ++idx)
+    {
+      if (!used[index_buffer->at(idx)])
       {
-        map_new_to_old[index] = de_uint[i]->indices()->at(idx);
-        map_old_to_new[de_uint[i]->indices()->at(idx)] = index;
-        index++;
-        used[de_uint[i]->indices()->at(idx)] = 1;
+        const DrawElementsUInt::index_type& old_idx = index_buffer->at(idx);
+        map_new_to_old[new_idx] = old_idx;
+        map_old_to_new[old_idx] = new_idx;
+        used[old_idx] = 1;
+        ++new_idx;
       }
+    }
   }
 
+  // regenerate vertices
   regenerateVertices(map_new_to_old);
 
-  // remap DrawElements
-  for(size_t i=0; i<de_uint.size(); ++i)
+  // regenerate draw calls
+  for(u32 i=0; i<de_u32_set.size(); ++i)
   {
-    drawCalls()->push_back(de_uint[i].get());
-    for(size_t j=0; j<de_uint[i]->indices()->size(); ++j)
+    drawCalls()->push_back(de_u32_set[i].get());
+    ArrayUInt1* index_buffer = de_u32_set[i]->indexBuffer();
+    for(u32 j=0; j<index_buffer->size(); ++j)
     {
-      de_uint[i]->indices()->at(j) = (GLuint)map_old_to_new[de_uint[i]->indices()->at(j)];
+      index_buffer->at(j) = map_old_to_new[index_buffer->at(j)];
     }
   }
 
@@ -745,9 +1316,18 @@ bool Geometry::sortVertices()
 //-----------------------------------------------------------------------------
 void Geometry::colorizePrimitives()
 {
+  ArrayAbstract* posarr = vertexArray() ? vertexArray() : vertexAttribArray(vl::VA_Position) ? vertexAttribArray(vl::VA_Position)->data() : NULL;
+
+  if (!posarr)
+    return;
+
   ref<ArrayFloat4> col = new vl::ArrayFloat4;
-  col->resize( vertexArray()->size() );
-  setColorArray( col.get() );
+  col->resize( posarr->size() );
+
+  if (vertexArray())
+    setColorArray( col.get() );
+  else
+    setVertexAttribArray( vl::VA_Color, col.get() );
 
   for(int i=0; i<drawCalls()->size(); ++i)
   {
@@ -757,13 +1337,13 @@ void Geometry::colorizePrimitives()
     c.b() = rand()%100 / 99.0f;
     c.a() = 1.0f;
 
-    for(IndexIterator it=drawCalls()->at(i)->indexIterator(); !it.isEnd(); it.next())
+    for(IndexIterator it=drawCalls()->at(i)->indexIterator(); it.hasNext(); it.next())
       col->at( it.index() ) = c;
   }
 }
 //-----------------------------------------------------------------------------
 void Geometry::computeTangentSpace(
-  size_t vert_count, 
+  u32 vert_count, 
   const fvec3 *vertex, 
   const fvec3* normal,
   const fvec2 *texcoord, 
@@ -776,7 +1356,7 @@ void Geometry::computeTangentSpace(
   tan1.resize(vert_count);
   tan2.resize(vert_count);
   
-  for ( TriangleIterator trit = prim->triangleIterator(); !trit.isEnd(); trit.next() )
+  for ( TriangleIterator trit = prim->triangleIterator(); trit.hasNext(); trit.next() )
   {
     unsigned int tri[] = { trit.a(), trit.b(), trit.c() };
 
@@ -817,7 +1397,7 @@ void Geometry::computeTangentSpace(
     tan2[tri[2]] += tdir;
   }
 
-  for ( size_t a = 0; a < vert_count; a++)
+  for ( u32 a = 0; a < vert_count; a++)
   {
     const fvec3& n = normal[a];
     const fvec3& t = tan1[a];

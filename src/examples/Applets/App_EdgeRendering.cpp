@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -34,7 +34,6 @@
 #include <vlGraphics/Light.hpp>
 #include <vlGraphics/EdgeExtractor.hpp>
 #include <vlGraphics/EdgeRenderer.hpp>
-#include <vlGraphics/GeometryLoadCallback.hpp>
 
 using namespace vl;
 
@@ -44,18 +43,18 @@ public:
   virtual String appletInfo()
   {
     return BaseDemo::appletInfo() + 
-    "'1' = edge rendering off.\n" +
-    "'2' = edge rendering on: silhouette only.\n" +
-    "'3' = edge rendering on: silhouette + creases.\n" +
-    "'4' = edge rendering on: silhouette + creases + hidden lines.\n" +
-    "'5' = edges only: silhouette + creases.\n" + 
-    "'6' = edges only: silhouette + creases + hidden lines.\n" +
+    "- '1' = edge rendering off.\n" +
+    "- '2' = edge rendering on: silhouette only.\n" +
+    "- '3' = edge rendering on: silhouette + creases.\n" +
+    "- '4' = edge rendering on: silhouette + creases + hidden lines.\n" +
+    "- '5' = edges only: silhouette + creases.\n" + 
+    "- '6' = edges only: silhouette + creases + hidden lines.\n" +
     "\n";
   }
 
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
 
     // retrieve the default rendering
     mMainRendering = rendering()->as<Rendering>();
@@ -70,7 +69,7 @@ public:
     // implemented by EdgeRenderer.
     mEdgeRenderer->setClearFlags(CF_CLEAR_DEPTH);
     // target the same opengl window
-    mEdgeRenderer->setRenderTarget(mSolidRenderer->renderTarget());
+    mEdgeRenderer->setFramebuffer(mSolidRenderer->framebuffer());
     // enqueue the EdgeRenderer in the rendering, will be executed after mSolidRenderer
     mMainRendering->renderers().push_back( mEdgeRenderer.get() );
 
@@ -84,9 +83,6 @@ public:
     mEdgeRenderer->setSmoothLines(true);
     mEdgeRenderer->setDefaultLineColor(black);
 
-    ref<GeometryLoadCallback> glc = new GeometryLoadCallback;
-    defLoadWriterManager()->loadCallbacks()->push_back(glc.get());
-
     // fills the scene with a few actors.
     // the beauty of this system is that you setup your actors ony once in a single scene managers and
     // they will be rendered twice, first using a normal renderer and then using the edge renderer.
@@ -97,7 +93,7 @@ public:
   void setupScene()
   {
     // setup common states
-    ref<Light> camera_light = new Light(0);
+    ref<Light> camera_light = new Light;
     ref<EnableSet> enables = new EnableSet;
     enables->enable(EN_DEPTH_TEST);
     enables->enable(EN_LIGHTING);
@@ -106,19 +102,19 @@ public:
     ref<Effect> red_fx = new Effect;
     red_fx->shader()->setEnableSet(enables.get());
     red_fx->shader()->gocMaterial()->setDiffuse(red);
-    red_fx->shader()->setRenderState(camera_light.get());
+    red_fx->shader()->setRenderState(camera_light.get(), 0);
 
     // green material fx
     ref<Effect> green_fx = new Effect;
     green_fx->shader()->setEnableSet(enables.get());
     green_fx->shader()->gocMaterial()->setDiffuse(green);
-    green_fx->shader()->setRenderState(camera_light.get());
+    green_fx->shader()->setRenderState(camera_light.get(), 0);
 
     // blue material fx
     ref<Effect> yellow_fx = new Effect;
     yellow_fx->shader()->setEnableSet(enables.get());
     yellow_fx->shader()->gocMaterial()->setDiffuse(yellow);
-    yellow_fx->shader()->setRenderState(camera_light.get());
+    yellow_fx->shader()->setRenderState(camera_light.get(), 0);
 
     // add box, cylinder, cone actors to the scene
     ref<Geometry> geom1 = makeBox     (vec3(-7,0,0),5,5,5);
@@ -214,7 +210,7 @@ public:
     Camera* camera = mMainRendering->camera();
     camera->viewport()->setWidth ( w );
     camera->viewport()->setHeight( h );
-    camera->setProjectionAsPerspective();
+    camera->setProjectionPerspective();
   }
 
   void loadModel(const std::vector<String>& files)
@@ -240,7 +236,7 @@ public:
       {
         ref<Actor> actor = actors[i].get();
         // define a reasonable Shader
-        actor->effect()->shader()->setRenderState( new Light(0) );
+        actor->effect()->shader()->setRenderState( new Light, 0 );
         actor->effect()->shader()->enable(EN_DEPTH_TEST);
         actor->effect()->shader()->enable(EN_LIGHTING);
         actor->effect()->shader()->gocLightModel()->setTwoSide(true);

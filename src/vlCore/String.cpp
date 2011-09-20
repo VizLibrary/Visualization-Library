@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
-/*  Copyright (c) 2005-2010, Michele Bosi                                             */
+/*  Copyright (c) 2005-2011, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
 /*                                                                                    */
 /*  Redistribution and use in source and binary forms, with or without modification,  */
@@ -37,6 +37,7 @@
 #include <vlCore/VirtualFile.hpp>
 #include <vlCore/VisualizationLibrary.hpp>
 #include <stdio.h>
+#include <stdarg.h>
 
 using namespace vl;
 
@@ -96,7 +97,7 @@ String String::loadText(const String& path, EStringEncoding default_encoding)
 //-----------------------------------------------------------------------------
 String String::loadText(VirtualFile* file, EStringEncoding default_encoding)
 {
-  std::vector<unsigned char> buffer;
+  std::vector<char> buffer;
   file->load( buffer );
   file->close();
 
@@ -532,7 +533,9 @@ String& String::reverse()
 //-----------------------------------------------------------------------------
 String& String::normalizeSlashes() 
 { 
+  // convert all '\' to '/'
   replace('\\', '/');
+  // remove double slashes
   int len=0;
   do
   {
@@ -540,6 +543,45 @@ String& String::normalizeSlashes()
     replace("//", "/"); 
   }
   while(len!=length());
+
+  bool beg_slash = startsWith('/');
+
+  bool end_slash = endsWith('/');
+
+  // resolve . and ..
+  std::vector<String> parts;
+  split('/', parts, true);
+  std::vector<String> new_parts;
+  for(size_t i=0; i<parts.size(); ++i)
+  {
+    if (parts[i] == ".")
+      continue;
+    else
+    if (parts[i] == ".." && !new_parts.empty())
+    {
+      new_parts.pop_back();
+      continue;
+    }
+    else
+      new_parts.push_back(parts[i]);
+  }
+
+  // recreate the string
+
+  clear();
+  if (beg_slash)
+    *this += '/';
+
+  for(size_t i=0; i<new_parts.size(); ++i)
+  {
+    *this += new_parts[i];
+    if(i != new_parts.size()-1)
+      *this += '/';
+  }
+
+  if (end_slash)
+    *this += '/';
+
   return *this; 
 }
 //-----------------------------------------------------------------------------
@@ -836,9 +878,12 @@ String String::fromStdWString(const std::wstring& str)
   return s;
 }
 //-----------------------------------------------------------------------------
-String String::fromStdString(const std::string& str)
+String String::fromStdString(const std::string& str, bool utf8)
 {
-  return fromAscii( str.c_str() );
+  if (utf8)
+    return fromUTF8( str.c_str(), str.length());
+  else
+    return fromAscii( str.c_str() );
 }
 //-----------------------------------------------------------------------------
 String String::fromAscii(const char* str, int size)
@@ -1024,10 +1069,18 @@ String String::fromLatin1(const char* str, int character_count)
   return s;
 }
 //-----------------------------------------------------------------------------
+String String::fromPointer(const void* value)
+{
+  char buffer[32];
+  memset(buffer, 0, sizeof(buffer));
+  sprintf(buffer, "%p", value);
+  return fromAscii(buffer);
+}
+//-----------------------------------------------------------------------------
 String String::fromInt(int value)
 {
   char buffer[256];
-  memset(buffer, 0, 256);
+  memset(buffer, 0, sizeof(buffer));
   sprintf(buffer, "%d", value);
   return fromAscii(buffer);
 }
@@ -1035,7 +1088,7 @@ String String::fromInt(int value)
 String String::fromUInt(unsigned int value)
 {
   char buffer[256];
-  memset(buffer, 0, 256);
+  memset(buffer, 0, sizeof(buffer));
   sprintf(buffer, "%u", value);
   return fromAscii(buffer);
 }
@@ -1043,7 +1096,7 @@ String String::fromUInt(unsigned int value)
 String String::fromLongLong(long long value)
 {
   char buffer[256];
-  memset(buffer, 0, 256);
+  memset(buffer, 0, sizeof(buffer));
   sprintf(buffer, "%lld", value);
   return fromAscii(buffer);
 }
@@ -1051,7 +1104,7 @@ String String::fromLongLong(long long value)
 String String::fromULongLong(unsigned long long value)
 {
   char buffer[256];
-  memset(buffer, 0, 256);
+  memset(buffer, 0, sizeof(buffer));
   sprintf(buffer, "%llu", value);
   return fromAscii(buffer);
 }
@@ -1059,7 +1112,7 @@ String String::fromULongLong(unsigned long long value)
 String String::fromDouble(double value, int decimals)
 {
   char buffer[256];
-  memset(buffer, 0, 256);
+  memset(buffer, 0, sizeof(buffer));
   switch(decimals)
   {
     case 0: sprintf(buffer, "%.0lf", value); break;
@@ -1452,5 +1505,18 @@ std::string String::trimStdString(const std::string& text)
   }
   trimmed.resize( i+1 );
   return trimmed;
+}
+//-----------------------------------------------------------------------------
+String String::printf(const char* fmt, ...)
+{
+  std::vector<char> buffer;
+  buffer.resize(1024 + strlen(fmt));
+  buffer[0] = 0;
+
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(&buffer[0], buffer.size(), fmt, ap);
+  va_end(ap);
+  return &buffer[0];
 }
 //-----------------------------------------------------------------------------

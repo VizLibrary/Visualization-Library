@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -36,7 +36,7 @@
 #include <vlCore/Say.hpp>
 #include <vlCore/Log.hpp>
 #include <vlGraphics/RenderEventCallback.hpp>
-#include <vlGraphics/GLBufferObject.hpp>
+#include <vlGraphics/BufferObject.hpp>
 #include <vlCore/Image.hpp>
 
 namespace vl
@@ -56,15 +56,18 @@ namespace vl
     // clears OpenGL errors
     glGetError();
 
+#if defined(VL_OPENGL)
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
+#endif
 
     glPixelStorei( GL_PACK_ALIGNMENT,   1);
+#if defined(VL_OPENGL)
     glPixelStorei( GL_PACK_ROW_LENGTH,  w);
     glPixelStorei( GL_PACK_SKIP_PIXELS, 0);
     glPixelStorei( GL_PACK_SKIP_ROWS,   0);
     glPixelStorei( GL_PACK_SWAP_BYTES,  0);
     glPixelStorei( GL_PACK_LSB_FIRST,   0);
-    if (GLEW_VERSION_1_2)
+    if (Has_GL_Version_1_2||Has_GL_Version_3_0||Has_GL_Version_4_0) // Texture 3D but excluding EOS
     {
       glPixelStorei( GL_PACK_IMAGE_HEIGHT, 0 );
       glPixelStorei( GL_PACK_SKIP_IMAGES,  0 );
@@ -73,6 +76,8 @@ namespace vl
     int prev = 0;
     glGetIntegerv( GL_READ_BUFFER, &prev ); VL_CHECK_OGL()
     glReadBuffer( read_buffer );
+#endif
+
     #ifndef NDEBUG
       if (glGetError() != GL_NO_ERROR)
       {
@@ -87,11 +92,13 @@ namespace vl
       }
     #endif
 
-    bool supports_pbo = GLEW_ARB_pixel_buffer_object||GLEW_EXT_pixel_buffer_object||GLEW_VERSION_2_1;
-    GLBufferObject* glbuf = dynamic_cast<GLBufferObject*>(image->imageBuffer());
+    bool supports_pbo = Has_GL_ARB_pixel_buffer_object||Has_GL_EXT_pixel_buffer_object||Has_GL_Version_2_1;
 
     if (store_in_pixel_buffer_object && supports_pbo)
     {
+      // mic fixme: test
+      BufferObject* glbuf = cast<BufferObject>(image->imageBuffer()); VL_CHECK(glbuf);
+
       int bytes = image->requiredMemory2D(w, h, 1, image->format(), image->type());
       // allocates the PBO
       glbuf->setBufferData( bytes, NULL, glbuf->usage() );
@@ -108,7 +115,7 @@ namespace vl
       // test GPU -> local copy
       //if (w != image->width() || h != image->height() || image->dimension() != ID_2D || image->pixels() == NULL)
       //  image->allocate2D( w, h, 1, image->format(), image->type() );
-      //glbuf->downloadGLBufferObject();
+      //glbuf->downloadBufferObject();
     }
     else
     {
@@ -117,9 +124,12 @@ namespace vl
       glReadPixels( x, y, w, h, image->format(), image->type(), image->pixels() );
     }
 
+#if defined(VL_OPENGL)
     // restore read buffer
     glReadBuffer( prev );
+
     glPopClientAttrib();
+#endif
 
     VL_CHECK_OGL()
   }
@@ -141,8 +151,9 @@ namespace vl
   */
   class ReadPixels: public RenderEventCallback
   {
+    VL_INSTRUMENT_CLASS(vl::ReadPixels, RenderEventCallback)
+
   public:
-    virtual const char* className() { return "vl::ReadPixels"; }
     ReadPixels():
       mX ( 0 ),
       mY ( 0 ),

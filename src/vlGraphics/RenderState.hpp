@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -49,8 +49,9 @@ namespace vl
   */
   class VLGRAPHICS_EXPORT RenderState: public Object
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::RenderState, Object)
+
   public:
-    virtual const char* className() { return "vl::RenderState"; }
     RenderState() 
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -58,30 +59,59 @@ namespace vl
     virtual ERenderState type() const { return RS_NONE; }
 
     /** The parameter cameara is NULL if we are disabling the state, non-NULL if we are enabling it. */
-    virtual void apply(const Camera* camera, OpenGLContext* ctx) const = 0;
+    virtual void apply(int index, const Camera* camera, OpenGLContext* ctx) const = 0;
+
+    virtual ref<RenderState> clone() const = 0;
   };
   //------------------------------------------------------------------------------
-  // TextureState
+  // RenderStateIndexed
   //------------------------------------------------------------------------------
-  /**
-   * Base class for the OpenGL texture state wrapper classes.
-   *
-   * \sa Shader, Effect, Actor, RenderState
-  */
-  class VLGRAPHICS_EXPORT TextureState: public RenderState
+  /** Base class for those render states which have more than one binding points like lights, clipping planes and texture unit states. */
+  class VLGRAPHICS_EXPORT RenderStateIndexed: public RenderState
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::RenderStateIndexed, RenderState)
+
   public:
-    virtual const char* className() { return "vl::TextureState"; }
-    TextureState(): mTextureUnit(0)
+    RenderStateIndexed() 
     {
       VL_DEBUG_SET_OBJECT_NAME()
     }
-    int textureUnit() const { return mTextureUnit; }
-    void setUnitIndex(int unit_index) { mTextureUnit = unit_index; }
-  protected:
-    int mTextureUnit;
   };
+  //------------------------------------------------------------------------------
+  // RenderStateNonIndexed
+  //------------------------------------------------------------------------------
+  /** Base class for those render states which have only one binding point (the vast majority). */
+  class VLGRAPHICS_EXPORT RenderStateNonIndexed: public RenderState
+  {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::RenderStateNonIndexed, RenderState)
 
+  public:
+    RenderStateNonIndexed() 
+    {
+      VL_DEBUG_SET_OBJECT_NAME()
+    }
+  };
+  //------------------------------------------------------------------------------
+  struct RenderStateSlot
+  {
+    RenderStateSlot(): mRS(NULL), mIndex(-1) {}
+    RenderStateSlot(RenderState* rs, int index): mRS(rs), mIndex(index) {}
+    virtual ~RenderStateSlot() {}
+
+    virtual void apply(const Camera* camera, OpenGLContext* ctx) const { mRS->apply( mIndex, camera, ctx ); }
+
+    ERenderState type() const 
+    { 
+      if (mIndex > 0)
+        return (ERenderState)(mRS->type() + mIndex); 
+      else
+        return mRS->type();
+    }
+
+    ref<RenderState> mRS;
+    int mIndex;
+  };
+  //------------------------------------------------------------------------------
 }
 
 #endif

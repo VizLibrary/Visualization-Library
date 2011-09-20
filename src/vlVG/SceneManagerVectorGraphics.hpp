@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -55,9 +55,9 @@ namespace vl
    * - SceneManagerPortals */
   class SceneManagerVectorGraphics: public SceneManager
   {
-  public:
-    virtual const char* className() { return "vl::SceneManagerVectorGraphics"; }
+    VL_INSTRUMENT_CLASS(vl::SceneManagerVectorGraphics, SceneManager)
 
+  public:
     SceneManagerVectorGraphics() { mActorRenderRankStart = 0; mVectorGraphicObjects.setAutomaticDelete(false); }
 
     /** Defines the Actor's render rank to be used when extracting them from the scene manager during the rendering.

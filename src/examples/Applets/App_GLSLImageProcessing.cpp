@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -50,14 +50,14 @@ public:
 
   virtual void initEvent()
   {
-    if (!(GLEW_ARB_shading_language_100||GLEW_VERSION_3_0))
+    if (!vl::Has_GLSL)
     {
       vl::Log::error("OpenGL Shading Language not supported.\n");
-      vl::Time::sleep(3000);
+      vl::Time::sleep(2000);
       exit(1);
     }
 
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
 
     /*openglContext()->setContinuousUpdate(false);*/
 
@@ -75,8 +75,8 @@ public:
 
     // camera setup
     rendering()->as<vl::Rendering>()->setNearFarClippingPlanesOptimized(false);
-    rendering()->as<vl::Rendering>()->camera()->setProjectionAsOrtho2D();
-    rendering()->as<vl::Rendering>()->camera()->setInverseViewMatrix( vl::mat4() );
+    rendering()->as<vl::Rendering>()->camera()->setProjectionOrtho(-0.5f);
+    rendering()->as<vl::Rendering>()->camera()->setModelingMatrix( vl::mat4() );
 
     // disable trackball and ghost camera manipulator
     trackball()->setEnabled(false);
@@ -93,14 +93,14 @@ public:
     mTexture->getTexParameter()->setMinFilter(vl::TPF_LINEAR);
     mTexture->getTexParameter()->setMagFilter(vl::TPF_LINEAR);
     mTexture->prepareTexture2D(mImage.get(), vl::TF_RGBA);
-    mTextureMatrix = new vl::TextureMatrix(0);
+    mTextureMatrix = new vl::TextureMatrix;
 
     vl::ref<vl::Effect> postproc_fx = new vl::Effect;
-    postproc_fx->shader()->gocTextureUnit(0)->setTexture(mTexture.get());
-    postproc_fx->shader()->setRenderState( mTextureMatrix.get() );
+    postproc_fx->shader()->gocTextureSampler(0)->setTexture(mTexture.get());
+    postproc_fx->shader()->setRenderState( mTextureMatrix.get(), 0 );
 
     vl::ref<vl::Effect> original_fx = new vl::Effect;
-    original_fx->shader()->gocTextureUnit(0)->setTexture(mTexture.get());
+    original_fx->shader()->gocTextureSampler(0)->setTexture(mTexture.get());
 
     mGLSLProgram = postproc_fx->shader()->gocGLSLProgram();
     mGLSLProgram->attachShader( new vl::GLSLFragmentShader("/glsl/image_processing.fs") );
@@ -161,7 +161,7 @@ public:
     mTexture->prepareTexture2D(mImage.get(), vl::TF_RGBA);
 
     // perfectly center the texture texels (see GL_CLAMP documentation)
-    vl::mat4 m;
+    vl::fmat4 m;
     float x_texel = 1.0f/mImage->width();
     float y_texel = 1.0f/mImage->height();
     float x_scale = 1.0f - x_texel;
@@ -172,13 +172,13 @@ public:
 
     // set "image_width" uniform
     vl::ref<vl::Uniform> image_width = mGLSLProgram->gocUniform("image_width");
-    image_width->setUniformF(mImage->width());
+    image_width->setUniformF((float)mImage->width());
     // set "image_height" uniform
     vl::ref<vl::Uniform> image_height = mGLSLProgram->gocUniform("image_height");
-    image_height->setUniformF(mImage->width());
+    image_height->setUniformF((float)mImage->width());
 
-    int w = rendering()->as<vl::Rendering>()->renderer()->renderTarget()->width();
-    int h = rendering()->as<vl::Rendering>()->renderer()->renderTarget()->height();
+    int w = rendering()->as<vl::Rendering>()->renderer()->framebuffer()->width();
+    int h = rendering()->as<vl::Rendering>()->renderer()->framebuffer()->height();
     resizeEvent( w, h );
     mTimer.start();
     mTest = 0;
@@ -190,7 +190,7 @@ public:
     vl::Camera* camera = rendering()->as<vl::Rendering>()->camera();
     camera->viewport()->setWidth(w);
     camera->viewport()->setHeight(h);
-    camera->setProjectionAsOrtho2D();
+    camera->setProjectionOrtho(-0.5f);
 
     if (mImage)
     {

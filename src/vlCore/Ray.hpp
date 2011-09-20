@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -36,7 +36,7 @@
 
 namespace vl
 {
-  /** The Ray class defines a ray as an origin and direction using Real precision.
+  /** The Ray class defines a ray as an origin and direction using real precision.
    */
   class Ray
   {

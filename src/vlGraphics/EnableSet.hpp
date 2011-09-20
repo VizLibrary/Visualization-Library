@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -46,13 +46,19 @@ namespace vl
   */
   class EnableSet: public Object
   {
+    VL_INSTRUMENT_CLASS(vl::EnableSet, Object)
+
   public:
     EnableSet(): mBlendingEnabled(false)
     {
       VL_DEBUG_SET_OBJECT_NAME()
+      // these two are enabled by default
+      mEnables.push_back(EN_DITHER);
+      // only OpenGL ES 2 does not support GL_MULTISAMPLE
+#if !defined(VL_OPENGL_ES2)
+      mEnables.push_back(EN_MULTISAMPLE);
+#endif
     }
-
-    virtual const char* className() { return "vl::EnableSet"; }
 
     // enable getter and setters
 
@@ -92,7 +98,7 @@ namespace vl
 
     void disableAll() { mEnables.clear(); mBlendingEnabled=false; }
 
-    bool blendingEnabled() const { return mBlendingEnabled; }
+    bool isBlendingEnabled() const { return mBlendingEnabled; }
 
   protected:
     std::vector<EEnable> mEnables;

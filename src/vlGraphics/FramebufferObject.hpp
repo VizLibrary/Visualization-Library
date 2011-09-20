@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -39,16 +39,18 @@
 
 namespace vl
 {
-  class FBORenderTarget;
+  class FramebufferObject;
 //-----------------------------------------------------------------------------
 // FBOAbstractAttachment
 //-----------------------------------------------------------------------------
   /**
-   * Abstract class that represents a framebuffer object attachment to be used with FBORenderTarget.
+   * Abstract class that represents a framebuffer object attachment to be used with FramebufferObject.
    */
   class VLGRAPHICS_EXPORT FBOAbstractAttachment: public Object
   {
-    friend class FBORenderTarget;
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::FBOAbstractAttachment, Object)
+
+    friend class FramebufferObject;
 
   private:
     // no copy constructor and no assignment operator
@@ -56,60 +58,61 @@ namespace vl
     void operator=( const FBOAbstractAttachment& ) {}
 
   public:
-    virtual const char* className() { return "vl::FBOAbstractAttachment"; }
-
-    /** Constructor */
+    /** Constructor  */
     FBOAbstractAttachment() {}
 
-    /** Destructor, removes automatically the FBO attachment from all bound FBO render targets and releases any OpenGL resource. */
-    virtual ~FBOAbstractAttachment() { destroy(); }
+    /** Destructor. */
+    virtual ~FBOAbstractAttachment() { VL_CHECK(fboFramebuffers().size() == 0); }
 
-    /** Removes the FBO attachment from all bound FBO render targets and releases any associated OpenGL resource. */
-    virtual void destroy();
+    /** Removes the FBO attachment from all bound FBO render targets. */
+    virtual void unbindFromAllFBO();
 
-    /** Returns an std::set containing the FBORenderTarget that use this FBO attachment. */
-    const std::set< ref<FBORenderTarget> >& fboRenderTargets() const { return mFBORenderTargets; }
-
-  protected:
-    virtual void bindAttachment( FBORenderTarget* fbo, EAttachmentPoint attach_point ) = 0;
+    /** Returns an std::set containing the FramebufferObject that use this FBO attachment. */
+    const std::set< ref<FramebufferObject> >& fboFramebuffers() const { return mFramebufferObjects; }
 
   protected:
-    std::set< ref<FBORenderTarget> > mFBORenderTargets;
+    virtual void bindAttachment( FramebufferObject* fbo, EAttachmentPoint attach_point ) = 0;
+
+  protected:
+    std::set< ref<FramebufferObject> > mFramebufferObjects;
   };
   //-----------------------------------------------------------------------------
   // FBORenderbufferAttachment
   //-----------------------------------------------------------------------------
   /** 
    * Abstract class that represents a framebuffer renderbuffer attachment, that is, a non-texture fbo attachment (wraps \p glFramebufferRenderbuffer()).
-   * \sa FBORenderTarget.
+   * \sa FramebufferObject.
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferRenderbuffer.xml
    */
   class VLGRAPHICS_EXPORT FBORenderbufferAttachment: public FBOAbstractAttachment
   {
-    friend class FBORenderTarget;
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::FBORenderbufferAttachment, FBOAbstractAttachment)
 
-  public:
-    virtual const char* className() { return "vl::FBORenderbufferAttachment"; }
-    
+    friend class FramebufferObject;
+
+  public:    
     /** Constructor. */
     FBORenderbufferAttachment(): mHandle( 0 ), mWidth( 0 ), mHeight( 0 ), mSamples( 0 ), mReallocateRenderbuffer( true ) {}
+
+    /** Destructor. */
+    ~FBORenderbufferAttachment() { deleteRenderBuffer(); }
     
     /**
      * Creates a renderbuffer object calling glGenRenderbuffers(). 
      * The identifier returned by glGenRenderbuffers() can be queried calling the handle() method.
      */
-    void create();
+    void createRenderBuffer();
     
-    /** Deletes the renderbuffer object created with the create() method. */
-    void destroy();
+    /** Deletes the renderbuffer object created with the createRenderBuffer() method. */
+    void deleteRenderBuffer();
     
     /** 
      * Sets the handle for this attachment, the handle must have been created by glGenRenderbuffers().
-     * Normally you don't need to call this. See also: create(), handle().
+     * Normally you don't need to call this. See also: createRenderBuffer(), handle().
      */
     void setHandle( GLuint  handle ) { if ( mHandle != handle ) { mHandle = handle; mReallocateRenderbuffer = false; } }
     
-    /** Returns the handle obtained by create() using glGenRenderbuffers() */
+    /** Returns the handle obtained by createRenderBuffer() using glGenRenderbuffers() */
     GLuint handle() const { return mHandle; }
     
     /**
@@ -147,13 +150,13 @@ namespace vl
     
     /**
      * The width of the renderbuffer storage to be allocated.
-     * If 'w' is set to 0 the renderbuffer storage allocation will use the dimensions of the next FBORenderTarget bound.
+     * If 'w' is set to 0 the renderbuffer storage allocation will use the dimensions of the next FramebufferObject bound.
      */
     void setWidth( int w ) { if ( w != mWidth ) /* schedules recreation */ mReallocateRenderbuffer = true; mWidth = w; }
     
     /**
      * The height of the renderbuffer storage to be allocated.
-     * If 'h' is set to 0 the renderbuffer storage allocation will use the dimensions of the next FBORenderTarget bound.
+     * If 'h' is set to 0 the renderbuffer storage allocation will use the dimensions of the next FramebufferObject bound.
      */
     void setHeight( int h ) { if ( h != mHeight ) /* schedules recreation */ mReallocateRenderbuffer = true; mHeight = h; }
     
@@ -166,7 +169,7 @@ namespace vl
     bool renderbufferStorageReady() const { return !mReallocateRenderbuffer; }
 
   protected:
-    void bindAttachment( FBORenderTarget* fbo, EAttachmentPoint attach_point );
+    void bindAttachment( FramebufferObject* fbo, EAttachmentPoint attach_point );
     virtual int internalType() = 0;
 
   protected:
@@ -180,15 +183,15 @@ namespace vl
   // FBOColorBufferAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A color renderbuffer to be attached to a FBORenderTarget.
+   * A color renderbuffer to be attached to a FramebufferObject.
    */
   class VLGRAPHICS_EXPORT FBOColorBufferAttachment: public FBORenderbufferAttachment
   {
-  public:
-    virtual const char* className() { return "vl::FBOColorBufferAttachment"; }
+    VL_INSTRUMENT_CLASS(vl::FBOColorBufferAttachment, FBOColorBufferAttachment)
 
+  public:
     /** Constructor */
-    FBOColorBufferAttachment( EColorBufferFormat type )
+    FBOColorBufferAttachment( EColorBufferFormat type = CBF_RGBA )
     {
       VL_DEBUG_SET_OBJECT_NAME()
       mType = type;
@@ -210,15 +213,15 @@ namespace vl
   // FBODepthBufferAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A depth renderbuffer to be attached to a FBORenderTarget.
+   * A depth renderbuffer to be attached to a FramebufferObject.
    */
   class VLGRAPHICS_EXPORT FBODepthBufferAttachment: public FBORenderbufferAttachment
   {
-  public:
-    virtual const char* className() { return "vl::FBODepthBufferAttachment"; }
+    VL_INSTRUMENT_CLASS(vl::FBODepthBufferAttachment, FBORenderbufferAttachment)
 
+  public:
     /** Constructor */
-    FBODepthBufferAttachment( EDepthBufferFormat type )
+    FBODepthBufferAttachment( EDepthBufferFormat type = DBF_DEPTH_COMPONENT )
     {
       VL_DEBUG_SET_OBJECT_NAME()
       mType = type;
@@ -240,15 +243,15 @@ namespace vl
   // FBOStencilBufferAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A stencil renderbuffer to be attached to a FBORenderTarget.
+   * A stencil renderbuffer to be attached to a FramebufferObject.
    */
   class VLGRAPHICS_EXPORT FBOStencilBufferAttachment: public FBORenderbufferAttachment
   {
-  public:
-    virtual const char* className() { return "vl::FBOStencilBufferAttachment"; }
+    VL_INSTRUMENT_CLASS(vl::FBOStencilBufferAttachment, FBORenderbufferAttachment)
 
+  public:
     /** Constructor */
-    FBOStencilBufferAttachment( EStencilBufferFormat type )
+    FBOStencilBufferAttachment( EStencilBufferFormat type = SBF_STENCIL_INDEX8 )
     {
       VL_DEBUG_SET_OBJECT_NAME()
       mType = type;
@@ -270,15 +273,15 @@ namespace vl
   // FBODepthStencilBufferAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A depth+stencil renderbuffer to be attached to a FBORenderTarget.
+   * A depth+stencil renderbuffer to be attached to a FramebufferObject.
    */
   class VLGRAPHICS_EXPORT FBODepthStencilBufferAttachment: public FBORenderbufferAttachment
   {
-  public:
-    virtual const char* className() { return "vl::FBODepthStencilBufferAttachment"; }
+    VL_INSTRUMENT_CLASS(vl::FBODepthStencilBufferAttachment, FBORenderbufferAttachment)
 
+  public:
     /** Constructor */
-    FBODepthStencilBufferAttachment( EDepthStencilBufferFormat type )
+    FBODepthStencilBufferAttachment( EDepthStencilBufferFormat type = DSBT_DEPTH_STENCIL )
     {
       VL_DEBUG_SET_OBJECT_NAME()
       mType = type;
@@ -300,13 +303,13 @@ namespace vl
   // FBOAbstractTextureAttachment
   //-----------------------------------------------------------------------------
   /**
-   * Base class for all the framebuffer texture attachments (see also FBORenderTarget).
+   * Base class for all the framebuffer texture attachments (see also FramebufferObject).
    */
   class VLGRAPHICS_EXPORT FBOAbstractTextureAttachment: public FBOAbstractAttachment
   {
-  public:
-    virtual const char* className() { return "vl::FBOAbstractTextureAttachment"; }
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::FBOAbstractTextureAttachment, FBOAbstractAttachment)
 
+  public:
     /** Constructor. */
     FBOAbstractTextureAttachment( Texture* texture, int mipmap_level ): mTexture(texture), mMipmapLevel(mipmap_level)
     {
@@ -336,13 +339,19 @@ namespace vl
   // FBOTexture1DAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A 1D texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture1D()).
+   * A 1D texture renderbuffer to be attached to a FramebufferObject (wraps \p glFramebufferTexture1D()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
   class VLGRAPHICS_EXPORT FBOTexture1DAttachment: public FBOAbstractTextureAttachment
   {
+    VL_INSTRUMENT_CLASS(vl::FBOTexture1DAttachment, FBOAbstractTextureAttachment)
+
   public:
-    virtual const char* className() { return "vl::FBOTexture1DAttachment"; }
+    /** Constructor. */
+    FBOTexture1DAttachment(): FBOAbstractTextureAttachment( NULL, 0 )
+    {
+      VL_DEBUG_SET_OBJECT_NAME()
+    }
 
     /** Constructor. */
     FBOTexture1DAttachment( Texture* texture, int mipmap_level ): FBOAbstractTextureAttachment( texture, mipmap_level )
@@ -351,19 +360,26 @@ namespace vl
     }
 
   protected:
-    virtual void bindAttachment( FBORenderTarget* fbo, EAttachmentPoint attach_point );
+    virtual void bindAttachment( FramebufferObject* fbo, EAttachmentPoint attach_point );
   };
   //-----------------------------------------------------------------------------
   // FBOTexture2DAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A 2D texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture2D()).
+   * A 2D texture renderbuffer to be attached to a FramebufferObject (wraps \p glFramebufferTexture2D()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
   class VLGRAPHICS_EXPORT FBOTexture2DAttachment: public FBOAbstractTextureAttachment
   {
+    VL_INSTRUMENT_CLASS(vl::FBOTexture2DAttachment, FBOAbstractTextureAttachment)
+
   public:
-    virtual const char* className() { return "vl::FBOTexture2DAttachment"; }
+    /** Constructor. */
+    FBOTexture2DAttachment( ): FBOAbstractTextureAttachment( NULL, 0 )
+    {
+      VL_DEBUG_SET_OBJECT_NAME()
+      mTextureTarget = T2DT_TEXTURE_2D;
+    }
 
     /** Constructor. */
     FBOTexture2DAttachment( Texture* texture, int mipmap_level, ETex2DTarget target ): FBOAbstractTextureAttachment( texture, mipmap_level )
@@ -379,7 +395,7 @@ namespace vl
     ETex2DTarget textureTarget() const { return mTextureTarget; }
 
   protected:
-    virtual void bindAttachment( FBORenderTarget* fbo, EAttachmentPoint attach_point );
+    virtual void bindAttachment( FramebufferObject* fbo, EAttachmentPoint attach_point );
 
   protected:
     ETex2DTarget mTextureTarget;
@@ -388,13 +404,19 @@ namespace vl
   // FBOTextureAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture()).
+   * A texture renderbuffer to be attached to a FramebufferObject (wraps \p glFramebufferTexture()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
   class VLGRAPHICS_EXPORT FBOTextureAttachment: public FBOAbstractTextureAttachment
   {
+    VL_INSTRUMENT_CLASS(vl::FBOTextureAttachment, FBOAbstractTextureAttachment)
+
   public:
-    virtual const char* className() { return "vl::FBOTextureAttachment"; }
+    /** Constructor. */
+    FBOTextureAttachment(): FBOAbstractTextureAttachment( NULL, 0 )
+    {
+      VL_DEBUG_SET_OBJECT_NAME()
+    }
 
     /** Constructor. */
     FBOTextureAttachment( Texture* texture, int mipmap_level ): FBOAbstractTextureAttachment( texture, mipmap_level )
@@ -403,20 +425,26 @@ namespace vl
     }
 
   protected:
-    virtual void bindAttachment( FBORenderTarget* fbo, EAttachmentPoint attach_point );
+    virtual void bindAttachment( FramebufferObject* fbo, EAttachmentPoint attach_point );
 
   };
   //-----------------------------------------------------------------------------
   // FBOTexture3DAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A 3D texture renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTexture3D()).
+   * A 3D texture renderbuffer to be attached to a FramebufferObject (wraps \p glFramebufferTexture3D()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTexture.xml
    */
   class VLGRAPHICS_EXPORT FBOTexture3DAttachment: public FBOAbstractTextureAttachment
   {
+    VL_INSTRUMENT_CLASS(vl::FBOTexture3DAttachment, FBOAbstractTextureAttachment)
+
   public:
-    virtual const char* className() { return "vl::FBOTexture3DAttachment"; }
+    FBOTexture3DAttachment(): FBOAbstractTextureAttachment( NULL, 0 )
+    {
+      VL_DEBUG_SET_OBJECT_NAME()
+      mLayer = 0;
+    }
 
     FBOTexture3DAttachment( Texture* texture, int mipmap_level, int layer ): FBOAbstractTextureAttachment( texture, mipmap_level )
     {
@@ -431,7 +459,7 @@ namespace vl
     int layer() const { return mLayer; }
 
   protected:
-    virtual void bindAttachment( FBORenderTarget* fbo, EAttachmentPoint attach_point );
+    virtual void bindAttachment( FramebufferObject* fbo, EAttachmentPoint attach_point );
 
   protected:
     int mLayer;
@@ -440,13 +468,20 @@ namespace vl
   // FBOTextureLayerAttachment
   //-----------------------------------------------------------------------------
   /**
-   * A texture layer renderbuffer to be attached to a FBORenderTarget (wraps \p glFramebufferTextureLayer()).
+   * A texture layer renderbuffer to be attached to a FramebufferObject (wraps \p glFramebufferTextureLayer()).
    * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glFramebufferTextureLayer.xml
    */
   class VLGRAPHICS_EXPORT FBOTextureLayerAttachment: public FBOAbstractTextureAttachment
   {
+    VL_INSTRUMENT_CLASS(vl::FBOTextureLayerAttachment, FBOAbstractTextureAttachment)
+
   public:
-    virtual const char* className() { return "vl::FBOTextureLayerAttachment"; }
+    /** Constructor. */
+    FBOTextureLayerAttachment(): FBOAbstractTextureAttachment( NULL, 0 )
+    {
+      VL_DEBUG_SET_OBJECT_NAME()
+      mLayer = 0;
+    }
 
     /** Constructor. */
     FBOTextureLayerAttachment( Texture* texture, int mipmap_level, int layer ): FBOAbstractTextureAttachment( texture, mipmap_level )
@@ -462,7 +497,7 @@ namespace vl
     void setLayer( int layer ) { mLayer = layer; }
 
   protected:
-    virtual void bindAttachment( FBORenderTarget* fbo, EAttachmentPoint attach_point );
+    virtual void bindAttachment( FramebufferObject* fbo, EAttachmentPoint attach_point );
 
   protected:
     ref<Texture> mTexture;
@@ -470,18 +505,18 @@ namespace vl
     int mLayer;
   };
   //-----------------------------------------------------------------------------
-  // FBORenderTarget
+  // FramebufferObject
   //-----------------------------------------------------------------------------
   /**
    * Implements a framebuffer object to be used as a rendering target as specified by
    * the \p ARB_framebuffer_object extension.
-   * An FBORenderTarget belongs to one and only one OpenGLContext and can be created
-   * using the OpenGLContext::createFBORenderTarget() method.
-   * To render to a FBORenderTarget use the Rendering::setRenderTarget() function.
+   * An FramebufferObject belongs to one and only one OpenGLContext and can be created
+   * using the OpenGLContext::createFramebufferObject() method.
+   * To render to a FramebufferObject use the Rendering::setFramebuffer() function.
    *
    * \remarks
-   * Before using any method from FBORenderTarget make sure that the appropriate
-   * OpenGL rendering context is active using FBORenderTarget::openglContext()->makeCurrent()
+   * Before using any method from FramebufferObject make sure that the appropriate
+   * OpenGL rendering context is active using FramebufferObject::openglContext()->makeCurrent()
    *
    * \remarks
    * All the renderbuffer attachments must specify the same number of samples.
@@ -500,16 +535,25 @@ namespace vl
    * - FBOTextureAttachment 
    * - FBOTextureLayerAttachment 
    */
-  class VLGRAPHICS_EXPORT FBORenderTarget: public RenderTarget
+  class VLGRAPHICS_EXPORT FramebufferObject: public Framebuffer
   {
+    VL_INSTRUMENT_CLASS(vl::FramebufferObject, Framebuffer)
+
     friend class OpenGLContext;
 
   private:
-    FBORenderTarget( const FBORenderTarget& other ): RenderTarget( other ), mHandle( 0 ) {}
+    FramebufferObject( const FramebufferObject& other ): Framebuffer( other ), mHandle( 0 ) {}
     
-    void operator=( const FBORenderTarget& ) {}
+    void operator=( const FramebufferObject& ) {}
     
-    FBORenderTarget( OpenGLContext* ctx, int w, int h ): RenderTarget( ctx, w, h ), mHandle( 0 )
+    FramebufferObject(): Framebuffer( NULL, 0, 0 ), mHandle( 0 )
+    {
+      VL_DEBUG_SET_OBJECT_NAME()
+      setDrawBuffer( RDB_COLOR_ATTACHMENT0 );
+      setReadBuffer( RDB_COLOR_ATTACHMENT0 );
+    }
+
+    FramebufferObject( OpenGLContext* ctx, int w, int h ): Framebuffer( ctx, w, h ), mHandle( 0 )
     {
       VL_DEBUG_SET_OBJECT_NAME()
       setDrawBuffer( RDB_COLOR_ATTACHMENT0 );
@@ -517,22 +561,20 @@ namespace vl
     }
 
   public:
-    virtual const char* className() { return "vl::FBORenderTarget"; }
-
     /** Destructor. */
-    ~FBORenderTarget() { if (openglContext()) destroy(); }
+    ~FramebufferObject() { if (openglContext()) deleteFBO(); }
 
     /** 
      * Creates a framebuffer object by calling glGenFramebuffers(). 
      * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glGenFramebuffers.xml
      */
-    void create();
+    void createFBO();
 
     /** 
      * Deletes a framebuffer object by calling glDeleteFramebuffers(). 
      * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glDeleteFramebuffers.xml
      */
-    void destroy();
+    void deleteFBO();
 
     /** The handle of the framebuffer object as returned by glGenFramebuffers. */
     void setHandle( GLuint handle ) { mHandle = handle; }
@@ -541,11 +583,11 @@ namespace vl
     virtual GLuint handle() const { return mHandle; }
 
     /**
-     * Makes the framebuffer the current rendering target calling glBindFramebuffer( GL_FRAMEBUFFER, FBORenderTarget::handle() )
+     * Makes the framebuffer the current rendering target calling glBindFramebuffer( GL_FRAMEBUFFER, FramebufferObject::handle() )
      * and initializes all the previously defined attachment points.
      * \sa http://www.opengl.org/sdk/docs/man3/xhtml/glBindFramebuffer.xml
      */
-    virtual void bindFramebuffer( EFrameBufferBind target = FBB_FRAMEBUFFER );
+    virtual void bindFramebuffer( EFramebufferBind target = FBB_FRAMEBUFFER );
 
     /** Checks the framebuffer status and returns the value of glCheckFramebufferStatus() */
     GLenum checkFramebufferStatus();

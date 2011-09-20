@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -44,8 +44,9 @@ namespace vl
   */
   class RenderQueueSorter: public Object
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::RenderQueueSorter, Object)
+
   public:
-    virtual const char* className() { return "vl::RenderQueueSorter"; }
     RenderQueueSorter()
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -61,8 +62,9 @@ namespace vl
   // no z sort, no effect render rank, no actor render rank
   class RenderQueueSorterByShader: public RenderQueueSorter
   {
+    VL_INSTRUMENT_CLASS(vl::RenderQueueSorterByShader, RenderQueueSorter)
+
   public:
-    virtual const char* className() { return "vl::RenderQueueSorterByShader"; }
     RenderQueueSorterByShader()
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -81,8 +83,9 @@ namespace vl
   // no z sort, no effect render rank, no actor render rank
   class RenderQueueSorterByRenderable: public RenderQueueSorter
   {
+    VL_INSTRUMENT_CLASS(vl::RenderQueueSorterByRenderable, RenderQueueSorter)
+
   public:
-    virtual const char* className() { return "vl::RenderQueueSorterByRenderable"; }
     RenderQueueSorterByRenderable()
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -100,12 +103,14 @@ namespace vl
   //! Sorts the RenderTokens by their Effect rank -> Actor rank -> Shader pointer -> Renderable pointer
   class RenderQueueSorterBasic: public RenderQueueSorter
   {
+    VL_INSTRUMENT_CLASS(vl::RenderQueueSorterBasic, RenderQueueSorter)
+
   public:
-    virtual const char* className() { return "vl::RenderQueueSorterBasic"; }
     RenderQueueSorterBasic()
     {
       VL_DEBUG_SET_OBJECT_NAME()
     }
+    virtual bool mightNeedZCameraDistance() const { return true; }
     virtual bool confirmZCameraDistanceNeed(const RenderToken*) const { return false; }
     virtual bool operator()(const RenderToken* a, const RenderToken* b) const
     {
@@ -143,8 +148,9 @@ namespace vl
   //! -# Sort solid objects by Renderable
   class RenderQueueSorterStandard: public RenderQueueSorter
   {
+    VL_INSTRUMENT_CLASS(vl::RenderQueueSorterStandard, RenderQueueSorter)
+
   public:
-    virtual const char* className() { return "vl::RenderQueueSorterStandard"; }
     RenderQueueSorterStandard(): mDepthSortMode(AlphaDepthSort)
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -154,7 +160,7 @@ namespace vl
     virtual bool confirmZCameraDistanceNeed(const RenderToken* a) const
     { 
       return mDepthSortMode != NeverDepthSort && (mDepthSortMode == AlwaysDepthSort  ||
-      (a->mShader->blendingEnabled() && (mDepthSortMode == AlphaDepthSort)) ); 
+      (a->mShader->isBlendingEnabled() && (mDepthSortMode == AlphaDepthSort)) ); 
     }
 
     virtual bool operator()(const RenderToken* a, const RenderToken* b) const
@@ -176,10 +182,10 @@ namespace vl
 
       // --------------- shader based sorting ---------------
 
-      if ( mDepthSortMode != AlwaysDepthSort && (a->mShader->blendingEnabled() != b->mShader->blendingEnabled()))
+      if ( mDepthSortMode != AlwaysDepthSort && (a->mShader->isBlendingEnabled() != b->mShader->isBlendingEnabled()))
       {
         // first render opaque objects
-        return !a->mShader->blendingEnabled();
+        return !a->mShader->isBlendingEnabled();
       }
       // A/b->mShader->isEnabled(OGL_BLEND) are equal or AlwaysDepthSort
       else
@@ -224,8 +230,9 @@ namespace vl
   //! -# Sort translucent objects back-to-front
   class RenderQueueSorterOcclusion: public RenderQueueSorter
   {
+    VL_INSTRUMENT_CLASS(vl::RenderQueueSorterOcclusion, RenderQueueSorter)
+
   public:
-    virtual const char* className() { return "vl::RenderQueueSorterOcclusion"; }
     RenderQueueSorterOcclusion()
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -253,19 +260,19 @@ namespace vl
 
       // --------------- shader based sorting ---------------
 
-      if ( a->mShader->blendingEnabled() != b->mShader->blendingEnabled() )
+      if ( a->mShader->isBlendingEnabled() != b->mShader->isBlendingEnabled() )
       {
         // first render opaque objects
-        return !a->mShader->blendingEnabled();
+        return !a->mShader->isBlendingEnabled();
       }
       else
       // blending on: render first far objects then the close ones
-      if ( a->mShader->blendingEnabled() )
+      if ( a->mShader->isBlendingEnabled() )
       {
         return a->mCameraDistance > b->mCameraDistance;
       }
       else
-      // blending off: render first close objects then far ones -> i.e. -> if ( !a->mShader->blendingEnabled() )
+      // blending off: render first close objects then far ones -> i.e. -> if ( !a->mShader->isBlendingEnabled() )
       if (a->mCameraDistance != b->mCameraDistance)
       {
         return a->mCameraDistance < b->mCameraDistance;
@@ -286,8 +293,9 @@ namespace vl
   //! GLSL program -> render state set -> enable set -> texture set -> light set -> Shader pointer -> Renderable pointer
   class RenderQueueSorterAggressive: public RenderQueueSorter
   {
+    VL_INSTRUMENT_CLASS(vl::RenderQueueSorterAggressive, RenderQueueSorter)
+
   public:
-    virtual const char* className() { return "vl::RenderQueueSorterAggressive"; }
     RenderQueueSorterAggressive(): mDepthSortMode(AlphaDepthSort)
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -297,7 +305,7 @@ namespace vl
     virtual bool confirmZCameraDistanceNeed(const RenderToken* a) const
     {
       return mDepthSortMode != NeverDepthSort &&
-        (mDepthSortMode == AlwaysDepthSort  || (a->mShader->blendingEnabled() && (mDepthSortMode == AlphaDepthSort)) );
+        (mDepthSortMode == AlwaysDepthSort  || (a->mShader->isBlendingEnabled() && (mDepthSortMode == AlphaDepthSort)) );
     }
 
     virtual bool operator()(const RenderToken* a, const RenderToken* b) const
@@ -319,9 +327,9 @@ namespace vl
 
       // --------------- shader based sorting ---------------
 
-      if ( mDepthSortMode != AlwaysDepthSort && (a->mShader->blendingEnabled() != b->mShader->blendingEnabled()))
+      if ( mDepthSortMode != AlwaysDepthSort && (a->mShader->isBlendingEnabled() != b->mShader->isBlendingEnabled()))
       {
-        return !a->mShader->blendingEnabled(); // first render opaque objects
+        return !a->mShader->isBlendingEnabled(); // first render opaque objects
       }
       else // A/b->mShader->isEnabled(OGL_BLEND) are equal or AlwaysDepthSort
       if ( confirmZCameraDistanceNeed(a) )

@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
-/*  Copyright (c) 2005-2010, Michele Bosi                                             */
+/*  Copyright (c) 2005-2011, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
 /*                                                                                    */
 /*  Redistribution and use in source and binary forms, with or without modification,  */
@@ -54,10 +54,11 @@ namespace vl
 	  OpenGLContext did not have the keyboard focus, the function keyPressed() will wrongly report a \a pressed state for that key. */
   class VLGRAPHICS_EXPORT UIEventListener: public Object
   {
-  friend class OpenGLContext;
-  public:
-    virtual const char* className() { return "vl::UIEventListener"; }
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::UIEventListener, Object)
 
+    friend class OpenGLContext;
+
+  public:
     /** Constructor. */
     UIEventListener(): mOpenGLContext(NULL), mEnabled(true) 
     {

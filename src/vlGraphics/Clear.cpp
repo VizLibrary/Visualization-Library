@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -57,7 +57,7 @@ void Clear::render_Implementation(const Actor*, const Shader*, const Camera* cam
   mask = mask | (mClearStencilBuffer ? GL_STENCIL_BUFFER_BIT : 0);
 
   // check for integer texture support
-  if ( (!glClearColorIiEXT || !glClearColorIuiEXT) && (clearColorMode() == CCM_Int || clearColorMode() == CCM_UInt) )
+  if ( (clearColorMode() == CCM_Int || clearColorMode() == CCM_UInt) && !Has_GL_EXT_texture_integer)
   {
     Log::error("Clear::render(): glClearColorIiEXT and glClearColorIuiEXT not supported.\n");
     return;

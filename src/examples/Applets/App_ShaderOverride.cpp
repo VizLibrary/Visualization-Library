@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -43,7 +43,7 @@ class App_ShaderOverride: public BaseDemo
 public:
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
 
     // retrieve our vl::Rendering object
 
@@ -60,7 +60,7 @@ public:
 
     // setup sphere geometry
 
-    const vl::Real fsize = 8;
+    const vl::real fsize = 8;
     vl::ref<vl::Geometry> ball = vl::makeUVSphere( vl::vec3(0,0,0), fsize, 8, 8 );
     ball->computeNormals();
 
@@ -69,7 +69,7 @@ public:
     vl::ref<vl::Effect> effect = new vl::Effect;
     effect->shader()->enable(vl::EN_BLEND);
     effect->shader()->enable(vl::EN_DEPTH_TEST);
-    effect->shader()->setRenderState( new vl::Light(0) );
+    effect->shader()->setRenderState( new vl::Light, 0 );
     effect->shader()->enable(vl::EN_LIGHTING);
     effect->shader()->enable(vl::EN_CULL_FACE);
     effect->shader()->gocMaterial()->setDiffuse( vl::gold );
@@ -96,7 +96,8 @@ public:
 
     // share all the states except for the glMaterial ones
 
-    *sh3 = *sh2 = *sh1;
+    sh2->shallowCopyFrom(*sh1);
+    sh3->shallowCopyFrom(*sh1);
 
     // assign a different flat material color to each shader
 
@@ -110,7 +111,7 @@ public:
     // keep the color buffer from the solid rendering but clear the depth buffer
     wire_renderer->setClearFlags(vl::CF_DO_NOT_CLEAR);
     // target the same render target
-    wire_renderer->setRenderTarget( mRendering->renderers()[0]->renderTarget() );
+    wire_renderer->setFramebuffer( mRendering->renderers()[0]->framebuffer() );
     // add wireframe renderer
     mRendering->renderers().push_back(wire_renderer.get());
 
@@ -129,7 +130,7 @@ public:
 
   virtual void updateScene()
   {
-    vl::Real degrees = vl::Time::currentTime() * 45.0f;
+    vl::real degrees = vl::Time::currentTime() * 45.0f;
     vl::mat4 matrix;
     
     matrix.rotate( degrees, 0,1,0 );
@@ -152,7 +153,7 @@ public:
     vl::Camera* camera = mRendering->camera();
     camera->viewport()->setWidth ( w );
     camera->viewport()->setHeight( h );
-    camera->setProjectionAsPerspective();
+    camera->setProjectionPerspective();
   }
 
 protected:

@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -49,6 +49,8 @@ namespace vl
   //! Generates a 3D plot with labels and isosurface. The isosurface is generated using the MarchingCubes algorithm.
   class VLVOLUME_EXPORT VolumePlot: public Object
   {
+    VL_INSTRUMENT_CLASS(vl::VolumePlot, Object)
+
   public:
     //! A function to be used with VolumePlot
     class Function
@@ -58,8 +60,6 @@ namespace vl
     };
 
   public:
-    virtual const char* className() { return "vl::VolumePlot"; }
-
     //! Constructor.
     VolumePlot();
 
@@ -97,7 +97,9 @@ namespace vl
     void setMaxCorner(const fvec3& max_corner) { mMaxCorner = max_corner; }
 
     //! The transform associated to the whole plot
-    Transform* plotTransform() const { return mPlotTransform.get(); }
+    const Transform* plotTransform() const { return mPlotTransform.get(); }
+    //! The transform associated to the whole plot
+    Transform* plotTransform() { return mPlotTransform.get(); }
     //! The transform associated to the whole plot
     void setPlotTransform(Transform* tr) { mPlotTransform = tr; }
 
@@ -112,7 +114,9 @@ namespace vl
     void setLabelFormat(const String& format) { mLabelFormat = format; }
 
     //! The Font to be used for the box labels
-    Font* labelFont() const { return mLabelFont.get(); }
+    const Font* labelFont() const { return mLabelFont.get(); }
+    //! The Font to be used for the box labels
+    Font* labelFont() { return mLabelFont.get(); }
     //! The Font to be used for the box labels
     void setLabelFont(Font* font) { mLabelFont = font; }
 

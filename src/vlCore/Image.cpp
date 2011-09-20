@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -36,7 +36,7 @@
 #include <vlCore/VisualizationLibrary.hpp>
 #include <vlCore/FileSystem.hpp>
 #include <vlCore/VirtualFile.hpp>
-#include <vlCore/GLSLmath.hpp>
+#include <vlCore/glsl_math.hpp>
 #include <vlCore/ResourceDatabase.hpp>
 #include <vlCore/LoadWriterManager.hpp>
 
@@ -50,41 +50,56 @@ using namespace vl;
 //-----------------------------------------------------------------------------
 Image::~Image()
 {
-  clear();
+  reset();
 }
 //-----------------------------------------------------------------------------
 Image::Image()
 {
   VL_DEBUG_SET_OBJECT_NAME()
   mPixels = new Buffer;
-  clear();
+  reset();
+}
+//-----------------------------------------------------------------------------
+Image::Image(const Image& other): Object(other) 
+{
+  VL_DEBUG_SET_OBJECT_NAME()
+  mPixels = new Buffer;
+  reset();
+  *this = other; 
 }
 //-----------------------------------------------------------------------------
 Image::Image(const String& path)
 {
   VL_DEBUG_SET_OBJECT_NAME()
   mPixels = new Buffer;
-  clear();
-  setObjectName(path.toStdString());
+  reset();
+
+  setObjectName(path.toStdString().c_str());
   ref<Image> img = loadImage(path);
   if (!img)
+  {
+    mFilePath = path;
     return;
+  }
   // quicker than *this = *img;
   mPixels->swap(*img->mPixels);
   mMipmaps.swap(img->mMipmaps);
-  mWidth = img->mWidth;
+  mWidth  = img->mWidth;
   mHeight = img->mHeight;
-  mDepth = img->mDepth;
-  mPitch = img->mPitch;
+  mDepth  = img->mDepth;
+  mPitch  = img->mPitch;
   mByteAlign = img->mByteAlign;
   mFormat    = img->mFormat;
   mType      = img->mType;
   mIsCubemap = img->mIsCubemap;
+  mIsNormalMap = img->mIsNormalMap;
+  mHasAlpha    = img->mHasAlpha;
+  mFilePath    = img->mFilePath;
 }
 //-----------------------------------------------------------------------------
 //! Note that the image is not allocated
 Image::Image(int x, int y, int z, int bytealign, EImageFormat format, EImageType type):
-  mWidth(x), mHeight(y), mDepth(z), mPitch(0), mByteAlign(1), mFormat(format), mType(type), mIsCubemap(false)
+  mWidth(x), mHeight(y), mDepth(z), mPitch(0), mByteAlign(1), mFormat(format), mType(type), mIsCubemap(false), mIsNormalMap(false), mHasAlpha(false)
 {
   VL_DEBUG_SET_OBJECT_NAME()
   mPixels = new Buffer;
@@ -559,7 +574,7 @@ void Image::updatePitch()
 //-----------------------------------------------------------------------------
 void Image::allocateCubemap(int x, int y, int bytealign, EImageFormat format, EImageType type)
 {
-  clear();
+  reset();
 
   setWidth(x);
   setHeight(y);
@@ -581,7 +596,7 @@ void Image::allocate()
 //-----------------------------------------------------------------------------
 void Image::allocate1D(int x, EImageFormat format, EImageType type)
 {
-  clear();
+  reset();
 
   VL_CHECK(x);
   setWidth(x);
@@ -597,7 +612,7 @@ void Image::allocate1D(int x, EImageFormat format, EImageType type)
 //-----------------------------------------------------------------------------
 void Image::allocate2D(int x, int y, int bytealign, EImageFormat format, EImageType type)
 {
-  clear();
+  reset();
 
   VL_CHECK(x);
   VL_CHECK(y);
@@ -612,13 +627,12 @@ void Image::allocate2D(int x, int y, int bytealign, EImageFormat format, EImageT
   int req_mem = requiredMemory();
   if (req_mem == 0)
     Log::bug("Image::allocate2D could not allocate memory, probably your image settings are invalid.\n");
-  // mPixels.clear();
   mPixels->resize(req_mem);
 }
 //-----------------------------------------------------------------------------
 void Image::allocate3D(int x, int y, int z, int bytealign, EImageFormat format, EImageType type)
 {
-  clear();
+  reset();
 
   VL_CHECK(x);
   VL_CHECK(y);
@@ -636,7 +650,7 @@ void Image::allocate3D(int x, int y, int z, int bytealign, EImageFormat format, 
 //-----------------------------------------------------------------------------
 void Image::reset(int x, int y, int z, int bytealign, EImageFormat format, EImageType type, bool is_cubemap)
 {
-  clear();
+  reset();
 
   setWidth(x);
   setHeight(y);
@@ -647,7 +661,7 @@ void Image::reset(int x, int y, int z, int bytealign, EImageFormat format, EImag
   mIsCubemap = is_cubemap;
 }
 //-----------------------------------------------------------------------------
-void Image::clear()
+void Image::reset()
 {
   mPixels->clear();
   mMipmaps.clear();
@@ -659,12 +673,14 @@ void Image::clear()
   mFormat = IF_RGBA;
   mType = IT_UNSIGNED_BYTE;
   mByteAlign = 1;
-  mIsCubemap = false;
+  mIsCubemap   = false;
+  mIsNormalMap = false;
+  mHasAlpha    = false;
 }
 //-----------------------------------------------------------------------------
 Image& Image::operator=(const Image& other)
 {
-  setObjectName(other.objectName());
+  super::operator=(other);
 
   // deep copy of the pixels
   *mPixels = *other.mPixels;
@@ -678,6 +694,8 @@ Image& Image::operator=(const Image& other)
   mFormat    = other.mFormat;
   mType      = other.mType;
   mIsCubemap = other.mIsCubemap;
+  mIsNormalMap = other.mIsNormalMap;
+  mHasAlpha    = other.mHasAlpha;
 
   // deep copy of the mipmaps
   mMipmaps.resize(other.mMipmaps.size());
@@ -689,82 +707,112 @@ Image& Image::operator=(const Image& other)
   return *this;
 }
 //-----------------------------------------------------------------------------
+const unsigned char* Image::pixelsXP() const
+{
+  VL_CHECK( dimension() == 4 )
+  if( dimension() != 4 || !pixels())
+    return NULL;
+  else
+    return pixels();
+}
+//-----------------------------------------------------------------------------
 unsigned char* Image::pixelsXP()
 {
+  VL_CHECK( dimension() == 4 )
   if( dimension() != 4 || !pixels())
-  {
-    VL_TRAP()
     return NULL;
-  }
   else
-  {
     return pixels();
-  }
+}
+//-----------------------------------------------------------------------------
+const unsigned char* Image::pixelsXN() const
+{
+  VL_CHECK( dimension() == 4 )
+  if( dimension() != 4 || !pixels())
+    return NULL;
+  else
+    return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 1;
 }
 //-----------------------------------------------------------------------------
 unsigned char* Image::pixelsXN()
 {
+  VL_CHECK( dimension() == 4 )
   if( dimension() != 4 || !pixels())
-  {
-    VL_TRAP()
     return NULL;
-  }
   else
-  {
     return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 1;
-  }
+}
+//-----------------------------------------------------------------------------
+const unsigned char* Image::pixelsYP() const
+{
+  VL_CHECK( dimension() == 4 )
+  if( dimension() != 4 || !pixels())
+    return NULL;
+  else
+    return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 2;
 }
 //-----------------------------------------------------------------------------
 unsigned char* Image::pixelsYP()
 {
+  VL_CHECK( dimension() == 4 )
   if( dimension() != 4 || !pixels())
-  {
-    VL_TRAP()
     return NULL;
-  }
   else
-  {
     return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 2;
-  }
+}
+//-----------------------------------------------------------------------------
+const unsigned char* Image::pixelsYN() const
+{
+  VL_CHECK( dimension() == 4 )
+  if( dimension() != 4 || !pixels())
+    return NULL;
+  else
+    return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 3;
 }
 //-----------------------------------------------------------------------------
 unsigned char* Image::pixelsYN()
 {
+  VL_CHECK( dimension() == 4 )
   if( dimension() != 4 || !pixels())
-  {
-    VL_TRAP()
     return NULL;
-  }
   else
-  {
     return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 3;
-  }
+}
+//-----------------------------------------------------------------------------
+const unsigned char* Image::pixelsZP() const
+{
+  VL_CHECK( dimension() == 4 )
+  if( dimension() != 4 || !pixels())
+    return NULL;
+  else
+    return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 4;
 }
 //-----------------------------------------------------------------------------
 unsigned char* Image::pixelsZP()
 {
+  VL_CHECK( dimension() == 4 )
   if( dimension() != 4 || !pixels())
-  {
-    VL_TRAP()
     return NULL;
-  }
   else
-  {
     return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 4;
-  }
+}
+//-----------------------------------------------------------------------------
+const unsigned char* Image::pixelsZN() const
+{
+  VL_CHECK( dimension() == 4 )
+  if( dimension() != 4 || !pixels())
+    return NULL;
+  else
+    return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 5;
 }
 //-----------------------------------------------------------------------------
 unsigned char* Image::pixelsZN()
 {
-  if ( dimension() != 4 || !pixels())
-  {
-    VL_TRAP()
+  VL_CHECK( dimension() == 4 )
+  if( dimension() != 4 || !pixels())
     return NULL;
-  }
   else
-  {
     return (unsigned char*)pixels() + requiredMemory2D( width(), height(), byteAlignment(), format(), type() ) * 5;
-  }
 }
 //-----------------------------------------------------------------------------
 //! Returns the pixels of the specified Z slice of a 3D image
@@ -1141,14 +1189,16 @@ ref<Image> vl::loadImage( VirtualFile* file )
 
   ref<Image> img;
 
-  if (res_db->count<Image>())
-    img = res_db->get<Image>(0);
+  img = res_db->get<Image>(0);
 
   VL_CHECK( !file->isOpen() )
   file->close();
 
   if (img)
-    img->setObjectName( file->path().toStdString() );
+  {
+    img->setObjectName( file->path().toStdString().c_str() );
+    img->setFilePath( file->path() );
+  }
 
   return img;
 }
@@ -1268,7 +1318,7 @@ ref<Image> vl::Image::convertType(EImageType new_type) const
   }
 
   ref<Image> img = new Image;
-  img->setObjectName( objectName() );
+  img->setObjectName( objectName().c_str() );
   img->setFormat(format());
   img->setType(new_type);
   img->setWidth(width());
@@ -1276,6 +1326,8 @@ ref<Image> vl::Image::convertType(EImageType new_type) const
   img->setDepth(depth());
   img->setByteAlignment(1);
   img->mIsCubemap = isCubemap();
+  img->mIsNormalMap = mIsNormalMap;
+  img->mHasAlpha    = mHasAlpha;
   img->allocate();
 
   int components = 0;
@@ -1684,7 +1736,7 @@ ref<Image> vl::Image::convertFormat(EImageFormat new_format) const
   }
 
   ref<Image> img = new Image;
-  img->setObjectName( objectName() );
+  img->setObjectName( objectName().c_str() );
   img->setFormat(new_format);
   img->setType(type());
   img->setWidth(width());
@@ -1692,6 +1744,8 @@ ref<Image> vl::Image::convertFormat(EImageFormat new_format) const
   img->setDepth(depth());
   img->setByteAlignment(1);
   img->mIsCubemap = isCubemap();
+  img->mIsNormalMap = mIsNormalMap;
+  img->mHasAlpha    = mHasAlpha;
   img->allocate();
 
   rgbal srco; // = {-1,-1,-1,-1,-1}, 

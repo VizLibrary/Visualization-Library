@@ -4,7 +4,7 @@
 #  All rights reserved.                                                        #
 #                                                                              #
 #  This file is part of Visualization Library                                  #
-#  http://www.visualizationlibrary.com                                         #
+#  http://www.visualizationlibrary.org                                         #
 #                                                                              #
 #  Released under the OSI approved Simplified BSD License                      #
 #  http://www.opensource.org/licenses/bsd-license.php                          #
@@ -35,4 +35,4 @@ target_link_libraries(VLWX VLCore VLGraphics  ${wxWidgets_LIBRARIES})
 VL_INSTALL_TARGET(VLWX)
 
 # VLWX headers
-install(FILES ${VLWX_INC} DESTINATION "include/vlWX")
+install(FILES ${VLWX_INC} DESTINATION "${VL_INCLUDE_INSTALL_DIR}/vlWX")

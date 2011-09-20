@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -35,9 +35,7 @@
 #include <vlCore/VirtualFile.hpp>
 #include <vlCore/DiskDirectory.hpp>
 
-#ifdef _WIN32
-  #include <windows.h>
-#else
+#if defined(VL_PLATFORM_LINUX) || defined(VL_PLATFORM_MACOSX)
   #include <sys/types.h>
   #include <sys/stat.h>
   #include <unistd.h>
@@ -64,15 +62,16 @@ namespace vl
   */
   class VLCORE_EXPORT DiskFile: public VirtualFile
   {
+    VL_INSTRUMENT_CLASS(vl::DiskFile, VirtualFile)
+
     friend class DiskDirectory;
   protected:
     DiskFile(const DiskFile& other): VirtualFile(other) {}
 
   public:
     DiskFile(const String& path = String());
-    ~DiskFile();
 
-    virtual const char* className() { return "vl::DiskFile"; }
+    ~DiskFile();
 
     //! The specified path is relative to the parent directory. See setPhysicalPath().
     bool open(const String& path, EOpenMode mode);
@@ -88,7 +87,7 @@ namespace vl
 
     virtual bool exists() const;
 
-    DiskFile& operator=(const DiskFile& other) { close(); VirtualFile::operator=(other); return *this; }
+    DiskFile& operator=(const DiskFile& other) { close(); super::operator=(other); return *this; }
 
     virtual ref<VirtualFile> clone() const;
 
@@ -104,7 +103,7 @@ namespace vl
     ref<DiskDirectory> parentDir() const;
 
   protected:
-    #ifdef _WIN32
+    #if defined(VL_PLATFORM_WINDOWS)
       HANDLE mHandle;
     #else
       FILE*  mHandle;

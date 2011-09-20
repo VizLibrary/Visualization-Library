@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -48,9 +48,9 @@ namespace vl
     friend class ZippedFile;
     friend class ZippedDirectory;
 
-  public:
-    virtual const char* className() { return "vl::ZippedFileInfo"; }
+    VL_INSTRUMENT_CLASS(vl::ZippedFileInfo, Object)
 
+  public:
     ZippedFileInfo()
     {
       mVersionNeeded = 0;
@@ -89,7 +89,8 @@ namespace vl
     // offset of the compressed data in the source zip file
     unsigned int zippedFileOffset() const { return mZippedFileOffset; }
     // source stream used to seek and read the compressed zip data
-    VirtualFile* sourceZipFile() const { return mSourceZipFile.get(); }
+    const VirtualFile* sourceZipFile() const { return mSourceZipFile.get(); }
+    VirtualFile* sourceZipFile() { return mSourceZipFile.get(); }
     void setSourceZipFile(VirtualFile* file) { mSourceZipFile = file; }
 
   public:
@@ -131,17 +132,19 @@ namespace vl
   */
   class VLCORE_EXPORT ZippedFile: public VirtualFile
   {
+    VL_INSTRUMENT_CLASS(vl::ZippedFile, VirtualFile)
 
     // Lower this if you need to limit the amount of data allocated to the stack, for example to 16K.
     static const int CHUNK_SIZE = 128*1024;
 
   public:
-    virtual const char* className() { return "vl::ZippedFile"; }
 
     ZippedFile();
     ~ZippedFile();
 
-    ZippedFileInfo* zippedFileInfo() const;
+    const ZippedFileInfo* zippedFileInfo() const;
+
+    ZippedFileInfo* zippedFileInfo();
 
     void setZippedFileInfo(ZippedFileInfo* info);
 
@@ -162,7 +165,7 @@ namespace vl
     ZippedFile& operator=(const ZippedFile& other) 
     { 
       close(); 
-      VirtualFile::operator=(other); 
+      super::operator=(other); 
       mZippedFileInfo = new ZippedFileInfo(*other.mZippedFileInfo); 
       if (mZippedFileInfo->sourceZipFile())
       {
@@ -197,6 +200,11 @@ namespace vl
     std::vector<char> mUncompressedBuffer;
     int mUncompressedBufferPtr;
   };
+  //---------------------------------------------------------------------------
+  // utilty functions
+  bool compress(const void* data, size_t size, std::vector<unsigned char>& out, int level);
+  bool decompress(const void* cdata, size_t csize, void* data_out);
+  //---------------------------------------------------------------------------
 }
 
 #endif

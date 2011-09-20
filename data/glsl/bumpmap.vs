@@ -4,7 +4,7 @@
 /*  All rights reserved.                                                              */
 /*                                                                                    */
 /*  This file is part of Visualization Library                                        */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Released under the OSI approved Simplified BSD License                            */
 /*  http://www.opensource.org/licenses/bsd-license.php                                */
@@ -26,7 +26,7 @@ void main(void)
  L.z = dot( gl_Normal, v );
  #if 0
   L = normalize(L); // normalized in the fragment shader
- #else
+ #endif
  
  gl_FrontColor = gl_Color;
  gl_TexCoord[0] = gl_MultiTexCoord0;

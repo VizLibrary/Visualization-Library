@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -68,9 +68,9 @@ namespace vl
   */
   class VLGRAPHICS_EXPORT Clear: public Renderable
   {
-  public:
-    virtual const char* className() { return "vl::Clear"; }
+    VL_INSTRUMENT_CLASS(vl::Clear, Renderable)
 
+  public:
     Clear();
 
     virtual void render_Implementation(const Actor*, const Shader*, const Camera*, OpenGLContext*) const;
@@ -105,7 +105,9 @@ namespace vl
 
     // Renderable interface implementation.
 
-    void updateVBOs(bool,bool) {}
+    virtual void updateDirtyBufferObject(EBufferObjectUpdateMode) {}
+
+    virtual void deleteBufferObject() {}
 
   protected:
     virtual void computeBounds_Implementation() { setBoundingBox(AABB()); setBoundingSphere(Sphere()); }

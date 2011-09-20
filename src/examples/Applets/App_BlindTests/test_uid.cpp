@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -53,7 +53,7 @@ namespace blind_tests
     vl::UUID guid, guid2;
     Random rnd;
 
-    for (size_t x=0; x<100000; x++)
+    for (size_t x=0; x<5000; x++)
     {
       guid.generateVersion4(rnd);
 

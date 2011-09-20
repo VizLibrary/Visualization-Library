@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -45,6 +45,8 @@ namespace vl
   */
   class Buffer: public Object
   {
+    VL_INSTRUMENT_CLASS(vl::Buffer, Object)
+
   public:
     typedef enum
     {
@@ -53,7 +55,6 @@ namespace vl
     } EAllocationMode;
 
   public:
-    virtual const char* className() { return "vl::Buffer"; }
     Buffer()
     {
       VL_DEBUG_SET_OBJECT_NAME()

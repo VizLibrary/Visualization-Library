@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -44,7 +44,7 @@ ZippedDirectory::ZippedDirectory(const String& zip_file)
   if (v_file)
     setSourceZipFile(v_file.get());
   else
-    Log::error( Say("ZippedFile() could not locate zip file '%s'.\n") << zip_file );
+    Log::error( Say("ZippedDirectory() could not locate zip file '%s'.\n") << zip_file );
 }
 //-----------------------------------------------------------------------------
 ZippedDirectory::ZippedDirectory(VirtualFile* zip_file)
@@ -58,23 +58,28 @@ bool ZippedDirectory::setPath(const String& name)
   String root = name;
   root.trim();
   root.normalizeSlashes();
-  while(root.endsWith('/'))
-    root = root.left(-1);
-  root.trim();
   if (root.empty())
   {
-    vl::Log::error("Directory path must be a non null string and must not be '/'.\n");
+    Log::error("ZippedDirectory::setPath() given an empty path.\n");
     return false;
   }
+  if (!root.endsWith('/'))
+  {
+    // Log::warning( Say("ZippedDirectory::setPath() : path (%s) must end with a '/'.\n") << root );
+    root += '/';
+  }
+
   std::map< String, ref<ZippedFile> > file_map;
-  for( std::map< String, ref<ZippedFile> >::const_iterator it = mFiles.begin(); it != mFiles.end(); ++it )
+  for( std::map< String, ref<ZippedFile> >::iterator it = mFiles.begin(); it != mFiles.end(); ++it )
   {
     String p = it->first;
-    if (path().length())
-      p = p.right(-path().length());
-    while(p.startsWith('/'))
-      p = p.right(-1);
-    it->second->setPath(root + '/' + p);
+    if ( !p.startsWith(path()) )
+    {
+      Log::warning( Say("ZippedDirectory::setPath() : invalid path file '%s'.\n") << p );
+      continue;
+    }
+    p = p.right(-path().length());
+    it->second->setPath(root + p);
     file_map[it->second->path()] = it->second;
   }
   mFiles = file_map;
@@ -82,7 +87,12 @@ bool ZippedDirectory::setPath(const String& name)
   return true;
 }
 //-----------------------------------------------------------------------------
-VirtualFile* ZippedDirectory::sourceZipFile() const
+const VirtualFile* ZippedDirectory::sourceZipFile() const
+{
+  return mSourceZipFile.get();
+}
+//-----------------------------------------------------------------------------
+VirtualFile* ZippedDirectory::sourceZipFile()
 {
   return mSourceZipFile.get();
 }
@@ -162,7 +172,7 @@ bool ZippedDirectory::init()
     zipped_file->setZippedFileInfo( zfile_info.get() );
 
     zfile_info->mFileName = name;
-    zipped_file->setPath( path() + '/' + name );
+    zipped_file->setPath( path() + name );
     mFiles[zipped_file->path()] = zipped_file;
 
     // extra field
@@ -245,12 +255,26 @@ int ZippedDirectory::zippedFileCount() const
   return (int)mFiles.size();
 }
 //-----------------------------------------------------------------------------
-ZippedFile* ZippedDirectory::zippedFile(int index) const
+const ZippedFile* ZippedDirectory::zippedFile(int index) const
 {
   std::map< String, ref<ZippedFile> >::const_iterator it = mFiles.begin();
-  for(int i=0; i<index; ++i)
+  for(int i=0; i<index && it != mFiles.end(); ++i)
     ++it;
-  return it->second.get();
+  if ( it == mFiles.end() )
+    return NULL;
+  else
+  	return it->second.get();
+}
+//-----------------------------------------------------------------------------
+ZippedFile* ZippedDirectory::zippedFile(int index)
+{
+  std::map< String, ref<ZippedFile> >::iterator it = mFiles.begin();
+  for(int i=0; i<index && it != mFiles.end(); ++i)
+    ++it;
+  if ( it == mFiles.end() )
+    return NULL;
+  else
+  	return it->second.get();
 }
 //-----------------------------------------------------------------------------
 ref<ZippedFile> ZippedDirectory::zippedFile(const String& name) const
@@ -277,7 +301,7 @@ void ZippedDirectory::listFilesRecursive( std::vector<String>& file_list ) const
   }
   for( std::map< String, ref<ZippedFile> >::const_iterator it = mFiles.begin(); it != mFiles.end();  ++it)
   {
-    if (!it->first.startsWith(path()+'/'))
+    if (!it->first.startsWith(path()))
       vl::Log::warning( Say("ZippedFile '%s' does not belong to ZippedDirectory '%s'.\n") << it->first << path() );
     file_list.push_back( it->first );
   }
@@ -295,7 +319,7 @@ void ZippedDirectory::listSubDirs(std::vector<String>& dirs, bool append) const
   std::set<String> sub_dirs;
   for( std::map< String, ref<ZippedFile> >::const_iterator it = mFiles.begin(); it != mFiles.end(); ++it )
   {
-    VL_CHECK(it->first.startsWith(path()+'/'))
+    VL_CHECK(it->first.startsWith(path()))
     String p = it->first.extractPath();
     if (path().length())
       p = p.right(-path().length());
@@ -312,7 +336,7 @@ void ZippedDirectory::listSubDirs(std::vector<String>& dirs, bool append) const
     std::vector<String> tokens;
     p.split('/',tokens,true);
     if (tokens.size())
-      sub_dirs.insert(path() + '/' + tokens[0]);
+      sub_dirs.insert(path() + tokens[0]);
   }
   for(std::set<String>::const_iterator it = sub_dirs.begin(); it != sub_dirs.end(); ++it)
     dirs.push_back(*it);
@@ -331,7 +355,7 @@ ref<ZippedDirectory> ZippedDirectory::zippedSubDir(const String& subdir_name) co
   {
     if (it->first.startsWith(p+'/'))
     {
-      ref<ZippedFile> mfile = dynamic_cast<ZippedFile*>(it->second->clone().get());
+      ref<ZippedFile> mfile = static_cast<ZippedFile*>(it->second->clone().get());
       VL_CHECK(mfile)
       dir->mFiles[mfile->path()] = mfile;
     }

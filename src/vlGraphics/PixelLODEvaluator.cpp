@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -93,23 +93,5 @@ int PixelLODEvaluator::evaluate(Actor* actor, Camera* camera)
   }
 
   return i; // == mPixelRangeSet.size()
-}
-//-----------------------------------------------------------------------------
-void PixelLODEvaluator::setPixelRangeSet(const std::vector<float>& distance_set) 
-{ 
-  mPixelRangeSet = distance_set; 
-  std::sort(mPixelRangeSet.begin(), mPixelRangeSet.end()); 
-}
-//-----------------------------------------------------------------------------
-void PixelLODEvaluator::addPixelRange(float distance) 
-{ 
-  mPixelRangeSet.push_back(distance); 
-  std::sort(mPixelRangeSet.begin(), mPixelRangeSet.end()); 
-}
-//-----------------------------------------------------------------------------
-void PixelLODEvaluator::setPixelRange(int index, float distance) 
-{ 
-  mPixelRangeSet[index] = distance; 
-  std::sort(mPixelRangeSet.begin(), mPixelRangeSet.end()); 
 }
 //-----------------------------------------------------------------------------

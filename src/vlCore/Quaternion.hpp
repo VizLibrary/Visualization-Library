@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -32,7 +32,7 @@
 #ifndef Quaternion_INCLUDE_ONCE
 #define Quaternion_INCLUDE_ONCE
 
-#include <vlCore/GLSLmath.hpp>
+#include <vlCore/glsl_math.hpp>
 
 namespace vl
 {
@@ -750,7 +750,7 @@ namespace vl
   //-----------------------------------------------------------------------------
   typedef Quaternion<float>  fquat;
   typedef Quaternion<double> dquat;
-  typedef Quaternion<Real>   quat;
+  typedef Quaternion<real>   quat;
   //-----------------------------------------------------------------------------
 }
 

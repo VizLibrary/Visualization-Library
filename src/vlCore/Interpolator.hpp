@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -33,7 +33,7 @@
 #define Interpolator_INCLUDE_ONCE
 
 #include <vlCore/Object.hpp>
-#include <vlCore/GLSLmath.hpp>
+#include <vlCore/glsl_math.hpp>
 #include <vlCore/Vector4.hpp>
 #include <vector>
 
@@ -51,8 +51,8 @@ namespace vl
    * <img src="pics/pagGuideInterpolators1.png"> */
   class Interpolator: public Object
   {
+    VL_INSTRUMENT_CLASS(vl::Interpolator, Object)
   public:
-    virtual const char* className() { return "vl::Interpolator"; }
     Interpolator() 
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -61,6 +61,7 @@ namespace vl
   //! Abstract class that interpolates vl::fvec4 values
   class InterpolatorFVec4: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorFVec4, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual vl::fvec4 computePoint(float t) const = 0;
@@ -68,6 +69,7 @@ namespace vl
   //! Abstract class that interpolates vl::fvec3 values
   class InterpolatorFVec3: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorFVec3, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual vl::fvec3 computePoint(float t) const = 0;
@@ -75,6 +77,7 @@ namespace vl
   //! Abstract class that interpolates vl::fvec2 values
   class InterpolatorFVec2: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorFVec2, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual vl::fvec2 computePoint(float t) const = 0;
@@ -82,6 +85,7 @@ namespace vl
   //! Abstract class that interpolates \p float values
   class InterpolatorFloat: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorFloat, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual float computePoint(float t) const = 0;
@@ -89,6 +93,7 @@ namespace vl
   //! Abstract class that interpolates vl::dvec4 values
   class InterpolatorDVec4: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorDVec4, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual vl::dvec4 computePoint(float t) const = 0;
@@ -96,6 +101,7 @@ namespace vl
   //! Abstract class that interpolates vl::dvec3 values
   class InterpolatorDVec3: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorDVec3, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual vl::dvec3 computePoint(float t) const = 0;
@@ -103,6 +109,7 @@ namespace vl
   //! Abstract class that interpolates vl::dvec2 values
   class InterpolatorDVec2: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorDVec2, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual vl::dvec2 computePoint(float t) const = 0;
@@ -110,6 +117,7 @@ namespace vl
   //! Abstract class that interpolates \p double values.
   class InterpolatorDouble: public Interpolator
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::InterpolatorDouble, Interpolator)
   public:
     //! Samples the interpolator at the given point.
     virtual double computePoint(float t) const = 0;

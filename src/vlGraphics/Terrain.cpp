@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -204,13 +204,13 @@ void Terrain::init()
     glsl->setUniform(heightmap_tex.get());
 
     AABB aabb;
-    aabb.setMinCorner((Real)-0.5, 0, (Real)-0.5);
-    aabb.setMaxCorner((Real)+0.5, (Real)height(), (Real)+0.5);
+    aabb.setMinCorner((real)-0.5, 0, (real)-0.5);
+    aabb.setMaxCorner((real)+0.5, (real)height(), (real)+0.5);
     terr_tile->setBoundingBox( aabb );
     terr_tile->setBoundingSphere(aabb);
     terr_tile->setBoundsDirty(false);
 
-    shaderNode()->setRenderState(glsl.get());
+    shaderNode()->setRenderState(IN_Propagate, glsl.get());
   }
 
   shaderNode()->setEnable(EN_CULL_FACE, true);
@@ -218,9 +218,9 @@ void Terrain::init()
 
   if (!useGLSL())
   {
-    ref<TexEnv> texenv = new TexEnv(1);
+    ref<TexEnv> texenv = new TexEnv;
     texenv->setMode(TEM_MODULATE);
-    shaderNode()->setRenderState(texenv.get());
+    shaderNode()->setRenderState(IN_Propagate, texenv.get(), 1);
   }
 
   // generate chunks
@@ -236,8 +236,8 @@ void Terrain::init()
 
       // terrain texture
       ref<Image> tex_image = terrain_img->subImage(tx, tz, tx_xsize, tx_zsize);
-      ref<TextureUnit> tex_unit0 = new TextureUnit(0);
-      shader_node->setRenderState(tex_unit0.get());
+      ref<TextureSampler> tex_unit0 = new TextureSampler;
+      shader_node->setRenderState(IN_Propagate, tex_unit0.get(), 0);
       tex_unit0->setTexture(new Texture(tex_image.get(), terrainTextureFormat(), false));
       tex_unit0->texture()->getTexParameter()->setMagFilter(TPF_LINEAR);
       tex_unit0->texture()->getTexParameter()->setMinFilter(TPF_LINEAR);
@@ -247,14 +247,14 @@ void Terrain::init()
       // detail texture
       if (detail_img)
       {
-        ref<TextureUnit> tex_unit1 = new TextureUnit(1);
-        shader_node->setRenderState(tex_unit1.get());
+        ref<TextureSampler> tex_unit1 = new TextureSampler;
+        shader_node->setRenderState(IN_Propagate, tex_unit1.get(), 1);
         tex_unit1->setTexture(new Texture(detail_img.get(), detailTextureFormat(), true));
         tex_unit1->texture()->getTexParameter()->setMagFilter(TPF_LINEAR);
         tex_unit1->texture()->getTexParameter()->setMinFilter(TPF_LINEAR_MIPMAP_LINEAR);
         tex_unit1->texture()->getTexParameter()->setWrapS(TPW_REPEAT);
         tex_unit1->texture()->getTexParameter()->setWrapT(TPW_REPEAT);
-        if (GLEW_EXT_texture_filter_anisotropic)
+        if (Has_GL_EXT_texture_filter_anisotropic)
         {
           float max = 1.0f;
           glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max);
@@ -266,8 +266,8 @@ void Terrain::init()
       ref<Image> hmap_image = heightmap_img->subImage(mx, mz, xsize, zsize);
       if (useGLSL())
       {
-        ref<TextureUnit> tex_unit2 = new TextureUnit(2);
-        shader_node->setRenderState(tex_unit2.get());
+        ref<TextureSampler> tex_unit2 = new TextureSampler;
+        shader_node->setRenderState(IN_Propagate, tex_unit2.get(), 2);
         tex_unit2->setTexture(new Texture(hmap_image.get(), heightmapTextureFormat(), false));
         tex_unit2->texture()->getTexParameter()->setMagFilter(TPF_NEAREST);
         tex_unit2->texture()->getTexParameter()->setMinFilter(TPF_NEAREST);
@@ -281,8 +281,7 @@ void Terrain::init()
       dmat.translate(mx*dx + (xsize-1)*dx*0.5 - width()/2.0, 0, mz*dz + (zsize-1)*dz*0.5 - depth()/2.0);
       dmat.translate((dvec3)mOrigin);
       ref<Transform> transform = new Transform;
-      transform->setLocalMatrix((mat4)dmat);
-      transform->computeWorldMatrix(NULL);
+      transform->setLocalAndWorldMatrix((mat4)dmat);
 
       if (!useGLSL())
       {
@@ -290,7 +289,7 @@ void Terrain::init()
         terr_tile->setTexCoordArray(0, tmap_uv.get());
         terr_tile->setTexCoordArray(1, dmap_uv.get());
 
-        ref<ArrayFloat3> verts = dynamic_cast<ArrayFloat3*>(terr_tile->vertexArray());
+        ref<ArrayFloat3> verts = terr_tile->vertexArray()->as<ArrayFloat3>(); VL_CHECK(verts.get());
         for(int z=0; z<zsize; ++z)
         {
           for(int x=0; x<xsize; ++x)

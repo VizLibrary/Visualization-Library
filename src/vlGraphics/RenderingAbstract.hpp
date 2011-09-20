@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -43,9 +43,9 @@ namespace vl
   //! The RenderingAbstract class is the base of all the rendering related sub-classes.
   class VLGRAPHICS_EXPORT RenderingAbstract: public Object
   {
-  public:
-    virtual const char* className() { return "vl::RenderingAbstract"; }
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::RenderingAbstract, Object)
 
+  public:
     //! Constructor.
     RenderingAbstract();
 
@@ -84,15 +84,15 @@ namespace vl
     bool isEnabled(unsigned int mask) { return (mask & mEnableMask) != 0; }
 
     //! The update time of the current rendering frame.
-    void setFrameClock(Real cur_time) { mFrameClock = cur_time; }
+    void setFrameClock(real cur_time) { mFrameClock = cur_time; }
 
     //! The update time of the current rendering frame.
-    Real frameClock() const { return mFrameClock; }
+    real frameClock() const { return mFrameClock; }
 
   protected:
     ref< Collection<RenderEventCallback> > mOnStartedCallbacks;
     ref< Collection<RenderEventCallback> > mOnFinishedCallbacks;
-    Real mFrameClock;
+    real mFrameClock;
     unsigned int mEnableMask;
   };
 }

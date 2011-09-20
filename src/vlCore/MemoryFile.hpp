@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -55,9 +55,9 @@ namespace vl
   */
   class VLCORE_EXPORT MemoryFile: public VirtualFile
   {
-  public:
-    virtual const char* className() { return "vl::MemoryFile"; }
+    VL_INSTRUMENT_CLASS(vl::MemoryFile, VirtualFile)
 
+  public:
     MemoryFile();
 
     const Buffer* buffer() const { return mBuffer.get(); }
@@ -85,7 +85,7 @@ namespace vl
     //! Copies the data of any kind of VirtualFile
     void copy(VirtualFile* file);
 
-    MemoryFile& operator=(const MemoryFile& other) { close(); VirtualFile::operator=(other); mBuffer = other.mBuffer; return *this; }
+    MemoryFile& operator=(const MemoryFile& other) { close(); super::operator=(other); mBuffer = other.mBuffer; return *this; }
 
     ref<VirtualFile> clone() const;
 

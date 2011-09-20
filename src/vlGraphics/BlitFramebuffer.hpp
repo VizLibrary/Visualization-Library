@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -43,6 +43,8 @@ namespace vl
   */
   class BlitFramebuffer: public RenderEventCallback
   {
+    VL_INSTRUMENT_CLASS(vl::BlitFramebuffer, RenderEventCallback)
+
   public:
     BlitFramebuffer()
     {
@@ -53,12 +55,11 @@ namespace vl
       mLinearFilteringEnabled = false;
       mReadBuffer = RDB_COLOR_ATTACHMENT0;
     }
-    virtual const char* className() { return "vl::BlitFramebuffer"; }
 
     //! Performs the actual pixel copy from the read framebuffer to the draw framebuffer
     void copyPixels()
     {
-      if (GLEW_EXT_framebuffer_blit||GLEW_ARB_framebuffer_object)
+      if (Has_GL_EXT_framebuffer_blit||Has_GL_ARB_framebuffer_object)
       {
         VL_CHECK_OGL()
 
@@ -69,15 +70,15 @@ namespace vl
         glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo); VL_CHECK_OGL()
 
         // initializes the source render target
-        readRenderTarget()->activate(FBB_READ_FRAMEBUFFER); VL_CHECK_OGL()
+        readFramebuffer()->activate(FBB_READ_FRAMEBUFFER); VL_CHECK_OGL()
         
-        // override read buffer specified by readRenderTarget()->activate() with the one specified by the user here
+        // override read buffer specified by readFramebuffer()->activate() with the one specified by the user here
         glReadBuffer(mReadBuffer); VL_CHECK_OGL()
         
         // activate destination render target
-        drawRenderTarget()->activate(FBB_DRAW_FRAMEBUFFER); VL_CHECK_OGL()
+        drawFramebuffer()->activate(FBB_DRAW_FRAMEBUFFER); VL_CHECK_OGL()
 
-        // note: keep the draw-buffers as specified by drawRenderTarget()->activate()
+        // note: keep the draw-buffers as specified by drawFramebuffer()->activate()
         // ...
 
         // performs the blit
@@ -120,10 +121,13 @@ namespace vl
     }
 
     /** The render-target used as source during blitting. */
-    void setReadRenderTarget(RenderTarget* fbo) { mReadRenderTarget = fbo; }
+    void setReadFramebuffer(Framebuffer* fbo) { mReadFramebuffer = fbo; }
 
     /** The render-target used as source during blitting. */
-    RenderTarget* readRenderTarget() const { return mReadRenderTarget.get(); }
+    const Framebuffer* readFramebuffer() const { return mReadFramebuffer.get(); }
+
+    /** The render-target used as source during blitting. */
+    Framebuffer* readFramebuffer() { return mReadFramebuffer.get(); }
 
     /** The read-buffer of the read-render-target used as pixel source during blitting. */
     void setReadBuffer(EReadDrawBuffer read_buffer) { mReadBuffer = read_buffer; }
@@ -132,10 +136,13 @@ namespace vl
     EReadDrawBuffer readBuffer() const { return mReadBuffer; }
 
     /** The render-target used as destination during blitting. */
-    void setDrawRenderTarget(RenderTarget* fbo) { mDrawRenderTarget = fbo; }
+    void setDrawFramebuffer(Framebuffer* fbo) { mDrawFramebuffer = fbo; }
 
     /** The render-target used as destination during blitting. */
-    RenderTarget* drawRenderTarget() const { return mDrawRenderTarget.get(); }
+    const Framebuffer* drawFramebuffer() const { return mDrawFramebuffer.get(); }
+
+    /** The render-target used as destination during blitting. */
+    Framebuffer* drawFramebuffer() { return mDrawFramebuffer.get(); }
 
     void setSrcRect(int x0, int y0, int x1, int y1)
     {
@@ -164,8 +171,8 @@ namespace vl
     bool linearFilteringEnabled() const { return mLinearFilteringEnabled; }
 
   protected:
-    ref<RenderTarget> mReadRenderTarget;
-    ref<RenderTarget> mDrawRenderTarget;
+    ref<Framebuffer> mReadFramebuffer;
+    ref<Framebuffer> mDrawFramebuffer;
     int mSrcRect[4];
     int mDstRect[4];
     int mBufferMask;

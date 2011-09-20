@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -42,7 +42,14 @@ class App_TessellationShader: public BaseDemo
 public:
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
+
+    if(!vl::Has_GL_Version_4_0)
+    {
+      vl::Log::error("This test requires OpenGL 4!\n");
+      vl::Time::sleep(2000);
+      exit(1);
+    }
 
     const int   patch_count      = 128;
     const float world_size       = 2500.0;
@@ -52,7 +59,7 @@ public:
 
     vl::ref< vl::Geometry > geom_patch = makeGrid( vl::vec3(), world_size, world_size, patch_count, patch_count, false );
 
-    geom_patch->toGenericVertexAttribs();
+    geom_patch->convertToVertexAttribs();
 
     // patch parameter associated to the draw call
     vl::ref<vl::PatchParameter> patch_param = new vl::PatchParameter;
@@ -69,8 +76,8 @@ public:
     // tessellated patches fx
     vl::ref<vl::Effect> fx = new vl::Effect;
     fx->shader()->enable(vl::EN_DEPTH_TEST);
-    fx->shader()->gocTextureUnit(0)->setTexture( hmap.get() );
-    fx->shader()->gocTextureUnit(1)->setTexture( tmap.get() );
+    fx->shader()->gocTextureSampler(0)->setTexture( hmap.get() );
+    fx->shader()->gocTextureSampler(1)->setTexture( tmap.get() );
 
     // bind all the necessary stages to the GLSLProgram
     mGLSL = fx->shader()->gocGLSLProgram();
@@ -86,13 +93,13 @@ public:
     mGLSL->gocUniform("tex_heghtmap")->setUniformI(0);
     mGLSL->gocUniform("tex_diffuse")->setUniformI(1);
 
-    mGLSL->addAutoAttribLocation( "vl_Position", 0 );
+    mGLSL->addAutoAttribLocation( 0, "vl_Position" );
 
     // tessellated patches fx_wire
     vl::ref<vl::Effect> fx_wire = new vl::Effect;
     fx_wire->shader()->enable(vl::EN_DEPTH_TEST);
     fx_wire->shader()->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
-    fx_wire->shader()->gocTextureUnit(0)->setTexture( hmap.get() );
+    fx_wire->shader()->gocTextureSampler(0)->setTexture( hmap.get() );
     fx_wire->shader()->gocPolygonOffset()->set(-1.0f, -1.0f);
     fx_wire->shader()->enable(vl::EN_POLYGON_OFFSET_LINE);
 
@@ -110,7 +117,7 @@ public:
     mGLSLWire->gocUniform("tex_heghtmap")->setUniformI(0);
     mGLSLWire->gocUniform("wire_color")->setUniform(vl::lightgreen);
 
-    mGLSLWire->addAutoAttribLocation( "vl_Position", 0 );
+    mGLSLWire->addAutoAttribLocation( 0, "vl_Position" );
 
     sceneManager()->tree()->addActor( geom_patch.get(), fx.get(), NULL )->setRenderRank(0);
     
@@ -159,7 +166,7 @@ class App_TessellationShaderTri: public BaseDemo
 public:
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
 
     // hemisphere base geometry
     vl::ref< vl::Geometry > geom_patch = new vl::Geometry;

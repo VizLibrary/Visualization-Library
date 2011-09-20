@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -58,7 +58,7 @@ public:
 
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
     openglContext()->setContinuousUpdate(true);
 
     srand((unsigned int)time(NULL));
@@ -95,7 +95,7 @@ public:
     // text setup
 
     mText = new vl::Text();
-    mText->setDisplayListEnabled(true);
+    mText->setDisplayListEnabled(!vl::Has_GLES);
     mText->setFont( vl::defFontManager()->acquireFont("/font/bitstream-vera/VeraMono.ttf", 10) );
     mText->setMargin(5);
     mText->setViewportAlignment(vl::AlignTop | vl::AlignHCenter);
@@ -178,11 +178,11 @@ public:
         mMetaball[iball].y() = 0;
         mMetaball[iball].x() = 0.5f;
         mMetaball[iball].z() = 0.5f;
-        mMetaballVelocity[iball].x() = (float)vl::randomMinMax(-12,+12);
-        mMetaballVelocity[iball].z() = (float)vl::randomMinMax(-12,+12);
+        mMetaballVelocity[iball].x() = (float)vl::random(-12,+12);
+        mMetaballVelocity[iball].z() = (float)vl::random(-12,+12);
         mMetaballVelocity[iball].y() = 100;
         mMetaballVelocity[iball].normalize();
-        mMetaballVelocity[iball] *= (17.0f + (float)vl::randomMinMax(0,5))*0.05f*mFountainSpeed;
+        mMetaballVelocity[iball] *= (17.0f + (float)vl::random(0,5))*0.05f*mFountainSpeed;
       }
     }
     mTimer.start();
@@ -251,7 +251,7 @@ public:
   // generates the 2 transparent volumes or a single volume
   vl::Actor* showVolumes(bool test1)
   {
-    rendering()->as<vl::Rendering>()->camera()->setInverseViewMatrix( vl::mat4::getTranslation(0,0,20) );
+    rendering()->as<vl::Rendering>()->camera()->setModelingMatrix( vl::mat4::getTranslation(0,0,20) );
 
     vl::ref<vl::Geometry > geom = new vl::Geometry;
     geom->setVertexArray(mMarchingCubes.mVertsArray.get());
@@ -259,7 +259,7 @@ public:
     geom->drawCalls()->push_back(mMarchingCubes.mDrawElements.get());
 
     vl::ref<vl::Effect> fx = new vl::Effect;
-    fx->shader()->setRenderState( new vl::Light(0) );
+    fx->shader()->setRenderState( new vl::Light, 0 );
     fx->shader()->enable(vl::EN_LIGHTING);
     fx->shader()->enable(vl::EN_DEPTH_TEST);
     // two side lighting
@@ -306,11 +306,17 @@ public:
   // 2 - to guarantee maximum compatibility the texture should be a cube (not a rectangle) whose side length is a power of 2.
   void textureVolumeColor(vl::Actor* vol_act)
   {
+    if (!vl::Has_Texture_3D)
+    {
+      vl::Log::notify("textureVolumeColor() requires 3D texturing.\n");
+      return;
+    }
+
     vl::Effect* fx = vol_act->effect();
 
     // automatic 3D texture coordinate generation
     #if 1
-      fx->shader()->gocTextureUnit(0)->setTexture( new vl::Texture( mColorImage.get() ) );
+      fx->shader()->gocTextureSampler(0)->setTexture( new vl::Texture( mColorImage.get() ) );
       fx->shader()->gocTexGen(0)->setGenModeS(vl::TGM_OBJECT_LINEAR);
       fx->shader()->gocTexGen(0)->setGenModeT(vl::TGM_OBJECT_LINEAR);
       fx->shader()->gocTexGen(0)->setGenModeR(vl::TGM_OBJECT_LINEAR);
@@ -326,7 +332,7 @@ public:
       vl::mat4 tex_mat = vl::mat4::getTranslation( vl::vec3(0.5f,0.5f,0.5f) ) * 
                          vl::mat4::getScaling(1.0f/box.width(),1.0f/box.height(),1.0f/box.depth()) * 
                          vl::mat4::getTranslation( -box.center() );
-      fx->shader()->gocTextureMatrix(0)->setMatrix(tex_mat);
+      fx->shader()->gocTextureMatrix(0)->setMatrix((vl::fmat4)tex_mat);
     #endif
 
     // the above code is equivalent to the code below that manually generates the texture coordinates.
@@ -338,12 +344,12 @@ public:
                          vl::mat4::getScaling(1.0f/box.width(),1.0f/box.height(),1.0f/box.depth()) * 
                          vl::mat4::getTranslation( -box.center() );
 
-      fx->shader()->gocTextureUnit(0)->setTexture( new vl::Texture( mColorImage.get() ) );
+      fx->shader()->gocTextureSampler(0)->setTexture( new vl::Texture( mColorImage.get() ) );
       vl::ref<vl::ArrayFloat3> tex_array = new vl::ArrayFloat3;
       tex_array->resize( geom->vertexArray()->size() );
       geom->setTexCoordArray(0, tex_array.get());
       for(int i=0; i<tex_array->size(); ++i)
-        tex_array->at(i) = ((vl::fvec4)(tex_mat * geom->vertexArray()->vectorAsVec4(i))).xyz();
+        tex_array->at(i) = ((vl::fvec4)(tex_mat * geom->vertexArray()->getAsVec4(i))).xyz();
     #endif
   }
 
@@ -352,7 +358,7 @@ public:
   // This technique is not particularly efficient if your isosurfaces are animated and you need to recompute the colors often.
   void vertexVolumeColor(vl::Actor* vol_act)
   {
-    vl::Geometry* geom = dynamic_cast<vl::Geometry*>(vol_act->lod(0).get());
+    vl::Geometry* geom = vl::cast<vl::Geometry>(vol_act->lod(0));
     vl::Effect* fx = vol_act->effect();
     // use color array
     fx->shader()->gocMaterial()->setColorMaterialEnabled(true);
@@ -369,7 +375,7 @@ public:
     geom->setColorArray(color_array.get());
     for(size_t i=0; i<color_array->size(); ++i)
     {
-      vl::vec4 px = tex_mat * geom->vertexArray()->vectorAsVec4(i);
+      vl::vec4 px = tex_mat * geom->vertexArray()->getAsVec4(i);
       px.x() *= mColorImage->width();
       px.y() *= mColorImage->height();
       px.z() *= mColorImage->depth();
@@ -380,7 +386,7 @@ public:
   // Setups the good old metaballs demo!
   vl::Actor* setupMetaballs()
   {
-    rendering()->as<vl::Rendering>()->camera()->setInverseViewMatrix( vl::mat4::getTranslation(0,0,25) );
+    rendering()->as<vl::Rendering>()->camera()->setModelingMatrix( vl::mat4::getTranslation(0,0,25) );
 
     sceneManager()->tree()->actors()->clear();
     sceneManager()->tree()->addActor( mTextActor.get() );
@@ -394,21 +400,24 @@ public:
     geom->setVertexArray(mMarchingCubes.mVertsArray.get());
     geom->setNormalArray(mMarchingCubes.mNormsArray.get());
     geom->drawCalls()->push_back(mMarchingCubes.mDrawElements.get());
-    // disable VBO since we update the vertices every frame
-    geom->setVBOEnabled(false);
+    // disable BufferObject since we update the vertices every frame
+    geom->setBufferObjectEnabled(false);
 
     vl::ref<vl::Effect> fx = new vl::Effect;
-    fx->shader()->setRenderState( new vl::Light(0) );
+    fx->shader()->setRenderState( new vl::Light, 0 );
     fx->shader()->enable(vl::EN_LIGHTING);
     fx->shader()->enable(vl::EN_DEPTH_TEST);
     // two side lighting
     fx->shader()->gocLightModel()->setTwoSide(true);
 
-    vl::ref<vl::Image> texture = vl::loadImage("/images/spheremap.png");
-    fx->shader()->gocTextureUnit(0)->setTexture( new vl::Texture( texture.get() ) );
-    fx->shader()->gocTexGen(0)->setGenModeS(vl::TGM_SPHERE_MAP);
-    fx->shader()->gocTexGen(0)->setGenModeT(vl::TGM_SPHERE_MAP);
-    fx->shader()->gocTexEnv(0)->setMode(vl::TEM_BLEND);
+    if (vl::Has_GL_Version_1_1)
+    {
+      vl::ref<vl::Image> texture = vl::loadImage("/images/spheremap.png");
+      fx->shader()->gocTextureSampler(0)->setTexture( new vl::Texture( texture.get() ) );
+      fx->shader()->gocTexGen(0)->setGenModeS(vl::TGM_SPHERE_MAP);
+      fx->shader()->gocTexGen(0)->setGenModeT(vl::TGM_SPHERE_MAP);
+      fx->shader()->gocTexEnv(0)->setMode(vl::TEM_BLEND);
+    }
 
     vl::ref<vl::Actor> act = sceneManager()->tree()->addActor(geom.get(), fx.get(), mTransform.get());
 
@@ -418,7 +427,7 @@ public:
   // Setups the metaballs fountain demo!
   vl::Actor* setupFountain()
   {
-    rendering()->as<vl::Rendering>()->camera()->setInverseViewMatrix( vl::mat4::getTranslation(0,0,25) );
+    rendering()->as<vl::Rendering>()->camera()->setModelingMatrix( vl::mat4::getTranslation(0,0,25) );
 
     sceneManager()->tree()->actors()->clear();
     sceneManager()->tree()->addActor( mTextActor.get() );
@@ -434,11 +443,11 @@ public:
     geom->setVertexArray(mMarchingCubes.mVertsArray.get());
     geom->setNormalArray(mMarchingCubes.mNormsArray.get());
     geom->drawCalls()->push_back(mMarchingCubes.mDrawElements.get());
-    // disable VBO since we update the vertices every frame
-    geom->setVBOEnabled(false);
+    // disable BufferObject since we update the vertices every frame
+    geom->setBufferObjectEnabled(false);
 
     vl::ref<vl::Effect> fx = new vl::Effect;
-    fx->shader()->setRenderState( new vl::Light(0) );
+    fx->shader()->setRenderState( new vl::Light, 0 );
     fx->shader()->enable(vl::EN_LIGHTING);
     fx->shader()->enable(vl::EN_DEPTH_TEST);
     // two side lighting
@@ -452,11 +461,11 @@ public:
       mMetaball[iball].y() = 0;
       mMetaball[iball].x() = 0.5f;
       mMetaball[iball].z() = 0.5f;
-      mMetaballVelocity[iball].x() = (float)vl::randomMinMax(-15,+15);
-      mMetaballVelocity[iball].z() = (float)vl::randomMinMax(-15,+15);
+      mMetaballVelocity[iball].x() = (float)vl::random(-15,+15);
+      mMetaballVelocity[iball].z() = (float)vl::random(-15,+15);
       mMetaballVelocity[iball].y() = 100;
       mMetaballVelocity[iball].normalize();
-      mMetaballVelocity[iball] *= (5.0f + (float)vl::randomMinMax(0,20))*0.05f*mFountainSpeed;
+      mMetaballVelocity[iball] *= (5.0f + (float)vl::random(0,20))*0.05f*mFountainSpeed;
     }
 
     mTransform->setLocalMatrix(vl::mat4());
@@ -482,7 +491,7 @@ public:
     // reset actors and camera
     sceneManager()->tree()->actors()->clear();
     sceneManager()->tree()->addActor( mTextActor.get() );
-    rendering()->as<vl::Rendering>()->camera()->setInverseViewMatrix( vl::mat4::getLookAt( vl::vec3(5,10,20), vl::vec3(0,0,0), vl::vec3(0,1,0)) );
+    rendering()->as<vl::Rendering>()->camera()->setViewMatrix( vl::mat4::getLookAt( vl::vec3(5,10,20), vl::vec3(0,0,0), vl::vec3(0,1,0)) );
 
     float range = 5.0f;
     vl::fvec3 min_corner(-range,-range,-range);
@@ -498,7 +507,7 @@ public:
   void loadVolume(vl::ref<vl::Image> vol_img)
   {
     // reset camera
-    rendering()->as<vl::Rendering>()->camera()->setInverseViewMatrix( vl::mat4::getTranslation(0,0,20) );
+    rendering()->as<vl::Rendering>()->camera()->setModelingMatrix( vl::mat4::getTranslation(0,0,20) );
 
     // reset actors
     sceneManager()->tree()->actors()->clear();
@@ -538,7 +547,6 @@ public:
     mIsosurfGeom->setVertexArray(mMarchingCubes.mVertsArray.get());
     mIsosurfGeom->setNormalArray(mMarchingCubes.mNormsArray.get());
     mIsosurfGeom->drawCalls()->push_back(mMarchingCubes.mDrawElements.get());
-    mIsosurfGeom->setColor(vl::royalblue);
 
     #if 0
       time.start();
@@ -548,23 +556,28 @@ public:
       vl::Log::print( vl::Say("Simplification: time = %.2n\n") << time.elapsed() );
     #endif
 
-    // actor
-    vl::ref<vl::Actor> actor = new vl::Actor(mIsosurfGeom.get(), new vl::Effect);
-    
+    vl::ref<vl::Effect> fx = new vl::Effect;
+
     // effect
-    actor->effect()->shader()->setRenderState( new vl::Light(0) );
-    actor->effect()->shader()->enable(vl::EN_DEPTH_TEST);
-    actor->effect()->shader()->enable(vl::EN_LIGHTING);
-    actor->effect()->shader()->gocLightModel()->setTwoSide(true);
-    actor->effect()->shader()->gocMaterial()->setBackDiffuse(vl::green);
+    fx->shader()->setRenderState( new vl::Light, 0 );
+    fx->shader()->enable(vl::EN_DEPTH_TEST);
+    fx->shader()->enable(vl::EN_LIGHTING);
+    fx->shader()->gocLightModel()->setTwoSide(true);
+    fx->shader()->gocMaterial()->setBackDiffuse(vl::green);
 
     // show the volume in wireframe to see the tessellation.
-    actor->effect()->lod(0)->push_back( new vl::Shader );
-    actor->effect()->shader(0,1)->enable(vl::EN_CULL_FACE);
-    actor->effect()->shader(0,1)->enable(vl::EN_DEPTH_TEST);
-    actor->effect()->shader(0,1)->enable(vl::EN_POLYGON_OFFSET_LINE);
-    actor->effect()->shader(0,1)->gocPolygonOffset()->set(-1.0f, -1.0f);
-    actor->effect()->shader(0,1)->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+#if defined(VL_OPENGL)
+    fx->lod(0)->push_back( new vl::Shader );
+    fx->shader(0,1)->enable(vl::EN_CULL_FACE);
+    fx->shader(0,1)->enable(vl::EN_DEPTH_TEST);
+    fx->shader(0,1)->enable(vl::EN_POLYGON_OFFSET_LINE);
+    fx->shader(0,1)->gocPolygonOffset()->set(-1.0f, -1.0f);
+    fx->shader(0,1)->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
+    fx->shader(0,1)->gocColor()->setValue(vl::royalblue);
+#endif
+
+    // actor
+    vl::ref<vl::Actor> actor = new vl::Actor(mIsosurfGeom.get(), fx.get());
 
     // add actor to the scene
     sceneManager()->tree()->addActor( actor.get() );
@@ -641,7 +654,7 @@ public:
     mMarchingCubes.volumeInfo()->at(0)->setThreshold(mThreshold);
     mMarchingCubes.run(false);
     if (mIsosurfGeom)
-      mIsosurfGeom->setVBODirty(true);
+      mIsosurfGeom->setBufferObjectDirty(true);
 
     vl::Log::print( vl::Say("Marching cubes: time = %.2n, verts = %n\n") << time.elapsed() << mMarchingCubes.mVertsArray->size() );
 

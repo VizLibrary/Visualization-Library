@@ -8,7 +8,10 @@
 
 	\par Math
 	
-	- vl::Real
+	- vl::half
+	- vl::real
+	- vl::degree
+	- vl::radian
 	- vl::vec4, vl::vec3, vl::vec2
 	- vl::dvec4, vl::dvec3, vl::dvec2
 	- vl::fvec4, vl::fvec3, vl::fvec2
@@ -29,7 +32,7 @@
 	- vl::RectI
 	- vl::RectF
 	
-	- GLSLmath.hpp
+	- glsl_math.hpp
 	
 	\par Text manipulation and rendering
 	
@@ -122,7 +125,7 @@
 	
 	\par Framebuffer Objects
 	
-	- vl::FBORenderTarget
+	- vl::FramebufferObject
 	- vl::FBOAbstractAttachment
 		- vl::FBORenderbufferAttachment
 			- vl::FBOColorBufferAttachment
@@ -136,7 +139,7 @@
 			- vl::FBOTextureAttachment
 			- vl::FBOTextureLayerAttachment
 	- vl::BlitFramebuffer
-	- vl::OpenGLContext::createFBORenderTarget()
+	- vl::OpenGLContext::createFramebufferObject()
 	
 	\par Renderables
 	
@@ -155,7 +158,7 @@
 	- vl::TexEnv
 	- vl::TexGen
 	- vl::TextureMatrix
-	- vl::TextureUnit
+	- vl::TextureSampler
 	- vl::CopyTexSubImage1D
 	- vl::CopyTexSubImage2D
 	- vl::CopyTexSubImage3D
@@ -182,10 +185,10 @@
 	- vl::Renderer
 	- vl::Camera
 	- vl::Viewport
-	- vl::RenderTarget
+	- vl::Framebuffer
 	- vl::OpenGLContext
 	- vl::OpenGLContextFormat
-	- vl::OpenGLContext::renderTarget()
+	- vl::OpenGLContext::framebuffer()
 	- vl::Actor
 	- vl::Effect
 	- vl::Shader
@@ -206,14 +209,28 @@
 	- vl::ActorTree
 	- vl::ActorKdTree
 	
+	\par Geometry Tools
+	- vl::Geometry::convertToVertexAttribs()
+	- vl::Geometry::computeNormals()
+	- vl::Geometry::flipNormals()
+	- vl::Geometry::fixTriangleWinding()
+	- vl::Geometry::transform()
+	- vl::Geometry::mergeTriangleStrips()
+	- vl::Geometry::mergeDrawCallsWithPrimitiveRestart()
+	- vl::Geometry::mergeDrawCallsWithMultiDrawElements()
+	- vl::Geometry::mergeDrawCallsWithTriangles()
+	- vl::Geometry::convertDrawCallToDrawArrays()
+	- vl::Geometry::triangulateDrawCalls()
+	- vl::Geometry::shrinkDrawCalls()
+	- vl::Geometry::makeGLESFriendly()
+	- vl::Geometry::sortVertices()
+	- vl::Geometry::regenerateVertices()
+	- vl::Geometry::colorizePrimitives()
+	- vl::Geometry::computeTangentSpace()
+	
 	\par Geometry
 	
 	- vl::Geometry
-	- vl::Geometry::computeNormals()
-	- vl::Geometry::flipNormals()
-	- vl::Geometry::transform()
-	- vl::Geometry::toGenericVertexAttribs()
-	- vl::Geometry::computeTangentSpace()
 	- vl::BezierSurface
 	- vl::Tessellator
 	- vl::Extrusion
@@ -231,7 +248,7 @@
 	- vl::ArrayAbstract::computeBoundingBox()
 	- vl::ArrayAbstract::transform()
 	- vl::ArrayAbstract::normalize()
-	- vl::ArrayAbstract::vectorAsVec4()
+	- vl::ArrayAbstract::getAsVec4()
 	
 	\par Geometry primitives
 	
@@ -312,7 +329,7 @@
 	- vl::ref
 	- vl::Object
 	- vl::Buffer
-	- vl::GLBufferObject
+	- vl::BufferObject
 	- vl::ArrayAbstract
 	- vl::Array
 
@@ -354,6 +371,6 @@
 	- vl::TexEnv, see also http://www.opengl.org/sdk/docs/man/xhtml/glTexEnv.xml
 	- vl::TexGen, see also http://www.opengl.org/sdk/docs/man/xhtml/glTexGen.xml
 	- vl::TextureMatrix
-	- vl::TextureUnit
+	- vl::TextureSampler
 	
 */

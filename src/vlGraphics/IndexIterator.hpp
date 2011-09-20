@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -42,15 +42,15 @@ namespace vl
   /** Abstract class used as base for all the index iterators specializations. */
   class IndexIteratorAbstract: public Object
   {
-  public:
-    virtual const char* className() { return "vl::IndexIteratorAbstract"; }
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::IndexIteratorAbstract, Object)
 
+  public:
     IndexIteratorAbstract(): mIndex(-1) 
     {
       VL_DEBUG_SET_OBJECT_NAME()
     }
     int index() const { return mIndex; }
-    virtual bool isEnd() const = 0;
+    virtual bool hasNext() const = 0;
     virtual bool next() = 0;
 
   protected:
@@ -62,17 +62,18 @@ namespace vl
   /** Wraps a IndexIteratorAbstract to iterate over the indices of a DrawCall. */
   class IndexIterator: public Object
   {
-  public:
-    virtual const char* className() { return "vl::IndexIterator"; }
+    VL_INSTRUMENT_CLASS(vl::IndexIterator, Object)
 
+  public:
     IndexIterator()
     {
       VL_DEBUG_SET_OBJECT_NAME()
     }
     void initialize(IndexIteratorAbstract* iterator) { mIterator = iterator; }
     int  index() { return mIterator->index(); }
-    bool isEnd() { return mIterator->isEnd(); }
+    bool hasNext() { return mIterator->hasNext(); }
     bool next()  { return mIterator->next();  }
+    bool operator++() { return next(); }
 
   protected:
     ref<IndexIteratorAbstract> mIterator;
@@ -83,9 +84,9 @@ namespace vl
   /** Index iterator operating used by DrawArrays. */
   class IndexIteratorDrawArrays: public IndexIteratorAbstract
   {
-  public:
-    virtual const char* className() { return "vl::IndexIteratorDrawArrays"; }
+    VL_INSTRUMENT_CLASS(vl::IndexIteratorDrawArrays, IndexIteratorAbstract)
 
+  public:
     IndexIteratorDrawArrays()
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -100,9 +101,9 @@ namespace vl
       mIndex  = start;
     }
 
-    virtual bool isEnd() const 
+    virtual bool hasNext() const 
     { 
-      return mCurPos == mStart + mCount; 
+      return mCurPos != mStart + mCount; 
     }
 
     virtual bool next() 
@@ -124,16 +125,16 @@ namespace vl
   template<class TArray>
   class IndexIteratorElements: public IndexIteratorAbstract
   {
-  public:
-    virtual const char* className() { return "vl::IndexIteratorElements"; }
+    VL_INSTRUMENT_CLASS(vl::IndexIteratorElements<TArray>, IndexIteratorAbstract)
 
+  public:
     IndexIteratorElements()
     {
       VL_DEBUG_SET_OBJECT_NAME()
       initialize( NULL, NULL, NULL, 0, false, 0 );
     }
 
-    void initialize( TArray* idx_array, const std::vector<GLint>* p_base_vertices, const std::vector<GLsizei>* p_vert_counts, 
+    void initialize( const TArray* idx_array, const std::vector<GLint>* p_base_vertices, const std::vector<GLsizei>* p_vert_counts, 
                      int base_vert, bool prim_restart_on, unsigned int prim_restart_idx )
     {
       mArray = idx_array;
@@ -162,9 +163,9 @@ namespace vl
       }
     }
 
-    virtual bool isEnd() const 
+    virtual bool hasNext() const 
     { 
-      return mCurPos == (int)mArray->size(); 
+      return mCurPos != (int)mArray->size(); 
     }
 
     virtual bool next() 
@@ -198,7 +199,7 @@ namespace vl
     }
 
   protected:
-    ref<TArray> mArray;
+    const TArray* mArray;
     int mBaseVert;
     int mCurPos;
     bool mPrimRestartEnabled;

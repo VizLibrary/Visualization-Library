@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -49,8 +49,9 @@ namespace vl
   */
   class VLGRAPHICS_EXPORT Text: public Renderable
   {
+    VL_INSTRUMENT_CLASS(vl::Text, Renderable)
+
   public:
-    virtual const char* className() { return "vl::Text"; }
     Text(): mColor(1,1,1,1), mBorderColor(0,0,0,1), mBackgroundColor(1,1,1,1), mOutlineColor(0,0,0,1), mShadowColor(0,0,0,0.5f), mShadowVector(2,-2), 
       mInterlineSpacing(5), mAlignment(AlignBottom|AlignLeft), mViewportAlignment(AlignBottom|AlignLeft), mMargin(5), mMode(Text2D), mLayout(LeftToRightText), mTextAlignment(TextAlignLeft), 
       mBorderEnabled(false), mBackgroundEnabled(false), mOutlineEnabled(false), mShadowEnabled(false), mKerningEnabled(true) 
@@ -82,7 +83,8 @@ namespace vl
     int margin() const { return mMargin; }
     void setMargin(int margin) { mMargin = margin; }
 
-    Font* font() const { return mFont.get(); }
+    const Font* font() const { return mFont.get(); }
+    Font* font() { return mFont.get(); }
     void setFont(Font* font) { mFont = font; }
 
     const fmat4 matrix() const { return mMatrix; }
@@ -134,7 +136,9 @@ namespace vl
 
     // Renderable interface implementation.
 
-    void updateVBOs(bool,bool) {}
+    virtual void updateDirtyBufferObject(EBufferObjectUpdateMode) {}
+
+    virtual void deleteBufferObject() {}
 
   protected:
     void renderText(const Actor*, const Camera* camera, const fvec4& color, const fvec2& offset) const;
@@ -143,7 +147,7 @@ namespace vl
     AABB rawboundingRect(const String& text) const;
 
   protected:
-    ref<Font> mFont;
+    mutable ref<Font> mFont;
     String mText;
     fvec4 mColor;
     fvec4 mBorderColor;

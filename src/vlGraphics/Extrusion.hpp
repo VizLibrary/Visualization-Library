@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -52,9 +52,9 @@ namespace vl
    */
   class VLGRAPHICS_EXPORT Extrusion: public vl::Object
   {
-  public:
-    virtual const char* className() { return "vl::Extrusion"; }
+    VL_INSTRUMENT_CLASS(vl::Extrusion, Object)
 
+  public:
     //! Constructor.
     Extrusion()
     {

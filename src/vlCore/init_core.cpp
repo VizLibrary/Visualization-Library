@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -30,42 +30,45 @@
 /**************************************************************************************/
 
 #include <vlCore/VisualizationLibrary.hpp>
-#include <vlCore/VLSettings.hpp>
+#include <vlCore/GlobalSettings.hpp>
+#include <vlCore/VLXRegistry.hpp>
 #include <vlCore/FileSystem.hpp>
 #include <vlCore/LoadWriterManager.hpp>
 #include <vlCore/Log.hpp>
 #include <vlCore/Say.hpp>
+#include <vlCore/Time.hpp>
 #include <vlCore/Quaternion.hpp>
 #include <vlCore/AABB.hpp>
 #include <vlCore/Sphere.hpp>
 #include <vlCore/version.hpp>
+#include <vlCore/MersenneTwister.hpp>
 #include <cassert>
 
 using namespace vl;
 
 #if defined(VL_IO_2D_JPG)
-  #include "plugins/vlJPG.hpp"
+  #include "plugins/ioJPG.hpp"
 #endif
 #if defined(VL_IO_2D_PNG)
-  #include "plugins/vlPNG.hpp"
+  #include "plugins/ioPNG.hpp"
 #endif
 #if defined(VL_IO_2D_TIFF)
-  #include "plugins/vlTIFF.hpp"
+  #include "plugins/ioTIFF.hpp"
 #endif
 #if defined(VL_IO_2D_TGA)
-  #include "plugins/vlTGA.hpp"
+  #include "plugins/ioTGA.hpp"
 #endif
 #if defined(VL_IO_2D_DAT)
-  #include "plugins/vlDAT.hpp"
+  #include "plugins/ioDAT.hpp"
 #endif
 #if defined(VL_IO_2D_DDS)
-  #include "plugins/vlDDS.hpp"
+  #include "plugins/ioDDS.hpp"
 #endif
 #if defined(VL_IO_2D_BMP)
-  #include "plugins/vlBMP.hpp"
+  #include "plugins/ioBMP.hpp"
 #endif
 #if defined(VL_IO_2D_DICOM)
-  #include "plugins/vlDICOM.hpp"
+  #include "plugins/ioDICOM.hpp"
 #endif
 
 //------------------------------------------------------------------------------
@@ -76,15 +79,15 @@ VL_COMPILE_TIME_CHECK( sizeof(int)       == 4 )
 VL_COMPILE_TIME_CHECK( sizeof(short)     == 2 )
 VL_COMPILE_TIME_CHECK( sizeof(char)      == 1 )
 VL_COMPILE_TIME_CHECK( sizeof(wchar_t)   >= 2 )
-VL_COMPILE_TIME_CHECK( sizeof(vec2)      == sizeof(Real)*2 )
-VL_COMPILE_TIME_CHECK( sizeof(vec3)      == sizeof(Real)*3 )
-VL_COMPILE_TIME_CHECK( sizeof(vec4)      == sizeof(Real)*4 )
-VL_COMPILE_TIME_CHECK( sizeof(mat2)      == sizeof(Real)*2*2 )
-VL_COMPILE_TIME_CHECK( sizeof(mat3)      == sizeof(Real)*3*3 )
-VL_COMPILE_TIME_CHECK( sizeof(mat4)      == sizeof(Real)*4*4 )
-VL_COMPILE_TIME_CHECK( sizeof(quat)      == sizeof(Real)*4 )
-VL_COMPILE_TIME_CHECK( sizeof(AABB)      == sizeof(Real)*6 )
-VL_COMPILE_TIME_CHECK( sizeof(Sphere)    == sizeof(Real)*4 )
+VL_COMPILE_TIME_CHECK( sizeof(vec2)      == sizeof(real)*2 )
+VL_COMPILE_TIME_CHECK( sizeof(vec3)      == sizeof(real)*3 )
+VL_COMPILE_TIME_CHECK( sizeof(vec4)      == sizeof(real)*4 )
+VL_COMPILE_TIME_CHECK( sizeof(mat2)      == sizeof(real)*2*2 )
+VL_COMPILE_TIME_CHECK( sizeof(mat3)      == sizeof(real)*3*3 )
+VL_COMPILE_TIME_CHECK( sizeof(mat4)      == sizeof(real)*4*4 )
+VL_COMPILE_TIME_CHECK( sizeof(quat)      == sizeof(real)*4 )
+VL_COMPILE_TIME_CHECK( sizeof(AABB)      == sizeof(real)*6 )
+VL_COMPILE_TIME_CHECK( sizeof(Sphere)    == sizeof(real)*4 )
 //------------------------------------------------------------------------------
 // VL misc
 //------------------------------------------------------------------------------
@@ -98,13 +101,13 @@ bool VisualizationLibrary::isCoreInitialized() { return gInitializedCore; }
 //------------------------------------------------------------------------------
 const char* VisualizationLibrary::versionString() { return gVersionString.c_str(); }
 //------------------------------------------------------------------------------
-// Global VLSettings
+// Global GlobalSettings
 //------------------------------------------------------------------------------
 namespace
 {
-  ref<VLSettings> gSettings = NULL;
+  ref<GlobalSettings> gSettings = NULL;
 }
-VLSettings* vl::globalSettings()
+GlobalSettings* vl::globalSettings()
 {
   return gSettings.get();
 }
@@ -153,6 +156,36 @@ void vl::setDefFileSystem(FileSystem* fs)
 {
   gDefaultFileSystem = fs;
 }
+//-----------------------------------------------------------------------------
+// Default VLXRegistry
+//-----------------------------------------------------------------------------
+namespace 
+{
+  ref<VLXRegistry> gDefaultVLXRegistry = NULL;
+}
+VLXRegistry* vl::defVLXRegistry()
+{
+  return gDefaultVLXRegistry.get();
+}
+void vl::setDefVLXRegistry(VLXRegistry* reg)
+{
+  gDefaultVLXRegistry = reg;
+}
+//-----------------------------------------------------------------------------
+// Default MersenneTwister
+//-----------------------------------------------------------------------------
+namespace 
+{
+  ref<MersenneTwister> gDefaultMersenneTwister = NULL;
+}
+MersenneTwister* vl::defMersenneTwister()
+{
+  return gDefaultMersenneTwister.get();
+}
+void vl::setDefMersenneTwister(MersenneTwister* reg)
+{
+  gDefaultMersenneTwister= reg;
+}
 //------------------------------------------------------------------------------
 void VisualizationLibrary::initCore(bool log_info)
 {
@@ -166,7 +199,7 @@ void VisualizationLibrary::initCore(bool log_info)
   // --- Init Core ---
 
   // Install globabl settings
-  gSettings = new VLSettings;
+  gSettings = new GlobalSettings;
 
   // Install default logger
   ref<StandardLog> logger = new StandardLog;
@@ -178,7 +211,13 @@ void VisualizationLibrary::initCore(bool log_info)
 
   // Install default FileSystem
   gDefaultFileSystem = new FileSystem;
-  gDefaultFileSystem->directories()->push_back( new DiskDirectory( globalSettings()->defaultDataPath() ) );
+  gDefaultFileSystem->directories().push_back( new DiskDirectory( globalSettings()->defaultDataPath() ) );
+
+  // Install default VLXRegistry
+  gDefaultVLXRegistry = new VLXRegistry;
+
+  // Install default MersenneTwister (seed done automatically)
+  gDefaultMersenneTwister = new MersenneTwister;
   
   // Register 2D modules
   #if defined(VL_IO_2D_JPG)
@@ -221,14 +260,20 @@ void VisualizationLibrary::shutdownCore()
 
   // --- Dispose Core ---
 
+  // Dispose default MersenneTwister
+  gDefaultMersenneTwister = NULL;
+  
+  // Dispose default VLXRegistry
+  gDefaultVLXRegistry = NULL;
+
   // Dispose default LoadWriterManager
-  gDefaultLoadWriterManager->loadCallbacks()->clear();
-  gDefaultLoadWriterManager->writeCallbacks()->clear();
-  gDefaultLoadWriterManager->loadWriters()->clear();
+  gDefaultLoadWriterManager->loadCallbacks().clear();
+  gDefaultLoadWriterManager->writeCallbacks().clear();
+  gDefaultLoadWriterManager->loadWriters().clear();
   gDefaultLoadWriterManager = NULL;
 
   // Dispose default FileSystem
-  gDefaultFileSystem->directories()->clear();
+  gDefaultFileSystem->directories().clear();
   gDefaultFileSystem = NULL;
 
   // Dispose default logger
@@ -243,17 +288,21 @@ void VisualizationLibrary::shutdownCore()
   // gSettings = NULL;
 }
 //------------------------------------------------------------------------------
-#if defined(_WIN32)
+void vl::abort_vl()
+{
+  vl::Time::sleep(3000);
+  exit(1);
+}  
+//------------------------------------------------------------------------------
+#if defined(VL_PLATFORM_WINDOWS)
   // console includes
-  #include <stdio.h>
   #include <io.h>
   #include <fcntl.h>
-  #include <commdlg.h>
 #endif
 
 void vl::showWin32Console()
 {
-  #if defined(_WIN32)
+  #if defined(VL_PLATFORM_WINDOWS)
     AllocConsole();
     // stdout
     HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);

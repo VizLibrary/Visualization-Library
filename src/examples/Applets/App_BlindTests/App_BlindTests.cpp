@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -39,6 +39,7 @@
 
 namespace blind_tests
 {
+  bool test_TypeInfo();
   bool test_filesystem();
   bool test_hfloat();
   bool test_math();
@@ -58,6 +59,7 @@ struct s_Test
 };
 
 s_Test g_Tests[] = { 
+  { test_TypeInfo,    "TypeInfo"     },
   { test_math,        "Math"         },
   { test_filesystem,  "Filesystem"   },
   { test_hfloat,      "Half Float"   },
@@ -72,7 +74,7 @@ class App_BlindTests: public BaseDemo
 public:
   void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
     String msg;
     Time time;
 

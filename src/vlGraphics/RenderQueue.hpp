@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -44,9 +44,9 @@ namespace vl
   */
   class RenderQueue: public Object
   {
-  public:
-    virtual const char* className() { return "vl::RenderQueue"; }
+    VL_INSTRUMENT_CLASS(vl::RenderQueue, Object)
 
+  public:
     RenderQueue(): mSize(0), mSizeMP(0)
     {
       VL_DEBUG_SET_OBJECT_NAME()
@@ -54,7 +54,9 @@ namespace vl
       mListMP.reserve(100);
     }
 
-    RenderToken* at(int i) const { return mList[i].get(); }
+    const RenderToken* at(int i) const { return mList[i].get(); }
+
+    RenderToken* at(int i) { return mList[i].get(); }
 
     RenderToken* newToken(bool multipass)
     {

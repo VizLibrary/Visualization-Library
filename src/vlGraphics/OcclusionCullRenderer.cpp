@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
-/*  Copyright (c) 2005-2010, Michele Bosi                                             */
+/*  Copyright (c) 2005-2011, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
 /*                                                                                    */
 /*  Redistribution and use in source and binary forms, with or without modification,  */
@@ -65,7 +65,7 @@ OcclusionCullRenderer::OcclusionCullRenderer()
   // mOcclusionShader->gocPolygonMode()->set(vl::PM_LINE, vl::PM_LINE);
 }
 //-----------------------------------------------------------------------------
-const RenderQueue* OcclusionCullRenderer::render(const RenderQueue* in_render_queue, Camera* camera, Real frame_clock)
+const RenderQueue* OcclusionCullRenderer::render(const RenderQueue* in_render_queue, Camera* camera, real frame_clock)
 {
   // skip if renderer is disabled
   if (enableMask() == 0)
@@ -130,18 +130,18 @@ void OcclusionCullRenderer::setWrappedRenderer(Renderer* renderer)
   mWrappedRenderer = renderer; 
 }
 //-----------------------------------------------------------------------------
-const RenderTarget* OcclusionCullRenderer::renderTarget() const
+const Framebuffer* OcclusionCullRenderer::framebuffer() const
 {
   if (mWrappedRenderer)
-    return mWrappedRenderer->renderTarget();
+    return mWrappedRenderer->framebuffer();
   else
     return NULL;
 }
 //-----------------------------------------------------------------------------
-RenderTarget* OcclusionCullRenderer::renderTarget()
+Framebuffer* OcclusionCullRenderer::framebuffer()
 {
   if (mWrappedRenderer)
-    return mWrappedRenderer->renderTarget();
+    return mWrappedRenderer->framebuffer();
   else
     return NULL;
 }
@@ -164,7 +164,7 @@ void OcclusionCullRenderer::render_pass1(const RenderQueue* in_render_queue )
       continue;
 
     bool occluded = false;
-    VL_CHECK(GLEW_ARB_occlusion_query || GLEW_VERSION_1_5 || GLEW_VERSION_3_0)
+    VL_CHECK(Has_Occlusion_Query)
 
     if ( actor->occlusionQuery() && 
          actor->occlusionQueryTick() == mWrappedRenderer->renderTick() && 
@@ -202,10 +202,16 @@ void OcclusionCullRenderer::render_pass2(const RenderQueue* non_occluded_render_
   if (enableMask() == 0)
     return;
 
+#ifndef NDEBUG
+  GLint buffer = 0;
+  glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &buffer);
+  VL_CHECK(buffer == 0);
+#endif
+
   // --------------- render target activation --------------- 
 
   /* keep the currently active render target */
-  // renderTarget()->activate();
+  // framebuffer()->activate();
 
   // --------------- viewport activation --------------- 
 
@@ -227,17 +233,19 @@ void OcclusionCullRenderer::render_pass2(const RenderQueue* non_occluded_render_
 
   // --------------- setup occlusion shader once and for all ---------------
 
-  OpenGLContext* opengl_context = renderTarget()->openglContext();
+  OpenGLContext* opengl_context = framebuffer()->openglContext();
   GLSLProgram*   glsl_program   = mOcclusionShader->glslProgram();
   Transform*     cur_transform  = NULL;
 
-  opengl_context->applyRenderStates(NULL, mOcclusionShader->getRenderStateSet(), camera );
-  opengl_context->applyEnables(NULL, mOcclusionShader->getEnableSet() );
-  projViewTransfCallback()->updateMatrices( true, true, glsl_program, camera, cur_transform, opengl_context->isCompatible() );
+  opengl_context->resetRenderStates();
+  opengl_context->resetEnables();
+  opengl_context->applyRenderStates( mOcclusionShader->getRenderStateSet(), camera );
+  opengl_context->applyEnables( mOcclusionShader->getEnableSet() );
+  projViewTransfCallback()->updateMatrices( true, true, glsl_program, camera, cur_transform );
 
   // camera/eye position for later usage
 
-  vec3 eye = camera->inverseViewMatrix().getT();
+  vec3 eye = camera->modelingMatrix().getT();
 
   // --------------- rendering ---------------
 
@@ -278,7 +286,7 @@ void OcclusionCullRenderer::render_pass2(const RenderQueue* non_occluded_render_
 
     if ( !actor->boundingBox().isInside(eye) )
     {
-      VL_CHECK(GLEW_ARB_occlusion_query || GLEW_VERSION_1_5 || GLEW_VERSION_3_0)
+      VL_CHECK(Has_Occlusion_Query)
 
       // if occludee -> perform occlusion test to be used for the next frame
       if (actor->isOccludee())
@@ -287,7 +295,7 @@ void OcclusionCullRenderer::render_pass2(const RenderQueue* non_occluded_render_
         if (tok->mActor->transform() != cur_transform)
         {
           cur_transform = tok->mActor->transform();
-          projViewTransfCallback()->updateMatrices( false, true, glsl_program, camera, cur_transform, opengl_context->isCompatible() );
+          projViewTransfCallback()->updateMatrices( false, true, glsl_program, camera, cur_transform );
         }
 
         // register occlusion query tick
@@ -320,10 +328,10 @@ void OcclusionCullRenderer::render_pass2(const RenderQueue* non_occluded_render_
   glVertexPointer(3, GL_FLOAT, 0, NULL); VL_CHECK_OGL();
 
   // clear enables
-  opengl_context->applyEnables(mOcclusionShader->getEnableSet(), mDummyEnables.get() );
+  opengl_context->applyEnables( mDummyEnables.get() );
 
   // clear render states
-  opengl_context->applyRenderStates(mOcclusionShader->getRenderStateSet(), mDummyStateSet.get(), camera );
+  opengl_context->applyRenderStates( mDummyStateSet.get(), camera );
 
   glDisable(GL_SCISSOR_TEST);
 }

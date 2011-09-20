@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -74,6 +74,8 @@ namespace vl
   - Actor::actorEventCallbacks() */
   class VLGRAPHICS_EXPORT ActorEventCallback: public Object
   {
+    VL_INSTRUMENT_ABSTRACT_CLASS(vl::ActorEventCallback, Object)
+
   public:
     ActorEventCallback(): mEnabled(true) {}
 
@@ -85,7 +87,7 @@ namespace vl
     \param renderable The currently selected Actor LOD.
     \param shader The currently active Shader.
     \param pass The current Actor[s] rendering pass. */
-    virtual void onActorRenderStarted(Actor* actor, Real frame_clock, const Camera* cam, Renderable* renderable, const Shader* shader, int pass) = 0;
+    virtual void onActorRenderStarted(Actor* actor, real frame_clock, const Camera* cam, Renderable* renderable, const Shader* shader, int pass) = 0;
 
     /** Event notifying that an Actor is being deleted. */
     virtual void onActorDelete(Actor* actor) = 0;
@@ -128,9 +130,9 @@ namespace vl
   */
   class VLGRAPHICS_EXPORT Actor: public Object
   {
-  public:
-    virtual const char* className() { return "vl::Actor"; }
+    VL_INSTRUMENT_CLASS(vl::Actor, Object)
 
+  public:
     /** Constructor.
     \param renderable A Renderable defining the Actor's LOD level #0
     \param effect The Effect to be used by the Actor
@@ -140,7 +142,7 @@ namespace vl
     */
     Actor(Renderable* renderable = NULL, Effect* effect = NULL, Transform* transform = NULL, int block = 0, int rank = 0):
       mEffect(effect), mTransform(transform), mRenderBlock(block), mRenderRank(rank),
-      mTransformUpdateTick(-1), mBoundsUpdateTick(-1), mEnableMask(0xFFFFFFFF), mOcclusionQuery(0), mIsOccludee(true), mOcclusionQueryTick(0xFFFFFFFF)
+      mTransformUpdateTick(-1), mBoundsUpdateTick(-1), mEnableMask(0xFFFFFFFF), mOcclusionQuery(0), mOcclusionQueryTick(0xFFFFFFFF), mIsOccludee(true)
     {
       VL_DEBUG_SET_OBJECT_NAME()
       mActorEventCallbacks.setAutomaticDelete(false);
@@ -169,7 +171,10 @@ namespace vl
     }
 
     /** Returns the Renderable object representing the LOD level specifed by \p lod_index. */
-    const ref<Renderable>& lod(int lod_index) const { return mRenderables[lod_index]; }
+    const Renderable* lod(int lod_index) const { return mRenderables[lod_index].get(); }
+
+    /** Returns the Renderable object representing the LOD level specifed by \p lod_index. */
+    Renderable* lod(int lod_index) { return mRenderables[lod_index].get(); }
 
     /** Utility function to assign one or more Renderable[s] to one or more LOD levels. */
     void setLODs(Renderable* lod0, Renderable* lod1=NULL, Renderable* lod2=NULL, Renderable* lod3=NULL, Renderable* lod4=NULL, Renderable* lod5=NULL);
@@ -283,7 +288,7 @@ namespace vl
     /** Equivalent to getUniformSet()->eraseUniform(name)
      \remarks
      You must install a UniformSet with setUniformSet() before calling this function. */
-    void eraseUniform(const std::string& name);
+    void eraseUniform(const char* name);
 
     /** Equivalent to getUniformSet()->eraseUniform(uniform)
      \remarks
@@ -298,23 +303,23 @@ namespace vl
     /** Equivalent to getUniformSet()->getUniform(name, get_mode)
      \remarks
      You must install a UniformSet with setUniformSet() before calling this function. */
-    Uniform* gocUniform(const std::string& name);
+    Uniform* gocUniform(const char* name);
 
     /** Equivalent to getUniformSet()->getUniform(name, get_mode)
      \remarks
      You must install a UniformSet with setUniformSet() before calling this function. */
-    Uniform* getUniform(const std::string& name);
+    Uniform* getUniform(const char* name);
     
     /** Equivalent to getUniformSet()->getUniform(name, get_mode)
      \remarks
      You must install a UniformSet with setUniformSet() before calling this function. */
-    const Uniform* getUniform(const std::string& name) const;
+    const Uniform* getUniform(const char* name) const;
 
     /** Installs a new UniformSet
      \sa
      - setUniform()
      - uniforms()
-     - eraseUniform(const std::string& name)
+     - eraseUniform(const char* name)
      - eraseUniform(const Uniform* uniform)
      - eraseAllUniforms()
      - getUniform() */
@@ -324,7 +329,7 @@ namespace vl
      \sa
      - setUniform()
      - uniforms()
-     - eraseUniform(const std::string& name)
+     - eraseUniform(const char* name)
      - eraseUniform(const Uniform* uniform)
      - eraseAllUniforms()
      - getUniform()
@@ -335,7 +340,7 @@ namespace vl
      \sa
      - setUniform()
      - uniforms()
-     - eraseUniform(const std::string& name)
+     - eraseUniform(const char* name)
      - eraseUniform(const Uniform* uniform)
      - eraseAllUniforms()
      - getUniform()
@@ -346,7 +351,7 @@ namespace vl
      \sa
      - setUniform()
      - uniforms()
-     - eraseUniform(const std::string& name)
+     - eraseUniform(const char* name)
      - eraseUniform(const Uniform* uniform)
      - eraseAllUniforms()
      - getUniform()
@@ -360,7 +365,7 @@ namespace vl
     Collection<ActorEventCallback>* actorEventCallbacks() { return &mActorEventCallbacks; }
 
     /** Calls all the onActorRenderStarted() of all the ActorEventCallback installed on this Actor. */
-    void dispatchOnActorRenderStarted( Real frame_clock, const Camera* camera, Renderable* renderable, const Shader* shader, int pass)
+    void dispatchOnActorRenderStarted( real frame_clock, const Camera* camera, Renderable* renderable, const Shader* shader, int pass)
     {
       for(int i=0; i<actorEventCallbacks()->size(); ++i)
       {
@@ -457,8 +462,8 @@ namespace vl
     long long mBoundsUpdateTick;
     unsigned int mEnableMask;
     GLuint mOcclusionQuery;
-    bool mIsOccludee;
     unsigned mOcclusionQueryTick;
+    bool mIsOccludee;
   };
   //---------------------------------------------------------------------------
   /** Defined as a simple subclass of Collection<Actor>, see Collection for more information. */

@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -35,6 +35,7 @@
 #include <vlCore/Object.hpp>
 #include <vlCore/vlnamespace.hpp>
 #include <vlGraphics/link_config.hpp>
+#include <vlGraphics/RenderState.hpp>
 #include <vector>
 
 namespace vl
@@ -46,24 +47,34 @@ namespace vl
     * \sa Shader, Effect, Actor */
   class VLGRAPHICS_EXPORT RenderStateSet: public Object
   {
+    VL_INSTRUMENT_CLASS(vl::RenderStateSet, Object)
+
   public:
     RenderStateSet(): mGLSLProgram(NULL)
     {
       VL_DEBUG_SET_OBJECT_NAME()
     }
-    virtual const char* className() { return "vl::RenderStateSet"; }
+
+    RenderStateSet& deepCopyFrom(const RenderStateSet& other);
+
+    RenderStateSet& shallowCopyFrom(const RenderStateSet& other) { mRenderStates = other.mRenderStates; mGLSLProgram = other.mGLSLProgram; return *this; }
 
     // renderstates getters and setters
 
-    void setRenderState(RenderState* renderstate);
+    void setRenderState(RenderState* renderstate, int index);
 
-    RenderState* renderState( ERenderState type );
+    RenderState* renderState( ERenderState type, int index=-1 );
 
-    const RenderState* renderState( ERenderState type ) const;
+    const RenderState* renderState( ERenderState type, int index=-1 ) const;
 
-    const std::vector< ref<RenderState> >& renderStates() const { return mRenderStates; }
+    size_t renderStatesCount() const { return mRenderStates.size(); }
 
-    void eraseRenderState(ERenderState type);
+    const RenderStateSlot* renderStates() const { if (mRenderStates.empty()) return NULL; else return &mRenderStates[0]; }
+
+    RenderStateSlot* renderStates() { if (mRenderStates.empty()) return NULL; else return &mRenderStates[0]; }
+
+    //! If index == -1 all the renderstates of the given type are removed regardless of their binding index.
+    void eraseRenderState(ERenderState type, int index);
 
     void eraseAllRenderStates() { mRenderStates.clear(); mGLSLProgram = NULL; }
     
@@ -74,7 +85,7 @@ namespace vl
     GLSLProgram* glslProgram() { return mGLSLProgram; }
 
   protected:
-    std::vector< ref<RenderState> > mRenderStates;
+    std::vector< RenderStateSlot > mRenderStates;
     GLSLProgram* mGLSLProgram;
   };
 }

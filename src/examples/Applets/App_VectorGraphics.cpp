@@ -1,7 +1,7 @@
 /**************************************************************************************/
 /*                                                                                    */
 /*  Visualization Library                                                             */
-/*  http://www.visualizationlibrary.com                                               */
+/*  http://www.visualizationlibrary.org                                               */
 /*                                                                                    */
 /*  Copyright (c) 2005-2010, Michele Bosi                                             */
 /*  All rights reserved.                                                              */
@@ -34,14 +34,14 @@
 #include <vlVG/VectorGraphics.hpp>
 #include <vlVG/SceneManagerVectorGraphics.hpp>
 #include <vlGraphics/Geometry.hpp>
-#include <vlCore/Array.hpp>
+#include <vlGraphics/Array.hpp>
 
 class App_VectorGraphics: public BaseDemo
 {
 public:
   virtual void initEvent()
   {
-    vl::Log::print(appletInfo());
+    vl::Log::notify(appletInfo());
 
     // disable trackball and ghost camera manipulator
     trackball()->setEnabled(false);
@@ -50,7 +50,7 @@ public:
     // camera setup
 
     rendering()->as<vl::Rendering>()->setNearFarClippingPlanesOptimized(false);
-    rendering()->as<vl::Rendering>()->camera()->setProjectionAsOrtho2D();
+    rendering()->as<vl::Rendering>()->camera()->setProjectionOrtho(-0.5f);
     // reset view matrix to I
     rendering()->as<vl::Rendering>()->camera()->setViewMatrix( vl::mat4() );
 
@@ -394,7 +394,7 @@ public:
   {
     rendering()->as<vl::Rendering>()->camera()->viewport()->setWidth(w);
     rendering()->as<vl::Rendering>()->camera()->viewport()->setHeight(h);
-    rendering()->as<vl::Rendering>()->camera()->setProjectionAsOrtho2D();
+    rendering()->as<vl::Rendering>()->camera()->setProjectionOrtho(-0.5f);
   }
 
 protected:
