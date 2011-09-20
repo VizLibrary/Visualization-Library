@@ -137,6 +137,20 @@ namespace vl
     // --- Vertex Array Manipulation ---
     // ------------------------------------------------------------------------
 
+    /** Converts the fixed function pipeline arrays (vertex array, normal arrays) into the generic ones.
+    * The generic attribute indices are allocated in the following order:
+    * - vertex array
+    * - normal array
+    * - color array
+    * - texture array 0 .. N
+    * - secondary color array
+    * - fog coord array
+    *
+    * \remarks
+    * The previously installed generic vertex attributes are removed. The fixed function attributes are set to NULL.
+    */
+    void toGenericVertexAttribs();
+
     /**
      * Computes the normals in a "smooth" way, i.e. averaging the normals of those 
      * polygons that share one or more vertices.
@@ -197,7 +211,7 @@ namespace vl
 
     void regenerateVertices(const std::vector<size_t>& map_new_to_old);
 
-    // mic fixme: move where appropriate: GUtils
+    // mic fixme: move somewhere else?
     //! Computes the tangent (and optionally bitangent) vectors used to form a TBN matrix to be used for bumpmapping.
     //! @param vert_count The number of elements stored in @a vertex, @a normal, @a texcoord, @a tangent and @a bitangent.
     //! @param vertex Array containing the vertex positions.
@@ -279,7 +293,7 @@ namespace vl
       tex_array = mTexCoordArrays[i]->mTexCoordArray.get();
     }
 
-    void setVertexAttribArray(unsigned int attrib_idx, bool normalize, EVertexAttribBehavior data_behav, ArrayAbstract* data) { setVertexAttribArray(VertexAttribInfo(attrib_idx, normalize, data_behav, data)); }
+    void setVertexAttribArray(unsigned int attrib_idx, ArrayAbstract* data, bool normalize=true, EVertexAttribBehavior data_behav=VAB_NORMAL) { setVertexAttribArray(VertexAttribInfo(attrib_idx, data, normalize, data_behav)); }
 
     void setVertexAttribArray(const VertexAttribInfo& info);
 
@@ -305,6 +319,7 @@ namespace vl
 
   protected:
     virtual void computeBounds_Implementation();
+    
     virtual void render_Implementation(const Actor* actor, const Shader* shader, const Camera* camera, OpenGLContext* gl_context) const;
 
     // render calls

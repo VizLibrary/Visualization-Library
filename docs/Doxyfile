@@ -1323,6 +1323,6 @@ SERVER_BASED_SEARCH    = YES
 # Automatically added by build script 
 #--------------------------------------------------------------------------- 
  
-PROJECT_NUMBER = "v2011.05.1140RC2" 
+PROJECT_NUMBER = "v2011.05.1144" 
 HTML_OUTPUT = Visualization_Library_SDK-docs 
 OUTPUT_DIRECTORY = ../.. 

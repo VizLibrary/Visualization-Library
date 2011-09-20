@@ -315,8 +315,8 @@ public:
     //blit_fbo->setSrcRect( center-side, center-side, center+side, center+side );
     blit_fbo->setSrcRect( 0, 0, mFBO_Size, mFBO_Size );
     blit_fbo->setDstRect( 0, 0, mFBO_Size, mFBO_Size );
-    blit_fbo->setReadFramebuffer( fbo_render_target.get() );
-    blit_fbo->setDrawFramebuffer( fbo_rt_texture.get() );
+    blit_fbo->setReadRenderTarget( fbo_render_target.get() );
+    blit_fbo->setDrawRenderTarget( fbo_rt_texture.get() );
 
     // Main rendering
 
@@ -467,6 +467,7 @@ public:
     if (texture1->dimension() == vl::TD_TEXTURE_2D_MULTISAMPLE)
     {
       effect1->shader()->gocGLSLProgram()->attachShader( new vl::GLSLFragmentShader("/glsl/tex_multisample.fs") );
+      effect1->shader()->gocGLSLProgram()->gocUniform("ms_texture")->setUniformI(0);
     }
 
     // ground plane

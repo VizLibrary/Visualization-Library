@@ -2,6 +2,64 @@
 
    \page pagChangelog Changelog
 
+	<div class="featuretitle">Visualization Library 2011.04.1144</div>
+
+	- Bug: fixed FontManager::acquireFont() always returning entry #0.
+	- Bug: fixed Matrix3::getInverse() returning the transpose of the inverse.
+	- Bug: fixed bug when destroying a Transform with children did not set mParent to NULL.
+	- Bug: fixed lag when starting font rendering with many glyphs.
+	- Bug: fixed problems and typos in FindVL.cmake.
+	- Bug: fixed vl::Time precision when system is up for several days.
+	- Bug: fixed partial GLSLProgState sorting in Renderer.cpp.
+	- actorQueue() cleared after rendering to potentially release rendered objects.
+	- Matrix4::getInverse() implemented using cofactors method give 3.5X speedup.
+	
+	<div class="featuretitle">Visualization Library 2011.04.1142</div>
+	
+	- Fixed compilation error when VL_PIPELINE_PRECISION == 2
+	- Define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES for MSVC compilers.
+
+	<div class="featuretitle">Visualization Library 2011.04.1140</div>
+
+	- Added pagGuideThreads.dox file "Multi-Threading with VL".
+	- Documentation updates: mainpage.dox, pagDesign.dox, pagKnowledgeBase.dox, pagLearning.dox, pagMainClasses.dox, pagOpenGL.dox, pagCredits.dox, pagInstall.dox.
+	- Updated config.hpp documentation and set to 8 both VL_MAX_TEXTURE_UNITS and VL_MAX_GENERIC_VERTEX_ATTRIB.
+	- App_Deformer loads default file.
+	- App_Molecules loads default mol2 file.
+	- Default log mutex initialized to NULL.
+	- Disabled vl::Object/vl::ref<> automatic delete for MFC windows.
+	- Fixed warning in App_Framebuffer_Object.
+
+	<div class="featuretitle">Visualization Library 2011.04.1140 RC4</div>
+
+	- GLSLProgram: log warning on GLSLProgram linkage in debug mode.
+	- GLSLProgram: methods *AutomaticAttribLocation() renamed *AutoAttribLocation()
+	- GLSLProgram: added getUniformLocation() taking "const char*" as argument.
+	- GLSLProgram: added activeUniformLocations() method to access the list of currently active uniforms and relative binding locations.
+	- GLSLProgram: added methods vl_ModelViewMatrix(), vl_ProjectionMatrix(), vl_ModelViewProjectionMatrix() and vl_NormalMatrix() to access VL built-in uniforms locations and test for their existence after GLSLProgram linkage.
+	- OpenGL 4: OpenGL 4 Core working!
+	- OpenGL 4: unified ProjViewTransfCallback class can automatically update OpenGL 1.x matrices as well as VL built-in matrices for GL 4 Core profile: vl_ModelViewMatrix, vl_ProjectionMatrix, vl_ModelViewProjectionMatrix, vl_NormalMatrix.
+	- OpenGL 4: OpenGL 4 Core mipmaps generation support.
+	- OpenGL 4: App_TessellationShader made (almost) compatible with OpenGL 4 Core.
+	- Added method toGenericVertexAttribs() to convert a Geometry vertex array to generic ones.
+	- Fixed use of wxUSE_UNICODE in WXGLCanvas.cpp
+	- Fixed VL_ACTOR_USER_DATA incorrectly placed inside Object.hpp
+	- VertexAttribInfo construction parameters order changed and added defaults.
+
+	<div class="featuretitle">Visualization Library 2011.04.1140 RC3</div>
+
+	- BlitFrameBuffer::setReadFramebuffer/setDrawFramebuffer() renamed setReadRenderTarget()/setDrawRenderTarget()
+	- Added RenderTarget::setReadBuffer() to specify the read-buffer to be used with a RenderTarget.
+	- Read-buffer and draw-buffer binding moved after render-target binding but before fbo completeness check.
+	- Added VL_INSTALL_DATA option during CMake configuration.
+
+	<div class="featuretitle">Visualization Library 2011.04.1140 RC2</div>
+
+	- Fixed version.hpp configuration error in CMake
+	- Fixed Linux compilation error
+	- Fixed vlQt4 install directory
+	- gDebugger-friendly texture creation
+
 	<div class="featuretitle">Visualization Library 2011.04.1140 RC1</div>
 
 	- Added ScopedMutex class and IMutex interface class.
